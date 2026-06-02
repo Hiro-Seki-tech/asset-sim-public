@@ -6,7 +6,7 @@
     <meta name="robots" content="index, follow">
     <meta name="description" content="野村総合研究所の資産ピラミッドに準拠した、シンプルかつ超高性能な資産シミュレータ。あなたの未来のキャッシュフローを即座に可視化します。">
     <meta property="og:title" content="資産・ライフシミュレータ💡（💀DIE WITH ZERO判定可能！） | 人生のキャッシュフロー軍略盤">
-    <meta property="og:description" content="純金融資産の階層別デフォルト値から、あなたの未来ের資産推移を即座に計算。">
+    <meta property="og:description" content="純金融資産の階層別デフォルト値から、あなたの未来の資産推移を即座に計算。">
     <meta property="og:type" content="website">
 
     <title>資産・ライフシミュレータ💡（💀DIE WITH ZERO判定可能！）</title>
@@ -416,8 +416,8 @@
                 </div>
                 <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
                     <span class="text-[10px] uppercase text-slate-400 font-bold block mb-1">ジェムキンのアドバイス</span>
-                    <p class="text-xs text-amber-300 italic max-w-xs mt-1 leading-relaxed">
-                        「富を抱いたまま墓場へ入るは軍師の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。」
+                    <p id="dwz-advice-text" class="text-xs text-amber-300 italic max-w-xs mt-1 leading-relaxed">
+                        <!-- JSで動的に書き換え -->
                     </p>
                 </div>
             </div>
@@ -960,10 +960,13 @@
                 document.getElementById('rate-cash').value = 0.2;
                 
                 addOtherIncomeRow("事業オーナー配当金", 2000, 50, 90);
-                addStageRow(1800, 70);   
-                addStageRow(1200, 90);  
+                // 人生の出費をリアルに引き上げ
+                addStageRow(3200, 70);   
+                addStageRow(2200, 90);  
                 addIncomeRow("海外不動産売却益", 65, 10000, "cash");
                 addExpenseRow("資産管理法人設立・海外移住費用", 55, 3000);
+                // 超富裕層向け有料シニアコレクティブハウス入居保証費用（億単位）
+                addExpenseRow("超高級有料シニアレジデンス前払入居金", 78, 12000);
                 
                 addAssetElement({ name: "米国プライベートエクイティ", type: "stocks", initAmt: 20000, rate: 8.0, yearAmt: 1000, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 85 });
                 addAssetElement({ name: "コアインデックス投信", type: "trust", initAmt: 15000, rate: 5.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 90 });
@@ -979,10 +982,13 @@
                 document.getElementById('rate-cash').value = 0.1;
                 
                 addOtherIncomeRow("未公開株配当等", 300, 45, 85);
-                addStageRow(900, 65);
-                addStageRow(600, 85);
+                // 人生の出費を引き上げ
+                addStageRow(1600, 65);
+                addStageRow(1100, 85);
                 addIncomeRow("役員退職慰労金", 60, 5000, "trust");
                 addExpenseRow("別荘購入費用", 50, 2000);
+                // 富裕層向け高級有料老人ホーム一時金（4500万円）
+                addExpenseRow("プライベートケア付き高級老人ホーム入居金", 75, 4500);
                 
                 addAssetElement({ name: "欧米高配当個別株", type: "stocks", initAmt: 6000, rate: 6.0, yearAmt: 200, monthAmt: 0, payout: "cashout", startAge: 45, endAge: 80 });
                 addAssetElement({ name: "世界分散ファンド", type: "trust", initAmt: 8000, rate: 4.5, yearAmt: 300, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 85 });
@@ -997,10 +1003,13 @@
                 document.getElementById('rate-cash').value = 0.1;
                 
                 addOtherIncomeRow("厚生・国民年金", 220, 65, 85);
-                addStageRow(500, 65);  
-                addStageRow(380, 85);   
+                // 人生の出費をリアルに引き上げ
+                addStageRow(800, 65);  
+                addStageRow(580, 85);   
                 addIncomeRow("大企業定年退職金", 65, 2000, "trust");
                 addExpenseRow("住宅ローン一括繰上返済", 50, 1500);
+                // 準富裕層向けケア付き有料老人ホーム入居初期費用
+                addExpenseRow("ケア付き有料シニアホーム保証前払金", 78, 2000);
                 
                 addAssetElement({ name: "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
                 addAssetElement({ name: "優良インデックス投信", type: "trust", initAmt: 3500, rate: 4.0, yearAmt: 120, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 85 });
@@ -1015,14 +1024,18 @@
                 document.getElementById('rate-cash').value = 0.1;
                 
                 addOtherIncomeRow("基礎・厚生年金", 180, 65, 85);
-                addStageRow(400, 60);
-                addStageRow(300, 85);
+                // 人生の出費をリアルに引き上げ
+                addStageRow(550, 60);
+                addStageRow(420, 85);
                 addIncomeRow("中小企業退職金", 60, 1000, "cash");
                 addExpenseRow("子供の大学進学学費", 45, 400);
+                // シニア住宅バリアフリーリノベ費用
+                addExpenseRow("シニア世代向け自宅リフォーム・介護改修費用", 72, 800);
                 
                 addAssetElement({ name: "つみたて新NISA(オルカン)", type: "trust", initAmt: 2000, rate: 4.0, yearAmt: 0, monthAmt: 10, startAge: 35, endAge: 85 });
 
             } else {
+                // マス層
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 30;
                 document.getElementById('years').value = 85;
@@ -1032,10 +1045,13 @@
                 document.getElementById('rate-cash').value = 0.05;
                 
                 addOtherIncomeRow("老齢基礎年金", 130, 65, 85);
-                addStageRow(320, 65);
-                addStageRow(240, 85);
+                // 人生の出費をリアルに引き上げ
+                addStageRow(420, 65);
+                addStageRow(320, 85);
                 addIncomeRow("小規模退職一時金", 65, 500, "cash");
                 addExpenseRow("自動車買い替え費用", 40, 250);
+                // バリアフリー手すり・医療介護臨時積立
+                addExpenseRow("後期高齢期バリアフリー改修・介護補助費用", 75, 400);
                 
                 addAssetElement({ name: "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 85 });
             }
@@ -1300,10 +1316,8 @@
             const finalRecord = lastSimulationData[lastSimulationData.length - 1];
             const totalRemainingYen = finalRecord.total; 
 
-            const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
-            const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
-
             const msgBox = document.getElementById('dwz-message-box');
+            const adviceBox = document.getElementById('dwz-advice-text');
             
             const breakdownList = document.getElementById('dwz-breakdown-list');
             breakdownList.innerHTML = '';
@@ -1330,19 +1344,62 @@
                 breakdownList.appendChild(div);
             });
 
-            const totalText = formatAssetValue(totalRemainingYen);
-            const yearText = formatAssetValue(additionalSpendPerYear);
-            const monthText = formatAssetValue(additionalSpendPerMonth);
+            if (totalRemainingYen < 0) {
+                // 1. 資産がマイナス（負）のとき
+                let bankruptAge = endAge;
+                // 何歳で0円を下回る（破綻する）のか探索
+                for (let i = 0; i < lastSimulationData.length; i++) {
+                    if (lastSimulationData[i].total < 0) {
+                        bankruptAge = currentAge + lastSimulationData[i].index;
+                        break;
+                    }
+                }
 
-            msgBox.innerHTML = `
-                現在の予定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
-                <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${totalText}</span> を遺すことになります。<br><br>
-                富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class="text-amber-400 font-extrabold">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、
-                残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
-                <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${yearText}／年</span> 
-                （すなわち <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${monthText}／月</span>）
-                多く使わなければなりません。
-            `;
+                const deficitAmt = Math.abs(totalRemainingYen);
+                
+                // ダイウィズゼロを果たすための必要削減額 (残された年月全体にわたって支出を減らすアプローチ)
+                const reduceSpendPerYear = Math.round(deficitAmt / yearsRemaining);
+                const reduceSpendPerMonth = Math.round(reduceSpendPerYear / 12);
+
+                const deficitText = formatAssetValue(deficitAmt);
+                const reduceYearText = formatAssetValue(reduceSpendPerYear);
+                const reduceMonthText = formatAssetValue(reduceSpendPerMonth);
+
+                msgBox.innerHTML = `
+                    現在の算盤では、あなたの資産は逝去される前の <span class="text-rose-400 font-black text-lg">${bankruptAge}歳</span> の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>
+                    最終的にシミュレーション終了年齢（<span class="text-amber-400 font-black">${endAge}歳</span>）に達した時点では、合計で <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">約${deficitText}</span> が【不足】する計算となります。<br><br>
+                    この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、年間支出を<br>
+                    <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${reduceYearText}／年</span> 
+                    （すなわち、月々約 <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${reduceMonthText}／月</span>）
+                    【減らさなければ】なりません。
+                `;
+
+                if (adviceBox) {
+                    adviceBox.innerHTML = `「兵糧が最期を前に尽きるは軍師として痛恨の極み。生活のステージ支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
+                }
+            } else {
+                // 2. 資産がプラス（正）のとき
+                const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
+                const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
+
+                const totalText = formatAssetValue(totalRemainingYen);
+                const yearText = formatAssetValue(additionalSpendPerYear);
+                const monthText = formatAssetValue(additionalSpendPerMonth);
+
+                msgBox.innerHTML = `
+                    現在の予定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
+                    <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${totalText}</span> を遺すことになります。<br><br>
+                    富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class="text-amber-400 font-extrabold">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、
+                    残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
+                    <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${yearText}／年</span> 
+                    （すなわち <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${monthText}／月</span>）
+                    【多く】使わなければなりません。
+                `;
+
+                if (adviceBox) {
+                    adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは軍師の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。」`;
+                }
+            }
 
             document.getElementById('simulator-view').classList.add('hidden');
             document.getElementById('dwz-view').classList.remove('hidden');
