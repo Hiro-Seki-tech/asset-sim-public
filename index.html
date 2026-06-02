@@ -38,7 +38,8 @@
         <span id="toast-text" class="text-sm font-medium">通知メッセージ</span>
     </div>
 
-    <div id="chart-tooltip" class="absolute bg-slate-950/95 text-white p-4 rounded-2xl shadow-2xl border border-slate-800 pointer-events-none opacity-0 transition-opacity duration-200 z-50 w-80 lg:w-80 flex flex-col gap-3 max-sm:w-[calc(100%-2rem)] max-sm:left-4 max-sm:right-4">
+    <!-- [2] 帯グラフ表示時のスマホ版(max-sm)は、左右幅を限界まで広げて padding や gap をコンパクトにして画面内に完璧に収める -->
+    <div id="chart-tooltip" class="absolute bg-slate-950/95 text-white p-4 max-sm:p-3 rounded-2xl shadow-2xl border border-slate-800 pointer-events-none opacity-0 transition-opacity duration-200 z-50 w-80 lg:w-80 flex flex-col gap-3 max-sm:gap-2 max-sm:w-[calc(100%-1rem)] max-sm:left-2 max-sm:right-2">
         <div id="tooltip-year" class="text-xs font-bold tracking-wider text-slate-400 border-b border-slate-800 pb-1.5 flex justify-between">
             <span>経過年次</span>
             <span class="text-amber-400">資産ポートフォリオ</span>
@@ -50,7 +51,7 @@
                 <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">0万円</span>
             </div>
         </div>
-        <div id="tooltip-breakdown" class="text-[11px] grid grid-cols-1 gap-y-1 text-slate-300 border-t border-slate-800 pt-2"></div>
+        <div id="tooltip-breakdown" class="text-[11px] max-sm:text-[10px] grid grid-cols-1 gap-y-1 max-sm:gap-y-0.5 text-slate-300 border-t border-slate-800 pt-2"></div>
         <div id="tooltip-diff" class="text-[11px] text-center border-t border-slate-800 pt-2 font-bold"></div>
     </div>
 
@@ -58,17 +59,21 @@
         <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="relative flex items-center">
-                    <!-- 修正[1]: 💎ジェムボタンをrelative化し、中に「開始！」の吹き出しを格納して完全に真左（中央高さ）に固定 -->
                     <div onclick="runSimulation(); showToast('💎 ジェムの魔力により、未来が再計算されました！')" class="relative bg-amber-500 text-slate-950 p-3 rounded-xl text-2xl shadow-inner font-black animate-pulse cursor-pointer hover:bg-amber-400 transition-colors flex items-center justify-center select-none" title="クリックしてシミュレーションを実行">
                         💎
-                        <div class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
+                        <!-- 修正[1]: PC/タブレット用（sm:flex）：従来どおり「真左」に吹き出しを指し示す -->
+                        <div class="hidden sm:flex absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
                             <span class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-amber-500"></span>
+                            開始！
+                        </div>
+                        <!-- 修正[1]: スマホ用（sm:hidden）：左に隠れることなく「真下中央」に安全に吹き出しを表示 -->
+                        <div class="sm:hidden absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
+                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-amber-500"></span>
                             開始！
                         </div>
                     </div>
                 </div>
-                <!-- 修正[2]: タイトルを「資産・ライフプランシミュレータ💡」へ変更 -->
-                <div class="ml-16 xl:ml-0">
+                <div class="ml-16 sm:ml-0">
                     <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                         資産・ライフプランシミュレータ<span class="blinking-light">💡</span>
                     </h1>
@@ -93,7 +98,6 @@
                         </select>
                     </div>
                 </div>
-                <!-- 修正[3]: 各マクロ経済世界線ボタンにホバー/フォーカス時の設定内訳吹き出しを「下部」に追加、スマホ対応 -->
                 <div class="flex items-center gap-1 border-t sm:border-t-0 sm:border-l border-slate-700 pt-2.5 sm:pt-0 sm:pl-3">
                     <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-earth-asia text-blue-400 mr-1"></i>マクロ経済世界線：</span>
                     
@@ -551,17 +555,17 @@
             if (tooltipPieChartInstance) { tooltipPieChartInstance.destroy(); }
             
             if (isMobile) {
-                // スマホ用: 1本の美しい積み上げ帯グラフ (Horizontal Stacked Bar Chart)
+                // 修正[2]: スマホ用: 1本の美しい積み上げ帯グラフ (Horizontal Stacked Bar Chart)
                 // コンテナを横並び(flex-row)にし、左に帯グラフ、右側に総資産をスマートに配置
-                chartContainer.className = "relative w-full h-16 flex items-center justify-between gap-4 border-b border-slate-800 pb-2";
+                chartContainer.className = "relative w-full h-12 flex items-center justify-between gap-2 border-b border-slate-800 pb-1.5";
                 totalCenterText.className = "flex flex-col items-end justify-center text-right shrink-0";
                 totalCenterText.style.position = 'static';
                 totalCenterText.style.transform = 'none';
                 totalCenterText.style.display = 'flex';
                 
                 // canvasの最大横幅とスリムな高さを設定して図と同じ1本の細い構成バーにする
-                ctx.canvas.style.maxWidth = '65%';
-                ctx.canvas.style.height = '24px';
+                ctx.canvas.style.maxWidth = '55%'; // 55% に落としてTotal金額を表示するエリアを広げ、確実にはみ出しを防ぐ
+                ctx.canvas.style.height = '18px';
                 
                 tooltipPieChartInstance = new Chart(ctx, {
                     type: 'bar',
@@ -642,17 +646,18 @@
                 { name: '債 券', key: 'bonds', color: assetColors.bonds }
             ];
 
+            // 修正[2]: スマホでのブレイクダウン一覧（内訳）の文字の折り返し・はみ出しを防ぐため、割合(w-1/2など)を極小最適化
             assetLabels.forEach(asset => {
                 const value = data[asset.key];
                 const pct = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
                 const item = document.createElement('div');
-                item.className = 'flex items-center justify-between border-b border-slate-900/40 pb-1';
+                item.className = 'flex items-center justify-between border-b border-slate-900/40 pb-0.5';
                 item.innerHTML = `
-                    <div class="flex items-center gap-1.5 w-1/2">
-                        <span class="w-2 h-2 rounded-full" style="background-color: ${asset.color}"></span>
-                        <span class="text-slate-400 truncate text-[10px] text-left">${asset.name}</span>
+                    <div class="flex items-center gap-1 w-[40%]">
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${asset.color}"></span>
+                        <span class="text-slate-400 truncate text-[10px] max-sm:text-[9px] text-left">${asset.name}</span>
                     </div>
-                    <div class="flex justify-between w-1/2 text-right gap-1 font-mono">
+                    <div class="flex justify-end w-[60%] text-right gap-1 font-mono text-[10px] max-sm:text-[9px]">
                         <span class="text-slate-100 font-bold">${formatAssetValue(value)}</span>
                         <span class="text-amber-400">(${pct}%)</span>
                     </div>
@@ -690,13 +695,14 @@
             const { offsetLeft: positionX, offsetTop: positionY } = context.chart.canvas;
             tooltipEl.style.opacity = 1;
 
+            // 修正[2]: スマホ(innerWidth < 1024)の画面余白を極限(8px)まで切り詰め、確実にはみ出しをシャットアウト
             if (window.innerWidth < 1024) {
                 tooltipEl.style.position = 'fixed';
-                tooltipEl.style.left = '16px';
-                tooltipEl.style.right = '16px';
-                tooltipEl.style.bottom = '16px';
+                tooltipEl.style.left = '8px';
+                tooltipEl.style.right = '8px';
+                tooltipEl.style.bottom = '8px';
                 tooltipEl.style.top = 'auto';
-                tooltipEl.style.width = 'calc(100% - 32px)';
+                tooltipEl.style.width = 'calc(100% - 16px)';
             } else {
                 tooltipEl.style.position = 'absolute';
                 tooltipEl.style.width = '20rem';
