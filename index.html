@@ -58,13 +58,13 @@
         <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="relative flex items-center">
-                    <div onclick="runSimulation(); showToast('💎 ジェムの魔力により、未来が再計算されました！')" class="bg-amber-500 text-slate-950 p-3 rounded-xl text-2xl shadow-inner font-black animate-pulse cursor-pointer hover:bg-amber-400 transition-colors flex items-center justify-center select-none" title="クリックしてシミュレーションを実行">
+                    <!-- 修正[1]: 💎ジェムボタンをrelative化し、中に「開始！」の吹き出しを格納して完全に真左（中央高さ）に固定 -->
+                    <div onclick="runSimulation(); showToast('💎 ジェムの魔力により、未来が再計算されました！')" class="relative bg-amber-500 text-slate-950 p-3 rounded-xl text-2xl shadow-inner font-black animate-pulse cursor-pointer hover:bg-amber-400 transition-colors flex items-center justify-center select-none" title="クリックしてシミュレーションを実行">
                         💎
-                    </div>
-                    <!-- 修正[1]: 吹き出しを下部(top-full)に配置し、上部中央に上向きの矢印突起を付与 -->
-                    <div class="absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2 py-1 rounded-md whitespace-nowrap shadow-md flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
-                        <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-amber-500"></span>
-                        試算実行！
+                        <div class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
+                            <span class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-amber-500"></span>
+                            開始！
+                        </div>
                     </div>
                 </div>
                 <!-- 修正[2]: タイトルを「資産・ライフプランシミュレータ💡」へ変更 -->
@@ -542,25 +542,92 @@
         function drawTooltipPieChart(data) {
             const ctx = document.getElementById('tooltipPieChart').getContext('2d');
             const total = data.cash + data.realestate + data.stocks + data.trust + data.metal + data.bonds;
+            
+            // スマホ判定 (PCは1024px以上、スマホ・タブレットは1024px未満)
+            const isMobile = window.innerWidth < 1024;
+            const totalCenterText = document.getElementById('tooltip-total-text').parentElement;
+            const chartContainer = document.getElementById('tooltipPieChart').parentElement;
+            
             if (tooltipPieChartInstance) { tooltipPieChartInstance.destroy(); }
-            tooltipPieChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['現金', '不動産', '株式', '投資信託', '貴金属', '債券'],
-                    datasets: [{
-                        data: [data.cash, data.realestate, data.stocks, data.trust, data.metal, data.bonds],
-                        backgroundColor: [assetColors.cash, assetColors.realestate, assetColors.stocks, assetColors.trust, assetColors.metal, assetColors.bonds],
-                        borderColor: 'rgba(15, 23, 42, 0.95)',
-                        borderWidth: 1.5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '72%',
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
-                }
-            });
+            
+            if (isMobile) {
+                // スマホ用: 1本の美しい積み上げ帯グラフ (Horizontal Stacked Bar Chart)
+                // コンテナを横並び(flex-row)にし、左に帯グラフ、右側に総資産をスマートに配置
+                chartContainer.className = "relative w-full h-16 flex items-center justify-between gap-4 border-b border-slate-800 pb-2";
+                totalCenterText.className = "flex flex-col items-end justify-center text-right shrink-0";
+                totalCenterText.style.position = 'static';
+                totalCenterText.style.transform = 'none';
+                totalCenterText.style.display = 'flex';
+                
+                // canvasの最大横幅とスリムな高さを設定して図と同じ1本の細い構成バーにする
+                ctx.canvas.style.maxWidth = '65%';
+                ctx.canvas.style.height = '24px';
+                
+                tooltipPieChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['資産比率'],
+                        datasets: [
+                            { label: '現金', data: [data.cash], backgroundColor: assetColors.cash, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: '不動産', data: [data.realestate], backgroundColor: assetColors.realestate, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: '株式', data: [data.stocks], backgroundColor: assetColors.stocks, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: '投資信託', data: [data.trust], backgroundColor: assetColors.trust, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: '貴金属', data: [data.metal], backgroundColor: assetColors.metal, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: '債券', data: [data.bonds], backgroundColor: assetColors.bonds, categoryPercentage: 1.0, barPercentage: 1.0 }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y', // 横棒グラフ化
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true, // 積み上げを有効にし、1本の帯に統合
+                                display: false,
+                                grid: { display: false }
+                            },
+                            y: {
+                                stacked: true, // 積み上げを有効にし、1本の帯に統合
+                                display: false,
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // PC用: 従来通りのドーナツ円グラフ
+                chartContainer.className = "relative w-full h-32 flex items-center justify-center";
+                totalCenterText.className = "absolute flex flex-col items-center justify-center text-center";
+                totalCenterText.style.position = '';
+                totalCenterText.style.transform = '';
+                totalCenterText.style.display = 'flex';
+                
+                ctx.canvas.style.maxWidth = '';
+                ctx.canvas.style.height = '';
+                
+                tooltipPieChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['現金', '不動産', '株式', '投資信託', '貴金属', '債券'],
+                        datasets: [{
+                            data: [data.cash, data.realestate, data.stocks, data.trust, data.metal, data.bonds],
+                            backgroundColor: [assetColors.cash, assetColors.realestate, assetColors.stocks, assetColors.trust, assetColors.metal, assetColors.bonds],
+                            borderColor: 'rgba(15, 23, 42, 0.95)',
+                            borderWidth: 1.5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '72%',
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                    }
+                });
+            }
 
             document.getElementById('tooltip-total-text').textContent = formatAssetValue(total);
             const breakdownContainer = document.getElementById('tooltip-breakdown');
