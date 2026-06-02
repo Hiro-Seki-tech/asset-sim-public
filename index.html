@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
-    <meta name="description" content="野村総合研究所の資産ピラミッドに準拠した、シンプルかつ超高性能な資産シミュレータ。あなたの未来のキャッシュフローを即座に可視化します。">
+    <meta name="description" content="野村総合研究所の資産ピラミッドに準拠した、シンプルかつ超高性能な資産シミュレータ。あなたの未来 of キャッシュフローを即座に可視化します。">
     <meta property="og:title" content="資産・ライフプランシミュレータ💡 | 人生のキャッシュフロー軍略盤">
     <meta property="og:description" content="純金融資産の階層別デフォルト値から、あなたの未来の資産推移を即座に計算。">
     <meta property="og:type" content="website">
@@ -379,6 +379,7 @@
         </footer>
     </div>
 
+    <!-- DIE WITH ZERO モード画面 -->
     <div id="dwz-view" class="hidden min-h-screen bg-slate-950 text-slate-100 flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden">
         <!-- 黄金に煌めく背後のグラデーション効果 -->
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08)_0%,transparent_60%)] pointer-events-none"></div>
@@ -430,11 +431,12 @@
         </div>
     </div>
 
-    <div class="fixed bottom-6 right-6 z-40">
-        <button onclick="transitionToDwz()" class="pulse-dwz bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 font-black px-5 py-4 rounded-2xl shadow-[0_10px_30px_rgba(245,158,11,0.4)] flex items-center gap-2 transition-all group focus:outline-none focus:ring-2 focus:ring-amber-400">
-            <span class="text-lg">💀</span>
-            <span class="text-xs uppercase tracking-widest font-black">DIE WITH ZERO !</span>
-            <i class="fa-solid fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
+    <!-- [1] スマホ端での隠れ・スマホ時の帯グラフツールチップ(bottom-8)との重なりを防止する、PC/スマホ切り替え型のフローティングボタン -->
+    <div class="fixed bottom-28 right-4 sm:bottom-6 sm:right-6 z-40">
+        <button onclick="transitionToDwz()" class="pulse-dwz bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 font-black px-4 py-3 sm:px-5 sm:py-4 rounded-2xl shadow-[0_10px_30px_rgba(245,158,11,0.4)] flex items-center gap-1.5 sm:gap-2 transition-all group focus:outline-none focus:ring-2 focus:ring-amber-400 text-[10px] sm:text-xs">
+            <span class="text-sm sm:text-lg">💀</span>
+            <span class="uppercase tracking-widest font-black">DIE WITH ZERO !</span>
+            <i class="fa-solid fa-chevron-right text-[10px] sm:text-xs group-hover:translate-x-1 transition-transform"></i>
         </button>
     </div>
 
@@ -1281,8 +1283,8 @@
             });
         }
 
+        /* [2] DIE WITH ZERO 診断画面遷移ロジック（総資産マイナス時対応の高度分岐） */
         function transitionToDwz() {
-            // 現在のシミュレーションデータを再計算して取得
             runSimulation();
             
             if (!lastSimulationData || lastSimulationData.length === 0) {
@@ -1296,16 +1298,9 @@
 
             // 最終年齢（逝去時）のデータを取得
             const finalRecord = lastSimulationData[lastSimulationData.length - 1];
-            const totalRemainingYen = finalRecord.total; // 円単位
+            const totalRemainingYen = finalRecord.total; 
 
-            // 年間・月間の追加必要支出を計算
-            const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
-            const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
-
-            // 画面要素の取得と差し替え
-            const msgBox = document.getElementById('dwz-message-box');
-            
-            // 美しい内訳HTML生成
+            // 内訳HTMLの動的生成
             const breakdownList = document.getElementById('dwz-breakdown-list');
             breakdownList.innerHTML = '';
             
@@ -1321,31 +1316,58 @@
             listItems.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'flex items-center justify-between pb-1 border-b border-slate-800';
+                const formattedVal = formatAssetValue(item.val);
                 div.innerHTML = `
                     <div class="flex items-center gap-1.5">
                         <span class="w-2 h-2 rounded-full ${item.color}"></span>
                         <span class="text-slate-400">${item.name}</span>
                     </div>
-                    <span class="font-mono text-slate-100 font-bold">${formatAssetValue(item.val)}</span>
+                    <span class="font-mono text-slate-100 font-bold ${item.val < 0 ? 'text-rose-500' : ''}">${formattedVal}</span>
                 `;
                 breakdownList.appendChild(div);
             });
 
-            // 強調用フォーマット
-            const totalText = formatAssetValue(totalRemainingYen);
-            const yearText = formatAssetValue(additionalSpendPerYear);
-            const monthText = formatAssetValue(additionalSpendPerMonth);
+            const msgBox = document.getElementById('dwz-message-box');
 
-            // 警告文言の流し込み
-            msgBox.innerHTML = `
-                現在の予定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
-                <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${totalText}</span> を遺すことになります。<br><br>
-                富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class="text-amber-400 font-extrabold">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、
-                残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
-                <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${yearText}／年</span> 
-                （すなわち <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${monthText}／月</span>）
-                多く使わなければなりません。
-            `;
+            // [2] 総資産のプラス/マイナスで文言と警告モードを分岐する
+            if (totalRemainingYen >= 0) {
+                // プラス時: DIE WITH ZERO 本来の「使い切れ」警告
+                const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
+                const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
+
+                const totalText = formatAssetValue(totalRemainingYen);
+                const yearText = formatAssetValue(additionalSpendPerYear);
+                const monthText = formatAssetValue(additionalSpendPerMonth);
+
+                msgBox.innerHTML = `
+                    現在の予定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
+                    <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${totalText}</span> を遺すことになります。<br><br>
+                    富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class="text-amber-400 font-extrabold">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、
+                    残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
+                    <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${yearText}／年</span> 
+                    （すなわち <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${monthText}／月</span>）
+                    多く使わなければなりません。
+                `;
+            } else {
+                // マイナス時: 老後破産を防ぐための「節約」警告
+                const absoluteDeficit = Math.abs(totalRemainingYen);
+                const neededSavingPerYear = Math.round(absoluteDeficit / yearsRemaining);
+                const neededSavingPerMonth = Math.round(neededSavingPerYear / 12);
+
+                const totalText = formatAssetValue(totalRemainingYen); // マイナスが付いた状態で表示
+                const yearText = formatAssetValue(neededSavingPerYear); // 必要な節約額（絶対値）
+                const monthText = formatAssetValue(neededSavingPerMonth); // 必要な節約額（絶対値）
+
+                msgBox.innerHTML = `
+                    現在の予定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-rose-400 font-black">${endAge}歳</span>）に、
+                    <span class="text-rose-500 font-black text-lg border-b border-dashed border-rose-500">${totalText}</span> の赤字（負債）を抱えることになります。<br><br>
+                    このまま最期を迎える前に資金が尽きる老後破産の危機を完全に回避するためには、
+                    残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
+                    <span class="text-rose-400 font-black text-2xl px-1.5 py-0.5 bg-rose-500/10 rounded-lg shadow-inner">${yearText}／年</span> 
+                    （すなわち <span class="text-rose-400 font-black text-xl px-1 bg-rose-500/10 rounded">${monthText}／月</span>）
+                    出費を<span class="text-rose-400 font-black text-lg underline">節約（削減）</span>しなければなりません。
+                `;
+            }
 
             // ビューの切り替え
             document.getElementById('simulator-view').classList.add('hidden');
