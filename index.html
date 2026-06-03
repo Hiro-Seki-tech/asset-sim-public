@@ -92,7 +92,7 @@
                             資産・ライフシミュレータ<span class="blinking-light">💡</span><span class="text-xs sm:text-sm text-amber-400 font-extrabold bg-amber-400/10 px-2.5 py-1 rounded border border-amber-500/20">（💀DIE WITH ZERO判定可能！）</span>
                         </h1>
                         <p class="text-slate-400 text-xs sm:text-sm mt-0.5 font-light">
-                            未来への軍略盤 — 所得の流入と生涯生活費の引き算が現金と連動する人生の設計図
+                            未来への軍略盤 — 所得の流入と生涯生活費の引き算が現金と連動する人生 of 設計図
                         </p>
                     </div>
                 </div>
@@ -415,7 +415,7 @@
                     </div>
                 </div>
                 <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
-                    <span class="text-[10px] uppercase text-slate-400 font-bold block mb-1">ジェムキンのアドバイス</span>
+                    <span class="text-[10px] uppercase text-slate-400 font-bold block mb-1">人生の軍師からのアドバイス</span>
                     <p id="dwz-advice-text" class="text-xs text-amber-300 italic max-w-xs mt-1 leading-relaxed">
                         <!-- JSで動的に書き換え -->
                     </p>
@@ -930,7 +930,115 @@
             const selectEl = document.getElementById('scenario-selector');
             const selectedText = selectEl.options[selectEl.selectedIndex].text;
             document.getElementById('scenario-input').value = selectedText;
+            localStorage.setItem('gemkin_active_scenario', scenario); // Save active scenario preference
             applyScenario(scenario);
+        }
+
+        function loadFromLocalStorage(scenario) {
+            try {
+                const saved = localStorage.getItem('gemkin_unrivaled_config_' + scenario);
+                if (!saved) return false;
+                const state = JSON.parse(saved);
+                
+                document.getElementById('start-year').value = state.startYear;
+                document.getElementById('start-age').value = state.startAge;
+                document.getElementById('years').value = state.years;
+                document.getElementById('salary-amount').value = state.salaryAmount;
+                document.getElementById('salary-limit').value = state.salaryLimit;
+                document.getElementById('init-cash').value = state.initCash;
+                document.getElementById('rate-cash').value = state.rateCash;
+                
+                document.getElementById('other-income-container').innerHTML = state.otherIncomeHTML || '';
+                document.getElementById('stage-container').innerHTML = state.stageHTML || '';
+                document.getElementById('income-container').innerHTML = state.incomeHTML || '';
+                document.getElementById('expense-container').innerHTML = state.expenseHTML || '';
+                
+                const container = document.getElementById('dynamic-assets-container');
+                container.innerHTML = '';
+                if (state.assets && Array.isArray(state.assets)) {
+                    state.assets.forEach(asset => {
+                        addAssetElement(asset);
+                    });
+                }
+                
+                if (state.customName) {
+                    document.getElementById('scenario-input').value = state.customName;
+                    const titleEl = document.getElementById('graph-title-element');
+                    titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${state.customName}」の生涯キャッシュフロー`;
+                }
+                
+                localStorage.setItem('gemkin_active_scenario', scenario);
+                return true;
+            } catch(e) {
+                console.error("ロードに失敗しました:", e);
+                return false;
+            }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                const currentScenario = document.getElementById('scenario-selector').value;
+                const customName = document.getElementById('scenario-input').value;
+                
+                // 動的入力フィールドのユーザー入力値（value）をDOM属性に反映させ、innerHTMLが正確な値をキャプチャできるように同期
+                const containers = ['other-income-container', 'stage-container', 'income-container', 'expense-container'];
+                containers.forEach(id => {
+                    const cont = document.getElementById(id);
+                    if (cont) {
+                        cont.querySelectorAll('input, select').forEach(el => {
+                            if (el.tagName === 'SELECT') {
+                                Array.from(el.options).forEach(opt => {
+                                    if (opt.value === el.value) opt.setAttribute('selected', 'selected');
+                                    else opt.removeAttribute('selected');
+                                });
+                            } else {
+                                el.setAttribute('value', el.value);
+                            }
+                        });
+                    }
+                });
+
+                const state = {
+                    customName: customName,
+                    startYear: document.getElementById('start-year').value,
+                    startAge: document.getElementById('start-age').value,
+                    years: document.getElementById('years').value,
+                    salaryAmount: document.getElementById('salary-amount').value,
+                    salaryLimit: document.getElementById('salary-limit').value,
+                    initCash: document.getElementById('init-cash').value,
+                    rateCash: document.getElementById('rate-cash').value,
+                    otherIncomeHTML: document.getElementById('other-income-container').innerHTML,
+                    stageHTML: document.getElementById('stage-container').innerHTML,
+                    incomeHTML: document.getElementById('income-container').innerHTML,
+                    expenseHTML: document.getElementById('expense-container').innerHTML,
+                    assets: Array.from(document.querySelectorAll('.asset-card')).map(card => ({
+                        name: card.querySelector('.asset-name-field').value,
+                        type: card.querySelector('.asset-type-field').value,
+                        initAmt: card.querySelector('.asset-init-field').value,
+                        rate: card.querySelector('.asset-rate-field').value,
+                        payout: card.querySelector('.asset-payout-field').value,
+                        yearAmt: card.querySelector('.asset-year-field')?.value || 0,
+                        monthAmt: card.querySelector('.asset-month-field')?.value || 0,
+                        startAge: card.querySelector('.asset-start-field').value,
+                        endAge: card.querySelector('.asset-end-field').value
+                    }))
+                };
+                localStorage.setItem('gemkin_unrivaled_config_' + currentScenario, JSON.stringify(state));
+                localStorage.setItem('gemkin_active_scenario', currentScenario);
+                showToast("💾 現在の入力数値を暗室（LocalStorage）に記録しました！");
+            } catch(e) { showToast("保存に失敗しました。", "error"); }
+        }
+
+        function clearLocalStorage() {
+            const currentScenario = document.getElementById('scenario-selector').value;
+            localStorage.removeItem('gemkin_unrivaled_config_' + currentScenario);
+            showToast("🧹 ブラウザの記憶を抹消。初期デフォルト値に戻します。");
+            if(currentScenario === 'custom') {
+                document.getElementById('scenario-selector').value = 'sub_rich';
+                handleScenarioSelect('sub_rich');
+            } else {
+                applyScenario(currentScenario);
+            }
         }
 
         function applyScenario(scenario) {
@@ -950,6 +1058,12 @@
             const currentName = document.getElementById('scenario-input').value || 'カスタム階層';
             titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${currentName}」の生涯キャッシュフロー`;
 
+            // 保存データが存在する場合はそれをロードして終了（デフォルト値の書き換えを防ぐ）
+            if (loadFromLocalStorage(scenario)) {
+                runSimulation();
+                return;
+            }
+
             if (scenario === 'ultra_rich') {
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 50;
@@ -960,12 +1074,10 @@
                 document.getElementById('rate-cash').value = 0.2;
                 
                 addOtherIncomeRow("事業オーナー配当金", 2000, 50, 90);
-                // 人生の出費をリアルに引き上げ
                 addStageRow(3200, 70);   
                 addStageRow(2200, 90);  
                 addIncomeRow("海外不動産売却益", 65, 10000, "cash");
                 addExpenseRow("資産管理法人設立・海外移住費用", 55, 3000);
-                // 超富裕層向け有料シニアコレクティブハウス入居保証費用（億単位）
                 addExpenseRow("超高級有料シニアレジデンス前払入居金", 78, 12000);
                 
                 addAssetElement({ name: "米国プライベートエクイティ", type: "stocks", initAmt: 20000, rate: 8.0, yearAmt: 1000, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 85 });
@@ -982,12 +1094,10 @@
                 document.getElementById('rate-cash').value = 0.1;
                 
                 addOtherIncomeRow("未公開株配当等", 300, 45, 85);
-                // 人生の出費を引き上げ
                 addStageRow(1600, 65);
                 addStageRow(1100, 85);
                 addIncomeRow("役員退職慰労金", 60, 5000, "trust");
                 addExpenseRow("別荘購入費用", 50, 2000);
-                // 富裕層向け高級有料老人ホーム一時金（4500万円）
                 addExpenseRow("プライベートケア付き高級老人ホーム入居金", 75, 4500);
                 
                 addAssetElement({ name: "欧米高配当個別株", type: "stocks", initAmt: 6000, rate: 6.0, yearAmt: 200, monthAmt: 0, payout: "cashout", startAge: 45, endAge: 80 });
@@ -1003,12 +1113,10 @@
                 document.getElementById('rate-cash').value = 0.1;
                 
                 addOtherIncomeRow("厚生・国民年金", 220, 65, 85);
-                // 人生の出費をリアルに引き上げ
                 addStageRow(800, 65);  
                 addStageRow(580, 85);   
                 addIncomeRow("大企業定年退職金", 65, 2000, "trust");
                 addExpenseRow("住宅ローン一括繰上返済", 50, 1500);
-                // 準富裕層向けケア付き有料老人ホーム入居初期費用
                 addExpenseRow("ケア付き有料シニアホーム保証前払金", 78, 2000);
                 
                 addAssetElement({ name: "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
@@ -1024,18 +1132,15 @@
                 document.getElementById('rate-cash').value = 0.1;
                 
                 addOtherIncomeRow("基礎・厚生年金", 180, 65, 85);
-                // 人生の出費をリアルに引き上げ
                 addStageRow(550, 60);
                 addStageRow(420, 85);
                 addIncomeRow("中小企業退職金", 60, 1000, "cash");
                 addExpenseRow("子供の大学進学学費", 45, 400);
-                // シニア住宅バリアフリーリノベ費用
                 addExpenseRow("シニア世代向け自宅リフォーム・介護改修費用", 72, 800);
                 
                 addAssetElement({ name: "つみたて新NISA(オルカン)", type: "trust", initAmt: 2000, rate: 4.0, yearAmt: 0, monthAmt: 10, startAge: 35, endAge: 85 });
 
             } else {
-                // マス層
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 30;
                 document.getElementById('years').value = 85;
@@ -1045,12 +1150,10 @@
                 document.getElementById('rate-cash').value = 0.05;
                 
                 addOtherIncomeRow("老齢基礎年金", 130, 65, 85);
-                // 人生の出費をリアルに引き上げ
                 addStageRow(420, 65);
                 addStageRow(320, 85);
                 addIncomeRow("小規模退職一時金", 65, 500, "cash");
                 addExpenseRow("自動車買い替え費用", 40, 250);
-                // バリアフリー手すり・医療介護臨時積立
                 addExpenseRow("後期高齢期バリアフリー改修・介護補助費用", 75, 400);
                 
                 addAssetElement({ name: "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 85 });
@@ -1345,9 +1448,7 @@
             });
 
             if (totalRemainingYen < 0) {
-                // 1. 資産がマイナス（負）のとき
                 let bankruptAge = endAge;
-                // 何歳で0円を下回る（破綻する）のか探索
                 for (let i = 0; i < lastSimulationData.length; i++) {
                     if (lastSimulationData[i].total < 0) {
                         bankruptAge = currentAge + lastSimulationData[i].index;
@@ -1356,8 +1457,6 @@
                 }
 
                 const deficitAmt = Math.abs(totalRemainingYen);
-                
-                // ダイウィズゼロを果たすための必要削減額 (残された年月全体にわたって支出を減らすアプローチ)
                 const reduceSpendPerYear = Math.round(deficitAmt / yearsRemaining);
                 const reduceSpendPerMonth = Math.round(reduceSpendPerYear / 12);
 
@@ -1378,7 +1477,6 @@
                     adviceBox.innerHTML = `「兵糧が最期を前に尽きるは軍師として痛恨の極み。生活のステージ支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
                 }
             } else {
-                // 2. 資産がプラス（正）のとき
                 const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
                 const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
 
@@ -1413,52 +1511,6 @@
             document.getElementById('dwz-view').classList.add('hidden');
             document.getElementById('simulator-view').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function saveToLocalStorage() {
-            try {
-                const currentScenario = document.getElementById('scenario-selector').value;
-                const customName = document.getElementById('scenario-input').value;
-                const state = {
-                    customName: customName,
-                    startYear: document.getElementById('start-year').value,
-                    startAge: document.getElementById('start-age').value,
-                    years: document.getElementById('years').value,
-                    salaryAmount: document.getElementById('salary-amount').value,
-                    salaryLimit: document.getElementById('salary-limit').value,
-                    initCash: document.getElementById('init-cash').value,
-                    rateCash: document.getElementById('rate-cash').value,
-                    otherIncomeHTML: document.getElementById('other-income-container').innerHTML,
-                    stageHTML: document.getElementById('stage-container').innerHTML,
-                    incomeHTML: document.getElementById('income-container').innerHTML,
-                    expenseHTML: document.getElementById('expense-container').innerHTML,
-                    assets: Array.from(document.querySelectorAll('.asset-card')).map(card => ({
-                        name: card.querySelector('.asset-name-field').value,
-                        type: card.querySelector('.asset-type-field').value,
-                        initAmt: card.querySelector('.asset-init-field').value,
-                        rate: card.querySelector('.asset-rate-field').value,
-                        payout: card.querySelector('.asset-payout-field').value,
-                        yearAmt: card.querySelector('.asset-year-field')?.value || 0,
-                        monthAmt: card.querySelector('.asset-month-field')?.value || 0,
-                        startAge: card.querySelector('.asset-start-field').value,
-                        endAge: card.querySelector('.asset-end-field').value
-                    }))
-                };
-                localStorage.setItem('gemkin_unrivaled_config_' + currentScenario, JSON.stringify(state));
-                showToast("💾 現在の入力数値を暗室（LocalStorage）に記録しました！");
-            } catch(e) { showToast("保存に失敗しました。", "error"); }
-        }
-
-        function clearLocalStorage() {
-            const currentScenario = document.getElementById('scenario-selector').value;
-            localStorage.removeItem('gemkin_unrivaled_config_' + currentScenario);
-            showToast("🧹 ブラウザの記憶を抹消。初期デフォルト値に戻します。");
-            if(currentScenario === 'custom') {
-                document.getElementById('scenario-selector').value = 'sub_rich';
-                handleScenarioSelect('sub_rich');
-            } else {
-                applyScenario(currentScenario);
-            }
         }
 
         function importCSV(event) {
@@ -1504,7 +1556,11 @@
             link.click();
         }
 
-        window.onload = function() { applyScenario('sub_rich'); }
+        window.onload = function() { 
+            const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
+            document.getElementById('scenario-selector').value = lastScenario;
+            applyScenario(lastScenario);
+        }
     </script>
 </body>
 </html>
