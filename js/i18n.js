@@ -1,14 +1,11 @@
 /**
- * 💡性能キャッシュフロー軍略盤 - 多言語化制御中枢 (i18n.js)
- * GitHub Pages等の環境を考慮し、外部JSONを動的fetchしてDOMへ適用する
+ * 💡性能キャッシュフロー軍略盤 - 多言語化制御中枢 (js/i18n.js)
  */
 
-// サポートする言語の定義（STEP5でさらに拡張可能）
 const SUPPORTED_LANGUAGES = ['ja', 'en'];
 const DEFAULT_LANGUAGE = 'ja';
 const STORAGE_KEY = 'gemkin_preferred_language';
 
-// 現在読み込まれている翻訳辞書キャッシュ
 let currentTranslations = {};
 
 /**
@@ -16,8 +13,7 @@ let currentTranslations = {};
  */
 async function loadTranslations(lang) {
     try {
-        // GitHub Pagesの相対パス構造を考慮し、/i18n/ からfetchを試みる
-        // 環境に応じて './i18n/' や 'i18n/' に適宜調整可能な前方互換性を確保
+        // 💡修正：HTML側から見て「i18n」フォルダの中を確実に探せるパスに変更
         const response = await fetch(`./i18n/${lang}.json`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -25,7 +21,6 @@ async function loadTranslations(lang) {
         currentTranslations = await response.json();
     } catch (error) {
         console.error(`[i18n] 翻訳ファイルの取得に失敗しました (${lang}):`, error);
-        // fetchに失敗した場合は空オブジェクトにしてフォールバックを有効化
         currentTranslations = {};
     }
 }
@@ -42,48 +37,46 @@ function applyTranslations() {
 
         const translation = currentTranslations[key];
 
-        // 各タグの種別に応じて適切な流し込み方を精密に分岐
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            // プレースホルダー属性などへの対応が必要な場合の拡張性を確保
             if (el.hasAttribute('placeholder')) {
                 el.setAttribute('placeholder', translation);
             }
         } else if (el.tagName === 'META') {
-            // descriptionやog:titleなどのメタタグ属性の書き換え
             if (el.hasAttribute('content')) {
                 el.setAttribute('content', translation);
             }
         } else if (el.tagName === 'OPTION') {
-            // セレクトボックスの選択肢テキスト
             el.textContent = translation;
         } else {
-            // 通常のコンテナ要素。ツールチップ内にHTML特殊装飾(span等)が含まれるため、innerHTMLで安全に適用
             el.innerHTML = translation;
         }
     });
 
-    // グラフのタイトルなど、JavaScript側で動的に管理しているテキストも更新するためのフックをトリガー
+    // 言語切り替え時に、シミュレータ側の動的テキスト（グラフタイトル等）も連動させる
     if (typeof window.runSimulation === 'function') {
+        // 英語ならグラフタイトルを英語に、日本語なら日本語に動的書き換え
+        const currentName = document.getElementById('scenario-input').value || 'カスタム';
+        const titleEl = document.getElementById('graph-title-element');
+        const currentLang = localStorage.getItem(STORAGE_KEY) || DEFAULT_LANGUAGE;
+        
+        if (titleEl) {
+            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> ` + 
+                (currentLang === 'en' ? `Lifetime Cash Flow for "${currentName}"` : `「${currentName}」の生涯キャッシュフロー`);
+        }
         window.runSimulation();
     }
 }
 
 /**
- * 言語環境を完全に切り替える主機能
+ * 言語環境を切り替える主機能
  */
 async function switchLanguage(lang) {
     if (!SUPPORTED_LANGUAGES.includes(lang)) lang = DEFAULT_LANGUAGE;
     
-    // 1. 翻訳データをfetch
     await loadTranslations(lang);
-    
-    // 2. DOMへ反映
     applyTranslations();
-    
-    // 3. localStorageに選択を記憶
     localStorage.setItem(STORAGE_KEY, lang);
     
-    // 4. 言語切り替えUI(Selectタグ)の表示を同期
     const switcher = document.getElementById('languageSwitcher');
     if (switcher) {
         switcher.value = lang;
@@ -91,10 +84,9 @@ async function switchLanguage(lang) {
 }
 
 /**
- * ページ初期化時に前回の言語を自動適用する関数
+ * ページ読み込み時の初期化
  */
 document.addEventListener('DOMContentLoaded', async () => {
-    // localStorageから取得、なければブラウザの標準言語を検出し、それもなければデフォルト(ja)
     const savedLang = localStorage.getItem(STORAGE_KEY);
     const browserLang = navigator.language.split('-')[0];
     
@@ -105,10 +97,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         targetLang = browserLang;
     }
     
-    // 初期言語を適用
     await switchLanguage(targetLang);
 
-    // UIイベントリスナーの紐付け
     const switcher = document.getElementById('languageSwitcher');
     if (switcher) {
         switcher.addEventListener('change', (e) => {
@@ -117,5 +107,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// グローバルスコープに公開（HTML側のインラインスクリプト等から呼び出し可能にするため）
 window.gemkinSwitchLanguage = switchLanguage;
