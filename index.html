@@ -23,21 +23,18 @@
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
         
-        /* 💡マークをカッコよく明滅させるアニメーション */
         @keyframes pulse-light {
             0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.2)); }
             50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.8)); text-shadow: 0 0 8px rgba(251, 191, 36, 0.6); }
         }
         .blinking-light { animation: pulse-light 2s infinite ease-in-out; color: #fbbf24; }
 
-        /* ダイウィズゼロボタンの脈動アニメーション */
         @keyframes pulse-gold {
             0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
             50% { transform: scale(1.06); box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
         }
         .pulse-dwz { animation: pulse-gold 2s infinite ease-in-out; }
 
-        /* フェードインアニメーション */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -461,12 +458,9 @@
         };
 
         const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
-
-        // トランジションキャンバス用アニメーション制御変数
         let dissolveAnimId = null;
         let particles = [];
 
-        /* トースト表示処理 */
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastText = document.getElementById('toast-text');
@@ -487,16 +481,12 @@
             }, 3000);
         }
 
-        /* ⚠️ 選択肢B「黄金の砂時計・完全使い切りの霧散（ディゾルブ）」専用のサラサラと崩れ去る神秘的な音 */
         function playDissolveSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
-                
-                const duration = 1.6; // 1.6秒かけて砂が流れ落ちる
-                
-                // 1. サラサラとした砂の流れを作るためのホワイトノイズ
+                const duration = 1.6;
                 const sampleRate = ctx.sampleRate;
                 const bufferSize = sampleRate * duration;
                 const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
@@ -507,108 +497,60 @@
                 const noiseNode = ctx.createBufferSource();
                 noiseNode.buffer = buffer;
 
-                // 砂が風に舞うような周波数特性を作るバンドパスフィルター
                 const noiseFilter = ctx.createBiquadFilter();
                 noiseFilter.type = 'bandpass';
                 noiseFilter.frequency.setValueAtTime(800, ctx.currentTime);
-                // 周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
                 noiseFilter.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + duration);
                 noiseFilter.Q.setValueAtTime(1.5, ctx.currentTime);
 
                 const noiseGain = ctx.createGain();
-                noiseGain.gain.setValueAtTime(0.04, ctx.currentTime); // 小さめの穏やかな音
+                noiseGain.gain.setValueAtTime(0.04, ctx.currentTime);
                 noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
-                // 2. 黄金のきらめき、砂時計の硝子を連想させる高周波チャイム音
                 const chime1 = ctx.createOscillator();
                 const chime2 = ctx.createOscillator();
-                chime1.type = 'sine';
-                chime2.type = 'sine';
-                chime1.frequency.setValueAtTime(2200, ctx.currentTime); // 高い金属音
-                chime2.frequency.setValueAtTime(2850, ctx.currentTime); // 重ねて澄んだ高音を創出
+                chime1.type = 'sine'; chime2.type = 'sine';
+                chime1.frequency.setValueAtTime(2200, ctx.currentTime);
+                chime2.frequency.setValueAtTime(2850, ctx.currentTime);
 
                 const chimeGain = ctx.createGain();
-                chimeGain.gain.setValueAtTime(0.02, ctx.currentTime); // かすかに響く音量
+                chimeGain.gain.setValueAtTime(0.02, ctx.currentTime);
                 chimeGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration - 0.2);
 
-                // 結線して再生
-                noiseNode.connect(noiseFilter);
-                noiseFilter.connect(noiseGain);
-                noiseGain.connect(ctx.destination);
+                noiseNode.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(ctx.destination);
+                chime1.connect(chimeGain); chime2.connect(chimeGain); chimeGain.connect(ctx.destination);
 
-                chime1.connect(chimeGain);
-                chime2.connect(chimeGain);
-                chimeGain.connect(ctx.destination);
-
-                noiseNode.start(ctx.currentTime);
-                chime1.start(ctx.currentTime);
-                chime2.start(ctx.currentTime);
-
-                noiseNode.stop(ctx.currentTime + duration);
-                chime1.stop(ctx.currentTime + duration);
-                chime2.stop(ctx.currentTime + duration);
-            } catch (e) {
-                console.warn("Web Audio APIによる砂時計サウンド再生に失敗しました:", e);
-            }
+                noiseNode.start(ctx.currentTime); chime1.start(ctx.currentTime); chime2.start(ctx.currentTime);
+                noiseNode.stop(ctx.currentTime + duration); chime1.stop(ctx.currentTime + duration); chime2.stop(ctx.currentTime + duration);
+            } catch (e) { console.warn(e); }
         }
 
-        /* 黄金の砂粒子クラス定義 */
         class GoldGrain {
             constructor(w, h) {
-                this.canvasWidth = w;
-                this.canvasHeight = h;
-                // 画面中央や中央上部から砂のようにこぼれ落ち、または舞い散る
+                this.canvasWidth = w; this.canvasHeight = h;
                 this.x = Math.random() * w;
-                this.y = Math.random() * h * 0.4 + h * 0.1; // 上中部に集中
+                this.y = Math.random() * h * 0.4 + h * 0.1;
                 this.size = Math.random() * 2.2 + 0.8;
-                // 風に流されるような軌道
-                this.vx = (Math.random() - 0.4) * 2.5; 
-                this.vy = Math.random() * 3 + 1.5; // 下方向に落ちる
-                this.alpha = 1.0;
-                // 個体差をつけて霧散の美しさを際立たせる
-                this.decay = Math.random() * 0.012 + 0.006;
-                // 黄金・アンバー色のカラーレンジ
-                const r = Math.floor(Math.random() * 45 + 210); // 210~255
-                const g = Math.floor(Math.random() * 60 + 140); // 140~200
+                this.vx = (Math.random() - 0.4) * 2.5; this.vy = Math.random() * 3 + 1.5;
+                this.alpha = 1.0; this.decay = Math.random() * 0.012 + 0.006;
+                const r = Math.floor(Math.random() * 45 + 210);
+                const g = Math.floor(Math.random() * 60 + 140);
                 this.color = `rgba(${r}, ${g}, 11,`;
             }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.alpha -= this.decay;
-            }
-            draw(ctx) {
-                ctx.fillStyle = this.color + this.alpha + ')';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            update() { this.x += this.vx; this.y += this.vy; this.alpha -= this.decay; }
+            draw(ctx) { ctx.fillStyle = this.color + this.alpha + ')'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
 
-        /* 黄金パーティクルアニメーションループ */
         function animateDissolve(canvas, ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 毎フレーム一定の黄金の粒子を注入
-            if (particles.length < 250) {
-                for (let i = 0; i < 6; i++) {
-                    particles.push(new GoldGrain(canvas.width, canvas.height));
-                }
-            }
-
+            if (particles.length < 250) { for (let i = 0; i < 6; i++) particles.push(new GoldGrain(canvas.width, canvas.height)); }
             for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                p.update();
-                p.draw(ctx);
-                if (p.alpha <= 0 || p.y > canvas.height) {
-                    particles.splice(i, 1);
-                }
+                const p = particles[i]; p.update(); p.draw(ctx);
+                if (p.alpha <= 0 || p.y > canvas.height) particles.splice(i, 1);
             }
-
             dissolveAnimId = requestAnimationFrame(() => animateDissolve(canvas, ctx));
         }
 
-        /* ライフステージ定義の年齢連動 */
         function updateStageAges() {
             const startAge = parseInt(document.getElementById('start-age').value) || 40;
             const rows = document.querySelectorAll('.stage-row');
@@ -617,7 +559,7 @@
             rows.forEach((row, index) => {
                 const titleSpan = row.querySelector('.stage-title');
                 if (titleSpan) {
-                    // 💡修正：新設した専用のキー（lbl_stage_title）を直接取得する仕様に変更し、すり替わりを防止
+                    // 💡第1手バグ粉砕：新設キー（lbl_stage_title）を直撃参照し文字化けを完全根絶
                     const baseTitle = (typeof currentTranslations !== 'undefined' && currentTranslations['lbl_stage_title']) 
                         ? currentTranslations['lbl_stage_title']
                         : '人生のステージ';
@@ -644,7 +586,6 @@
             const div = document.createElement('div');
             div.className = 'stage-row bg-rose-50/10 p-3 rounded-xl border border-rose-100/40 flex flex-col gap-2 text-[11px]';
             
-            // 💡修正：動的追加フィールドのテキストパーツを現在の言語に同期
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const lblTo = isEn ? ' to ' : ' ～ ';
             const lblAge = isEn ? ' years old' : ' 歳';
@@ -680,7 +621,6 @@
             const div = document.createElement('div');
             div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡修正：その他所得追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultName = isEn ? "Pension" : name;
             const lblName = isEn ? "Income Name" : "所得の名称";
@@ -718,7 +658,6 @@
             const div = document.createElement('div');
             div.className = 'income-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡修正：臨時収入追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? "Retirement Bonus" : memo;
             const lblMemo = isEn ? "Description" : "収入の名称";
@@ -736,7 +675,7 @@
             div.innerHTML = `
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblMemo}</span>
-                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="${defaultMemo}" placeholder="">
+                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="${defaultMemo}">
                 </div>
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAge}</span>
@@ -768,7 +707,6 @@
             const div = document.createElement('div');
             div.className = 'expense-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡修正：臨時出費追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? "Special Event" : memo;
             const lblMemo = isEn ? "Description" : "出費の名称";
@@ -863,7 +801,7 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         cutout: '72%',
-                        plugins: { legend: { position: 'top' }, tooltip: { enabled: false } }
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } }
                     }
                 });
             }
@@ -912,436 +850,10 @@
             }
         }
 
-        function customTooltipHandler(context) {
-            const tooltipEl = document.getElementById('chart-tooltip');
-            if (context.tooltip.opacity === 0) { tooltipEl.style.opacity = 0; return; }
-            const dataPoints = context.tooltip.dataPoints;
-            if (!dataPoints || dataPoints.length === 0) return;
-            const dataIndex = dataPoints[0].dataIndex;
-            
-            if (lastSimulationData && lastSimulationData[dataIndex]) {
-                const yearData = lastSimulationData[dataIndex];
-                const parts = yearData.yearLabel.split(' ');
-                document.getElementById('tooltip-year').innerHTML = `<span>${parts[0]}</span><span class="text-amber-400 font-bold">${parts[1] || ''} ${parts[2] || ''}</span>`;
-                drawTooltipPieChart(yearData);
-            }
-
-            const { offsetLeft: positionX, offsetTop: positionY } = context.chart.canvas;
-            tooltipEl.style.opacity = 1;
-
-            if (window.innerWidth < 1024) {
-                tooltipEl.style.position = 'fixed';
-                tooltipEl.style.left = '50%';
-                tooltipEl.style.transform = 'translateX(-50%)';
-                tooltipEl.style.right = 'auto';
-                tooltipEl.style.bottom = '8px';
-                tooltipEl.style.top = 'auto';
-                tooltipEl.style.width = '260px';
-            } else {
-                tooltipEl.style.position = 'absolute';
-                tooltipEl.style.transform = '';
-                tooltipEl.style.width = '20rem';
-                let targetLeft = positionX + context.tooltip.caretX + 20;
-                let targetTop = positionY + context.tooltip.caretY - 80;
-                const tooltipWidth = 320;
-                const tooltipHeight = tooltipEl.offsetHeight || 340;
-
-                if (targetLeft + tooltipWidth > window.innerWidth) { targetLeft = positionX + context.tooltip.caretX - (tooltipWidth + 20); }
-                if (targetLeft < 10) targetLeft = 10;
-                if (targetTop < 10) { targetTop = positionY + context.tooltip.caretY + 20; }
-                const maxTop = window.innerHeight + window.scrollY - tooltipHeight - 15;
-                if (targetTop > maxTop) { targetTop = maxTop; }
-                
-                tooltipEl.style.left = targetLeft + 'px';
-                tooltipEl.style.top = targetTop + 'px';
-            }
-        }
-
-        function addAssetElement(data) {
-            const container = document.getElementById('dynamic-assets-container');
-            const id = data.id || 'asset-' + Date.now() + Math.random().toString(36).substr(2, 5);
-            const div = document.createElement('div');
-            div.id = id;
-            div.className = 'asset-card border-l-4 bg-white shadow-sm border-slate-300 p-4 rounded-xl flex flex-col gap-3 text-xs relative group animate-fade-in transition-all';
-            
-            const applyBorder = (type) => {
-                div.className = div.className.replace(/border-([a-z]+)-\d+/g, '');
-                if (type === 'realestate') div.classList.add('border-rose-500');
-                if (type === 'stocks') div.classList.add('border-blue-500');
-                if (type === 'trust') div.classList.add('border-emerald-500');
-                if (type === 'metal') div.classList.add('border-amber-500');
-                if (type === 'bonds') div.classList.add('border-purple-500');
-            };
-
-            const typeLabelText = { realestate: '🏢 不動産', stocks: '📈 株式', trust: '💼 投資信託', metal: '👑 貴金属', bonds: '📜 債券' }[data.type];
-
-            div.innerHTML = `
-                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-[10px]">${typeLabelText}</span>
-                        <input type="text" class="asset-name-field font-bold text-slate-800 bg-transparent border-b border-dashed border-slate-200 focus:border-slate-500 focus:outline-none py-0.5 px-1 text-sm w-40" value="${data.name}" oninput="runSimulation();">
-                        <input type="hidden" class="asset-type-field" value="${data.type}">
-                    </div>
-                    <button type="button" onclick="document.getElementById('${id}').remove(); runSimulation(); showToast('資産アセットを削除しました。')" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-colors">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[10px]">
-                    <div>
-                        <label class="text-slate-400 block mb-0.5">初期/購入額 (万円)</label>
-                        <input type="number" class="asset-init-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.initAmt}" oninput="runSimulation();">
-                    </div>
-                    <div>
-                        <label class="text-slate-400 block mb-0.5">想定年利 (%)</label>
-                        <input type="number" class="asset-rate-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.rate}" step="0.1" oninput="runSimulation();">
-                    </div>
-                    <div>
-                        <label class="text-slate-400 block mb-0.5">利益受取</label>
-                        <select class="asset-payout-field w-full rounded border border-slate-200 p-1 bg-white font-semibold" onchange="runSimulation();">
-                            <option value="reinvest" ${data.payout === 'reinvest' ? 'selected' : ''}>再投資</option>
-                            <option value="cashout" ${data.payout === 'cashout' ? 'selected' : ''}>現金受取</option>
-                        </select>
-                    </div>
-                    <div class="regular-invest-fields">
-                        <label class="text-slate-400 block mb-0.5">年初投資 (万円/年)</label>
-                        <input type="number" class="asset-year-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.yearAmt || 0}" oninput="runSimulation();">
-                    </div>
-                    <div class="regular-invest-fields">
-                        <label class="text-slate-400 block mb-0.5">月々積立 (万円/月)</label>
-                        <input type="number" class="asset-month-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.monthAmt || 0}" oninput="runSimulation();">
-                    </div>
-                    <div class="grid grid-cols-5 items-center gap-1">
-                        <div class="col-span-2">
-                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">購入年齢</label>
-                            <input type="number" class="asset-start-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.startAge}" oninput="runSimulation();">
-                        </div>
-                        <span class="col-span-1 text-center text-slate-400 mt-3 font-bold">-</span>
-                        <div class="col-span-2">
-                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">売却年齢</label>
-                            <input type="number" class="asset-end-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.endAge}" oninput="runSimulation();">
-                        </div>
-                    </div>
-                </div>
-            `;
-            container.appendChild(div);
-            applyBorder(data.type);
-
-            const toggleRealestateFields = () => {
-                const regularInvestFields = div.querySelectorAll('.regular-invest-fields');
-                const payoutField = div.querySelector('.asset-payout-field');
-                if (data.type === 'realestate') {
-                    regularInvestFields.forEach(el => el.style.opacity = '0.3');
-                    regularInvestFields.forEach(el => el.querySelector('input').disabled = true);
-                    payoutField.disabled = true;
-                    payoutField.style.opacity = '0.3';
-                }
-            };
-            toggleRealestateFields();
-        }
-
-        function addDirectAsset(chosenType) {
-            const startAge = parseInt(document.getElementById('start-age').value) || 30;
-            const endAge = parseInt(document.getElementById('years').value) || 85;
-            const assetNames = { stocks: '新興個別株', trust: 'つみたてインデックス', realestate: '新規不動産B', metal: '地金', bonds: '国債' };
-
-            addAssetElement({
-                name: assetNames[chosenType],
-                type: chosenType,
-                initAmt: 100,
-                rate: 4.0,
-                yearAmt: 0,
-                monthAmt: 0,
-                payout: chosenType === 'bonds' ? 'cashout' : 'reinvest',
-                startAge: startAge,
-                endAge: endAge
-            });
-            runSimulation();
-            showToast(`${assetNames[chosenType]}カードを戦場に展開しました。`);
-        }
-
-        function applyWorldLine(scenario) {
-            if (scenario === 'bright') document.getElementById('rate-cash').value = "0.1";
-            else if (scenario === 'mild_bull') document.getElementById('rate-cash').value = "0.1";
-            else if (scenario === 'normal') document.getElementById('rate-cash').value = "0.1";
-            else if (scenario === 'dark') document.getElementById('rate-cash').value = "0.0";
-            
-            const cards = document.querySelectorAll('.asset-card');
-            cards.forEach(card => {
-                const typeEl = card.querySelector('.asset-type-field');
-                const rateEl = card.querySelector('.asset-rate-field');
-                if (!typeEl || !rateEl) return;
-                const type = typeEl.value;
-
-                if (scenario === 'bright') {
-                    if (type === 'stocks' || type === 'trust') rateEl.value = "15.0";
-                    if (type === 'metal' || type === 'bonds') rateEl.value = "5.0";
-                    if (type === 'realestate') rateEl.value = "0.0";
-                } else if (scenario === 'mild_bull') {
-                    if (type === 'stocks') rateEl.value = "10.0";
-                    if (type === 'trust') rateEl.value = "8.0";
-                    if (type === 'metal' || type === 'bonds') rateEl.value = "5.0";
-                    if (type === 'realestate') rateEl.value = "0.0";
-                } else if (scenario === 'normal') {
-                    if (type === 'stocks') rateEl.value = "5.0";
-                    if (type === 'trust') rateEl.value = "4.0";
-                    if (type === 'metal' || type === 'bonds') rateEl.value = "4.0";
-                    if (type === 'realestate') rateEl.value = "0.0";
-                } else if (scenario === 'dark') {
-                    if (type === 'stocks') rateEl.value = "4.0";
-                    if (type === 'trust') rateEl.value = "1.0";
-                    if (type === 'metal') rateEl.value = "3.0";
-                    if (type === 'bonds') rateEl.value = "4.0";
-                    if (type === 'realestate') rateEl.value = "0.0";
-                }
-            });
-            runSimulation();
-        }
-
-        function handleUserTypeInput() {
-            const inputVal = document.getElementById('scenario-input').value || '名無し';
-            const titleEl = document.getElementById('graph-title-element');
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${inputVal}」の生涯キャッシュフロー`;
-            document.getElementById('scenario-selector').value = 'custom';
-        }
-
-        function handleScenarioSelect(scenario) {
-            if (scenario === 'custom') return;
-            const selectEl = document.getElementById('scenario-selector');
-            const selectedText = selectEl.options[selectEl.selectedIndex].text;
-            document.getElementById('scenario-input').value = selectedText;
-            localStorage.setItem('gemkin_active_scenario', scenario);
-            applyScenario(scenario);
-        }
-
-        function loadFromLocalStorage(scenario) {
-            try {
-                const saved = localStorage.getItem('gemkin_unrivaled_config_' + scenario);
-                if (!saved) return false;
-                const state = JSON.parse(saved);
-                
-                document.getElementById('start-year').value = state.startYear;
-                document.getElementById('start-age').value = state.startAge;
-                document.getElementById('years').value = state.years;
-                document.getElementById('salary-amount').value = state.salaryAmount;
-                document.getElementById('salary-limit').value = state.salaryLimit;
-                document.getElementById('init-cash').value = state.initCash;
-                document.getElementById('rate-cash').value = state.rateCash;
-                
-                document.getElementById('other-income-container').innerHTML = state.otherIncomeHTML || '';
-                document.getElementById('stage-container').innerHTML = state.stageHTML || '';
-                document.getElementById('income-container').innerHTML = state.incomeHTML || '';
-                document.getElementById('expense-container').innerHTML = state.expenseHTML || '';
-                
-                const container = document.getElementById('dynamic-assets-container');
-                container.innerHTML = '';
-                if (state.assets && Array.isArray(state.assets)) {
-                    state.assets.forEach(asset => {
-                        addAssetElement(asset);
-                    });
-                }
-                
-                if (state.customName) {
-                    document.getElementById('scenario-input').value = state.customName;
-                    const titleEl = document.getElementById('graph-title-element');
-                    titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${state.customName}」の生涯キャッシュフロー`;
-                }
-                
-                localStorage.setItem('gemkin_active_scenario', scenario);
-                return true;
-            } catch(e) {
-                console.error("ロードに失敗しました:", e);
-                return false;
-            }
-        }
-
-        function saveToLocalStorage() {
-            try {
-                const currentScenario = document.getElementById('scenario-selector').value;
-                const customName = document.getElementById('scenario-input').value;
-                
-                const containers = ['other-income-container', 'stage-container', 'income-container', 'expense-container'];
-                containers.forEach(id => {
-                    const cont = document.getElementById(id);
-                    if (cont) {
-                        cont.querySelectorAll('input, select').forEach(el => {
-                            if (el.tagName === 'SELECT') {
-                                Array.from(el.options).forEach(opt => {
-                                    if (opt.value === el.value) opt.setAttribute('selected', 'selected');
-                                    else opt.removeAttribute('selected');
-                                });
-                            } else {
-                                el.setAttribute('value', el.value);
-                            }
-                        });
-                    }
-                });
-
-                const state = {
-                    customName: customName,
-                    startYear: document.getElementById('start-year').value,
-                    startAge: document.getElementById('start-age').value,
-                    years: document.getElementById('years').value,
-                    salaryAmount: document.getElementById('salary-amount').value,
-                    salaryLimit: document.getElementById('salary-limit').value,
-                    initCash: document.getElementById('init-cash').value,
-                    rateCash: document.getElementById('rate-cash').value,
-                    otherIncomeHTML: document.getElementById('other-income-container').innerHTML,
-                    stageHTML: document.getElementById('stage-container').innerHTML,
-                    incomeHTML: document.getElementById('income-container').innerHTML,
-                    expenseHTML: document.getElementById('expense-container').innerHTML,
-                    assets: Array.from(document.querySelectorAll('.asset-card')).map(card => ({
-                        name: card.querySelector('.asset-name-field').value,
-                        type: card.querySelector('.asset-type-field').value,
-                        initAmt: card.querySelector('.asset-init-field').value,
-                        rate: card.querySelector('.asset-rate-field').value,
-                        payout: card.querySelector('.asset-payout-field').value,
-                        yearAmt: card.querySelector('.asset-year-field')?.value || 0,
-                        monthAmt: card.querySelector('.asset-month-field')?.value || 0,
-                        startAge: card.querySelector('.asset-start-field').value,
-                        endAge: card.querySelector('.asset-end-field').value
-                    }))
-                };
-                localStorage.setItem('gemkin_unrivaled_config_' + currentScenario, JSON.stringify(state));
-                localStorage.setItem('gemkin_active_scenario', currentScenario);
-                showToast("💾 現在の入力数値を暗室（LocalStorage）に記録しました！");
-            } catch(e) { showToast("保存に失敗しました。", "error"); }
-        }
-
-        function clearLocalStorage() {
-            const currentScenario = document.getElementById('scenario-selector').value;
-            localStorage.removeItem('gemkin_unrivaled_config_' + currentScenario);
-            showToast("🧹 ブラウザの記憶を抹消。初期デフォルト値に戻します。");
-            if(currentScenario === 'custom') {
-                document.getElementById('scenario-selector').value = 'sub_rich';
-                handleScenarioSelect('sub_rich');
-            } else {
-                applyScenario(currentScenario);
-            }
-        }
-
-        function applyScenario(scenario) {
-            const otherContainer = document.getElementById('other-income-container');
-            const stageContainer = document.getElementById('stage-container');
-            const incContainer = document.getElementById('income-container');
-            const expContainer = document.getElementById('expense-container');
-            const assetContainer = document.getElementById('dynamic-assets-container');
-
-            otherContainer.innerHTML = '';
-            stageContainer.innerHTML = '';
-            incContainer.innerHTML = '';
-            expContainer.innerHTML = '';
-            assetContainer.innerHTML = '';
-
-            const titleEl = document.getElementById('graph-title-element');
-            const currentName = document.getElementById('scenario-input').value || 'カスタム階層';
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${currentName}」の生涯キャッシュフロー`;
-
-            if (loadFromLocalStorage(scenario)) {
-                runSimulation();
-                return;
-            }
-
-            if (scenario === 'ultra_rich') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 50;
-                document.getElementById('years').value = 90;
-                document.getElementById('salary-amount').value = 3500;
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 15000;
-                document.getElementById('rate-cash').value = 0.2;
-                
-                addOtherIncomeRow("事業オーナー配当金", 2000, 50, 90);
-                addStageRow(3200, 70);   
-                addStageRow(2200, 90);  
-                addIncomeRow("海外不動産売却益", 65, 10000, "cash");
-                addExpenseRow("資産管理法人設立・海外移住費用", 55, 3000);
-                addExpenseRow("超高級有料シニアレジデンス前払入居金", 78, 12000);
-                
-                addAssetElement({ name: "米国プライベートエクイティ", type: "stocks", initAmt: 20000, rate: 8.0, yearAmt: 1000, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 85 });
-                addAssetElement({ name: "コアインデックス投信", type: "trust", initAmt: 15000, rate: 5.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 90 });
-                addAssetElement({ name: "金インゴット(現物)", type: "metal", initAmt: 5000, rate: 4.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 90 });
-
-            } else if (scenario === 'rich') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 45;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 1800;
-                document.getElementById('salary-limit').value = 60;
-                document.getElementById('init-cash').value = 5000;
-                document.getElementById('rate-cash').value = 0.1;
-                
-                addOtherIncomeRow("未公開株配当等", 300, 45, 85);
-                addStageRow(1600, 65);
-                addStageRow(1100, 85);
-                addIncomeRow("役員退職慰労金", 60, 5000, "trust");
-                addExpenseRow("別荘購入費用", 50, 2000);
-                addExpenseRow("プライベートケア付き高級老人ホーム入居金", 75, 4500);
-                
-                addAssetElement({ name: "欧米高配当個別株", type: "stocks", initAmt: 6000, rate: 6.0, yearAmt: 200, monthAmt: 0, payout: "cashout", startAge: 45, endAge: 80 });
-                addAssetElement({ name: "世界分散ファンド", type: "trust", initAmt: 8000, rate: 4.5, yearAmt: 300, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 85 });
-
-            } else if (scenario === 'sub_rich') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 40;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 1000;
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 2500;
-                document.getElementById('rate-cash').value = 0.1;
-                
-                addOtherIncomeRow("厚生・国民年金", 220, 65, 85);
-                addStageRow(800, 65);  
-                addStageRow(580, 85);   
-                addIncomeRow("大企業定年退職金", 65, 2000, "trust");
-                addExpenseRow("住宅ローン一括繰上返済", 50, 1500);
-                addExpenseRow("ケア付き有料シニアホーム保証前払金", 78, 2000);
-                
-                addAssetElement({ name: "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
-                addAssetElement({ name: "優良インデックス投信", type: "trust", initAmt: 3500, rate: 4.0, yearAmt: 120, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 85 });
-
-            } else if (scenario === 'upper_mass') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 35;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 700;
-                document.getElementById('salary-limit').value = 60;
-                document.getElementById('init-cash').value = 1500;
-                document.getElementById('rate-cash').value = 0.1;
-                
-                addOtherIncomeRow("基礎・厚生年金", 180, 65, 85);
-                addStageRow(550, 60);
-                addStageRow(420, 85);
-                addIncomeRow("中小企業退職金", 60, 1000, "cash");
-                addExpenseRow("子供の大学進学学費", 45, 400);
-                addExpenseRow("シニア世代向け自宅リフォーム・介護改修費用", 72, 800);
-                
-                addAssetElement({ name: "つみたて新NISA(オルカン)", type: "trust", initAmt: 2000, rate: 4.0, yearAmt: 0, monthAmt: 10, startAge: 35, endAge: 85 });
-
-            } else {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 30;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 500;
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 600;
-                document.getElementById('rate-cash').value = 0.05;
-                
-                addOtherIncomeRow("老齢基礎年金", 130, 65, 85);
-                addStageRow(420, 65);
-                addStageRow(320, 85);
-                addIncomeRow("小規模退職一時金", 65, 500, "cash");
-                addExpenseRow("自動車買い替え費用", 40, 250);
-                addExpenseRow("後期高齢期バリアフリー改修・介護補助費用", 75, 400);
-                
-                addAssetElement({ name: "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 85 });
-            }
-            runSimulation();
-        }
-
         function formatAssetValue(valInYen) {
             const valInWan = Math.round(valInYen / 10000);
             const absWan = Math.abs(valInWan);
-            const sign = valInWan < 0 ? '-' : '';
+            const sign = valInYen < 0 ? '-' : '';
             if (absWan >= 10000) {
                 const oku = Math.floor(absWan / 10000);
                 const wan = absWan % 10000;
@@ -1575,7 +1087,7 @@
         }
 
         window.onload = function() { 
-            const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
+            const lastScenario = localStorage.getItem('gemkin_active_scenario'] || 'sub_rich';
             document.getElementById('scenario-selector').value = lastScenario;
             applyScenario(lastScenario);
             
