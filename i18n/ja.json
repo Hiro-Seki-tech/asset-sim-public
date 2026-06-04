@@ -94,5 +94,6 @@
   "dwz_assets_portfolio_title": "逝去時の資産ポートフォリオ",
   "dwz_advisor_advice_title": "人生の軍師からのアドバイス",
   "btn_re-plan_strategy": "資産・ライフプランシミュレータに戻って軍略を練り直す",
-  "btn_floating_dwz_check": "DIE WITH ZERO !"
+  "btn_floating_dwz_check": "DIE WITH ZERO !",
+  "lbl_stage_title": "人生のステージ"
 }
