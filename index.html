@@ -20,7 +20,7 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        input::-webkit-outer-spin-button, input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
         
         /* 💡マークをカッコよく明滅させるアニメーション */
@@ -134,9 +134,9 @@
                             <button onclick="applyWorldLine('bright')" class="px-2.5 py-1.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition-colors border border-emerald-500/30 font-bold focus:outline-none" data-i18n="btn_macro_bright">🚀 超高成長</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-emerald-400" data-i18n="tooltip_macro_bright_title">🚀 超高成長（ハイパーインフレ・強気相場）</span><br>
-                                <span data-i18n="tooltip_macro_bright_item1" data-i18n-html="true">• 株式 / 投資信託: <span class="font-bold text-white">15.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_bright_item2" data-i18n-html="true">• 貴金属 / 債券: <span class="font-bold text-white">5.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_bright_item3" data-i18n-html="true">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
+                                <span data-i18n="tooltip_macro_bright_item1">• 株式 / 投資信託: <span class="font-bold text-white">15.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_bright_item2">• 貴金属 / 債券: <span class="font-bold text-white">5.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_bright_item3">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
@@ -145,9 +145,9 @@
                             <button onclick="applyWorldLine('mild_bull')" class="px-2.5 py-1.5 rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-colors border border-cyan-500/30 font-bold focus:outline-none" data-i18n="btn_macro_mild_bull">📈 安定上昇</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-cyan-400" data-i18n="tooltip_macro_mild_bull_title">📈 安定上昇（緩やかな成長・マイルドインフレ）</span><br>
-                                <span data-i18n="tooltip_macro_mild_bull_item1" data-i18n-html="true">• 株式: <span class="font-bold text-white">10.0%</span> | 投資信託: <span class="font-bold text-white">8.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_mild_bull_item2" data-i18n-html="true">• 貴金属 / 債券: <span class="font-bold text-white">5.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_mild_bull_item3" data-i18n-html="true">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
+                                <span data-i18n="tooltip_macro_mild_bull_item1">• 株式: <span class="font-bold text-white">10.0%</span> | 投資信託: <span class="font-bold text-white">8.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_mild_bull_item2">• 貴金属 / 債券: <span class="font-bold text-white">5.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_mild_bull_item3">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
@@ -156,9 +156,9 @@
                             <button onclick="applyWorldLine('normal')" class="px-2.5 py-1.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors border border-blue-500/30 font-bold focus:outline-none" data-i18n="btn_macro_normal">🌱 巡航速度</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-blue-400" data-i18n="tooltip_macro_normal_title">🌱 巡航速度（平時の現代日本・安定的成長）</span><br>
-                                <span data-i18n="tooltip_macro_normal_item1" data-i18n-html="true">• 株式: <span class="font-bold text-white">5.0%</span> | 投資信託: <span class="font-bold text-white">4.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_normal_item2" data-i18n-html="true">• 貴金属 / 債券: <span class="font-bold text-white">4.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_normal_item3" data-i18n-html="true">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
+                                <span data-i18n="tooltip_macro_normal_item1">• 株式: <span class="font-bold text-white">5.0%</span> | 投資信託: <span class="font-bold text-white">4.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_normal_item2">• 貴金属 / 債券: <span class="font-bold text-white">4.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_normal_item3">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
@@ -167,9 +167,9 @@
                             <button onclick="applyWorldLine('dark')" class="px-2.5 py-1.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors border border-rose-500/30 font-bold focus:outline-none" data-i18n="btn_macro_dark">⛈️ 停滞下落</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-rose-400" data-i18n="tooltip_macro_dark_title">⛈️ 停滞下落（スタグフレーション・資産デフレ）</span><br>
-                                <span data-i18n="tooltip_macro_dark_item1" data-i18n-html="true">• 株式: <span class="font-bold text-white">4.0%</span> | 投資信託: <span class="font-bold text-white">1.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_dark_item2" data-i18n-html="true">• 貴金属: <span class="font-bold text-white">3.0%</span> | 債券: <span class="font-bold text-white">4.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_dark_item3" data-i18n-html="true">• 現金（普通預金等）: <span class="font-bold text-white">0.0%</span></span>
+                                <span data-i18n="tooltip_macro_dark_item1">• 株式: <span class="font-bold text-white">4.0%</span> | 投資信託: <span class="font-bold text-white">1.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_dark_item2">• 貴金属: <span class="font-bold text-white">3.0%</span> | 債券: <span class="font-bold text-white">4.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_dark_item3">• 現金（普通預金等）: <span class="font-bold text-white">0.0%</span></span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
@@ -436,7 +436,7 @@
         </div>
     </div>
 
-    <div class="fixed top-1/2 -translate-y-1/2 right-4 z-[60]" style="transform: translate33d(0,-50%,0); will-change: transform;">
+    <div class="fixed top-1/2 -translate-y-1/2 right-4 z-[60]" style="transform: translate3d(0,-50%,0); will-change: transform;">
         <button onclick="transitionToDwz()" class="pulse-dwz bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 font-black px-4 py-3 sm:px-5 sm:py-4 rounded-2xl shadow-[0_10px_30px_rgba(245,158,11,0.4)] flex items-center gap-2 transition-all group focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs sm:text-sm">
             <span class="text-base sm:text-lg">💀</span>
             <span class="text-[10px] sm:text-xs uppercase tracking-widest font-black" data-i18n="btn_floating_dwz_check">DIE WITH ZERO !</span>
@@ -471,14 +471,7 @@
             const toast = document.getElementById('toast');
             const toastText = document.getElementById('toast-text');
             const toastIcon = document.getElementById('toast-icon');
-            
-            // 💡修正：i18n読み込み時と連動したフォールバックを完備
-            let cleanMsg = message;
-            if (message === '💎 未来が再計算されました！' && typeof currentTranslations !== 'undefined' && currentTranslations['toast_message']) {
-                cleanMsg = currentTranslations['toast_message'];
-            }
-            
-            toastText.textContent = cleanMsg;
+            toastText.textContent = message;
             if (type === 'success') {
                 toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
                 toastIcon.className = 'text-emerald-400 text-lg';
@@ -564,13 +557,17 @@
             constructor(w, h) {
                 this.canvasWidth = w;
                 this.canvasHeight = h;
+                // 画面中央や中央上部から砂のようにこぼれ落ち、または舞い散る
                 this.x = Math.random() * w;
                 this.y = Math.random() * h * 0.4 + h * 0.1; // 上中部に集中
                 this.size = Math.random() * 2.2 + 0.8;
+                // 風に流されるような軌道
                 this.vx = (Math.random() - 0.4) * 2.5; 
                 this.vy = Math.random() * 3 + 1.5; // 下方向に落ちる
                 this.alpha = 1.0;
+                // 個体差をつけて霧散の美しさを際立たせる
                 this.decay = Math.random() * 0.012 + 0.006;
+                // 黄金・アンバー色のカラーレンジ
                 const r = Math.floor(Math.random() * 45 + 210); // 210~255
                 const g = Math.floor(Math.random() * 60 + 140); // 140~200
                 this.color = `rgba(${r}, ${g}, 11,`;
@@ -592,6 +589,7 @@
         function animateDissolve(canvas, ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
+            // 毎フレーム一定の黄金の粒子を注入
             if (particles.length < 250) {
                 for (let i = 0; i < 6; i++) {
                     particles.push(new GoldGrain(canvas.width, canvas.height));
@@ -619,9 +617,9 @@
             rows.forEach((row, index) => {
                 const titleSpan = row.querySelector('.stage-title');
                 if (titleSpan) {
-                    // 💡第1手修正：新設された専用キー（lbl_stage_title）を直撃取得し「年間生活費」への反転バグを完全封殺
-                    const baseTitle = (typeof currentTranslations !== 'undefined' && currentTranslations['lbl_stage_title']) 
-                        ? currentTranslations['lbl_stage_title']
+                    // 💡第1手修正：日本語・英語辞書からタイトルヘッダーを動的に自動生成
+                    const baseTitle = (typeof currentTranslations !== 'undefined' && currentTranslations['title_living_costs']) 
+                        ? currentTranslations['title_living_costs'].replace(/💸\s*/, '').split('（')[0].trim()
                         : '人生のステージ';
                     titleSpan.innerHTML = `<i class="fa-solid fa-layer-group mr-1"></i>${baseTitle} ${romanNumerals[index] || (index + 1)}`;
                 }
@@ -646,6 +644,7 @@
             const div = document.createElement('div');
             div.className = 'stage-row bg-rose-50/10 p-3 rounded-xl border border-rose-100/40 flex flex-col gap-2 text-[11px]';
             
+            // 💡第1手修正：動的追加フィールドのテキストパーツを現在の言語に同期
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const lblTo = isEn ? ' to ' : ' ～ ';
             const lblAge = isEn ? ' years old' : ' 歳';
@@ -681,6 +680,7 @@
             const div = document.createElement('div');
             div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
             
+            // 💡第1手修正：その他所得追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultName = isEn ? "Pension" : name;
             const lblName = isEn ? "Income Name" : "所得の名称";
@@ -718,6 +718,7 @@
             const div = document.createElement('div');
             div.className = 'income-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
+            // 💡第1手修正：臨時収入追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? "Retirement Bonus" : memo;
             const lblMemo = isEn ? "Description" : "収入の名称";
@@ -735,7 +736,7 @@
             div.innerHTML = `
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblMemo}</span>
-                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="${defaultMemo}">
+                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="${defaultMemo}" placeholder="">
                 </div>
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAge}</span>
@@ -767,6 +768,7 @@
             const div = document.createElement('div');
             div.className = 'expense-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
+            // 💡第1手修正：臨時出費追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? "Special Event" : memo;
             const lblMemo = isEn ? "Description" : "出費の名称";
@@ -1334,6 +1336,444 @@
                 addAssetElement({ name: "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 85 });
             }
             runSimulation();
+        }
+
+        function formatAssetValue(valInYen) {
+            const valInWan = Math.round(valInYen / 10000);
+            const absWan = Math.abs(valInWan);
+            const sign = valInWan < 0 ? '-' : '';
+            if (absWan >= 10000) {
+                const oku = Math.floor(absWan / 10000);
+                const wan = absWan % 10000;
+                return wan > 0 ? `${sign}${oku}億${wan}万円` : `${sign}${oku}億円`;
+            }
+            return `${sign}${absWan}万円`;
+        }
+
+        function runSimulation() {
+            const startYear = parseInt(document.getElementById('start-year').value) || 2026;
+            const startAge = parseInt(document.getElementById('start-age').value) || 30;
+            const endAge = parseInt(document.getElementById('years').value) || 85;
+            const simulationDuration = Math.min(Math.max(endAge - startAge, 1), 90);
+
+            let labels = [];
+            let dynamicAssets = [];
+            const cards = document.querySelectorAll('.asset-card');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.asset-name-field').value || '未定義資産';
+                const type = card.querySelector('.asset-type-field').value || 'stocks';
+                const initAmt = (parseFloat(card.querySelector('.asset-init-field').value) || 0) * 10000;
+                const rate = (parseFloat(card.querySelector('.asset-rate-field').value) || 0) / 100;
+                const payout = card.querySelector('.asset-payout-field').value || 'reinvest';
+                const yearAmt = type === 'realestate' ? 0 : (parseFloat(card.querySelector('.asset-year-field').value) || 0) * 10000;
+                const monthAmt = type === 'realestate' ? 0 : (parseFloat(card.querySelector('.asset-month-field').value) || 0) * 10000;
+                const startA = parseInt(card.querySelector('.asset-start-field').value) || startAge;
+                const endA = parseInt(card.querySelector('.asset-end-field').value) || endAge;
+
+                dynamicAssets.push({
+                    name, type, initAmt, rate, payout, yearAmt, monthAmt, startAge: startA, endAge: endA,
+                    currentVal: 0, active: false, purchased: false, sold: false
+                });
+            });
+
+            const initCashVal = (parseFloat(document.getElementById('init-cash').value) || 0) * 10000;
+            const rateCash = (parseFloat(document.getElementById('rate-cash').value) || 0) / 100;
+            let currentCashVal = initCashVal;
+
+            dynamicAssets.forEach(a => {
+                if (a.startAge <= startAge) {
+                    a.currentVal = a.initAmt;
+                    a.active = true;
+                    a.purchased = true;
+                }
+            });
+
+            const salaryAmount = (parseFloat(document.getElementById('salary-amount').value) || 0) * 10000;
+            const salaryLimitAge = parseInt(document.getElementById('salary-limit').value) || 65;
+
+            let otherIncomes = [];
+            document.querySelectorAll('.other-income-row').forEach(row => {
+                const amtEl = row.querySelector('.other-inc-amount');
+                if(!amtEl) return;
+                otherIncomes.push({
+                    amount: (parseFloat(amtEl.value) || 0) * 10000,
+                    start: parseInt(row.querySelector('.other-inc-start').value) || 0,
+                    end: parseInt(row.querySelector('.other-inc-end').value) || 0
+                });
+            });
+
+            let stageExp = [];
+            document.querySelectorAll('.stage-row').forEach(row => {
+                stageExp.push({
+                    amount: (parseFloat(row.querySelector('.stage-amount').value) || 0) * 10000,
+                    startAge: parseInt(row.querySelector('.stage-start').value) || startAge,
+                    endAge: parseInt(row.querySelector('.stage-end').value) || 120
+                });
+            });
+
+            let extraIncomes = [];
+            document.querySelectorAll('.income-row').forEach(row => {
+                const ageEl = row.querySelector('.income-age');
+                if(!ageEl) return;
+                extraIncomes.push({
+                    age: parseInt(ageEl.value) || 0,
+                    amount: (parseFloat(row.querySelector('.income-amount').value) || 0) * 10000,
+                    target: row.querySelector('.income-target').value || 'cash'
+                });
+            });
+
+            let extraExpenses = [];
+            document.querySelectorAll('.expense-row').forEach(row => {
+                const ageEl = row.querySelector('.expense-age');
+                if(!ageEl) return;
+                extraExpenses.push({
+                    age: parseInt(ageEl.value) || 0,
+                    amount: (parseFloat(row.querySelector('.expense-amount').value) || 0) * 10000
+                });
+            });
+
+            const sumOfCategory = (type) => {
+                return dynamicAssets.filter(a => a.type === type && a.active).reduce((sum, a) => sum + a.currentVal, 0);
+            };
+            
+            labels.push(`0年目 (${startYear}年/⚖️${startAge}歳)`);
+            let totalData = [currentCashVal + ['realestate', 'stocks', 'trust', 'metal', 'bonds'].reduce((sum, cat) => sum + sumOfCategory(cat), 0)];
+
+            let simRecords = [{
+                index: 0, yearLabel: `0年目 (${startYear}年/⚖️${startAge}歳)`,
+                cash: currentCashVal, realestate: sumOfCategory('realestate'), stocks: sumOfCategory('stocks'),
+                trust: sumOfCategory('trust'), metal: sumOfCategory('metal'), bonds: sumOfCategory('bonds'), total: totalData[0]
+            }];
+
+            let cashCheckDeficit = false;
+
+            for (let y = 1; y <= simulationDuration; y++) {
+                const currentYear = startYear + y;
+                const currentAge = startAge + y;
+                labels.push(`${y}年目 (${currentYear}年/⚖️${currentAge}歳)`);
+                
+                currentCashVal = currentCashVal * (1 + rateCash);
+                let payoutIncomes = 0;
+
+                dynamicAssets.forEach(a => {
+                    if (currentAge === a.startAge && !a.purchased && a.startAge > startAge) {
+                        currentCashVal -= a.initAmt;
+                        a.currentVal = a.initAmt;
+                        a.active = true;
+                        a.purchased = true;
+                    }
+                    if (a.active && currentAge >= a.startAge && currentAge <= a.endAge) {
+                        const profit = a.currentVal * a.rate;
+                        if (a.payout === 'cashout') payoutIncomes += profit;
+                        else a.currentVal += profit;
+
+                        const regularSavings = a.yearAmt + (a.monthAmt * 12);
+                        currentCashVal -= regularSavings;
+                        a.currentVal += regularSavings;
+                    }
+                });
+
+                let collectedIncomes = payoutIncomes;
+                if (currentAge <= salaryLimitAge) collectedIncomes += salaryAmount;
+                otherIncomes.forEach(ot => { if (currentAge >= ot.start && currentAge <= ot.end) collectedIncomes += ot.amount; });
+                currentCashVal += collectedIncomes;
+
+                let livingCost = 0;
+                const matchedStage = stageExp.find(st => currentAge >= st.startAge && currentAge <= st.endAge);
+                if (matchedStage) livingCost = matchedStage.amount;
+                currentCashVal -= livingCost;
+
+                extraIncomes.filter(item => item.age === currentAge).forEach(item => {
+                    if (item.target === 'cash') currentCashVal += item.amount;
+                    else {
+                        const targetAsset = dynamicAssets.find(a => a.type === item.target && a.active);
+                        if (targetAsset) targetAsset.currentVal += item.amount;
+                        else currentCashVal += item.amount;
+                    }
+                });
+
+                let thisYearExpenses = extraExpenses.filter(item => item.age === currentAge).reduce((sum, item) => sum + item.amount, 0);
+                currentCashVal -= thisYearExpenses;
+
+                dynamicAssets.forEach(a => {
+                    if (a.active && currentAge === a.endAge && !a.sold) {
+                        currentCashVal += a.currentVal;
+                        a.currentVal = 0;
+                        a.active = false;
+                        a.sold = true;
+                    }
+                });
+
+                if (currentCashVal < 0) cashCheckDeficit = true;
+                let yearTotal = currentCashVal + ['realestate', 'stocks', 'trust', 'metal', 'bonds'].reduce((sum, cat) => sum + sumOfCategory(cat), 0);
+                totalData.push(Math.round(yearTotal));
+
+                simRecords.push({
+                    index: y, yearLabel: `${y}年目 (${currentYear}年/⚖️${currentAge}歳)`,
+                    cash: Math.round(currentCashVal), realestate: Math.round(sumOfCategory('realestate')),
+                    stocks: Math.round(sumOfCategory('stocks')), trust: Math.round(sumOfCategory('trust')),
+                    metal: Math.round(sumOfCategory('metal')), bonds: Math.round(sumOfCategory('bonds')), total: Math.round(yearTotal)
+                });
+            }
+
+            document.getElementById('cash-warning-badge').className = cashCheckDeficit ? 'px-2.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold text-[10px] animate-pulse' : 'hidden';
+
+            let aggregatedTemplates = {
+                cash: { name: '現金', data: simRecords.map(r => r.cash) },
+                realestate: { name: '不動産', data: simRecords.map(r => r.realestate) },
+                stocks: { name: '株式', data: simRecords.map(r => r.stocks) },
+                trust: { name: '投資信託', data: simRecords.map(r => r.trust) },
+                metal: { name: '貴金属', data: simRecords.map(r => r.metal) },
+                bonds: { name: '債券', data: simRecords.map(r => r.bonds) }
+            };
+
+            renderTableAndChart(labels, aggregatedTemplates, totalData, simRecords);
+        }
+
+        function renderTableAndChart(labels, datasetTemplates, totalData, simRecords) {
+            lastSimulationData = simRecords;
+            const tbody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            simRecords.forEach((rec, idx) => {
+                let row = tbody.insertRow();
+                row.className = idx === simRecords.length - 1 ? 'bg-emerald-500/10 border-t-2 border-emerald-500 text-slate-900 font-bold' : 'hover:bg-slate-50 transition-colors';
+                const labelParts = rec.yearLabel.split(' ');
+                
+                row.insertCell().innerHTML = `<div class="text-center font-bold text-slate-800">${labelParts[0]}</div><div class="text-center text-slate-400 font-normal text-[10px]">${labelParts[1] || ''}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono ${rec.cash < 0 ? 'text-rose-600 font-bold' : 'text-slate-800'}">${formatAssetValue(rec.cash)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.realestate)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.stocks)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.trust)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.metal)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.bonds)}</div>`;
+                row.insertCell().innerHTML = `<div class="p-1 font-bold text-right text-slate-900 bg-slate-100/50 font-mono">${formatAssetValue(rec.total)}</div>`;
+            });
+
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            const assetsList = [{id:'cash',name:'現金'},{id:'realestate',name:'不動産'},{id:'stocks',name:'株式'},{id:'trust',name:'投資信託'},{id:'metal',name:'貴金属'},{id:'bonds',name:'債券'}];
+            let datasets = assetsList.map(a => {
+                return {
+                    label: a.name, data: datasetTemplates[a.id].data, borderColor: assetColors[a.id], backgroundColor: assetColors[a.id] + '11',
+                    fill: false, tension: 0.15, borderWidth: 2, pointRadius: labels.length > 30 ? 0.5 : 2.5
+                };
+            });
+
+            datasets.push({ label: '総資産', data: totalData, borderColor: '#0f172a', backgroundColor: '#0f172a', borderWidth: 4, fill: false, tension: 0.15, pointRadius: labels.length > 30 ? 1 : 3 });
+
+            chartInstance = new Chart(ctx, {
+                type: 'line', data: { labels: labels, datasets: datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } },
+                    scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: value => (value / 10000).toLocaleString() + '万' } } }
+                }
+            });
+        }
+
+        function transitionToDwz() {
+            playDissolveSound();
+            const tooltipEl = document.getElementById('chart-tooltip');
+            if (tooltipEl) {
+                tooltipEl.style.opacity = '0';
+                tooltipEl.style.pointerEvents = 'none';
+            }
+            const overlay = document.getElementById('transition-overlay');
+            const canvas = document.getElementById('dissolve-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 150; i++) {
+                particles.push(new GoldGrain(canvas.width, canvas.height));
+            }
+
+            if (dissolveAnimId) cancelAnimationFrame(dissolveAnimId);
+            animateDissolve(canvas, ctx);
+            overlay.classList.remove('pointer-events-none');
+            overlay.style.opacity = '1';
+
+            setTimeout(() => {
+                runSimulation();
+                
+                if (!lastSimulationData || lastSimulationData.length === 0) {
+                    showToast("有効なシミュレーションデータがありません。", "error");
+                    overlay.style.opacity = '0';
+                    overlay.classList.add('pointer-events-none');
+                    cancelAnimationFrame(dissolveAnimId);
+                    return;
+                }
+
+                const currentAge = parseInt(document.getElementById('start-age').value) || 40;
+                const endAge = parseInt(document.getElementById('years').value) || 85;
+                const yearsRemaining = Math.max(endAge - currentAge, 1);
+
+                const finalRecord = lastSimulationData[lastSimulationData.length - 1];
+                const totalRemainingYen = finalRecord.total; 
+
+                const msgBox = document.getElementById('dwz-message-box');
+                const adviceBox = document.getElementById('dwz-advice-text');
+                const breakdownList = document.getElementById('dwz-breakdown-list');
+                breakdownList.innerHTML = '';
+                
+                const listItems = [
+                    { name: '現金', val: finalRecord.cash, color: 'bg-slate-500' },
+                    { name: '不動産', val: finalRecord.realestate, color: 'bg-rose-500' },
+                    { name: '株式', val: finalRecord.stocks, color: 'bg-blue-500' },
+                    { name: '投資信託', val: finalRecord.trust, color: 'bg-emerald-500' },
+                    { name: '貴金属', val: finalRecord.metal, color: 'bg-amber-500' },
+                    { name: '債券', val: finalRecord.bonds, color: 'bg-purple-500' }
+                ];
+
+                listItems.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center justify-between pb-1 border-b border-slate-800';
+                    div.innerHTML = `
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full ${item.color}"></span>
+                            <span class="text-slate-400">${item.name}</span>
+                        </div>
+                        <span class="font-mono text-slate-100 font-bold">${formatAssetValue(item.val)}</span>
+                    `;
+                    breakdownList.appendChild(div);
+                });
+
+                let cashShortageAge = null;
+                for (let i = 0; i < lastSimulationData.length; i++) {
+                    if (lastSimulationData[i].cash < 0) {
+                        const ageMatch = lastSimulationData[i].yearLabel.match(/⚖️(\d+)歳/);
+                        cashShortageAge = ageMatch ? parseInt(ageMatch[1]) : currentAge + lastSimulationData[i].index;
+                        break;
+                    }
+                }
+
+                let advicePrefixHtml = '';
+                let dwzDisclaimer = '';
+
+                if (cashShortageAge !== null) {
+                    advicePrefixHtml = `
+                        <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
+                            <span>⚠️</span>
+                            <span>このままでは、${cashShortageAge}歳で現金が不足して生活が成り立ちません。現金が不足する前に他の資産を売却するなどの策を講じた方がよいと思われます。</span>
+                        </div>
+                    `;
+                    dwzDisclaimer = '（仮に、現金が不足したまま続けた場合）';
+                }
+
+                if (totalRemainingYen < 0) {
+                    let bankruptAge = endAge;
+                    for (let i = 0; i < lastSimulationData.length; i++) {
+                        if (lastSimulationData[i].total < 0) {
+                            bankruptAge = currentAge + lastSimulationData[i].index;
+                            break;
+                        }
+                    }
+
+                    const deficitAmt = Math.abs(totalRemainingYen);
+                    const reduceSpendPerYear = Math.round(deficitAmt / yearsRemaining);
+                    const reduceSpendPerMonth = Math.round(reduceSpendPerYear / 12);
+
+                    msgBox.innerHTML = `
+                        ${advicePrefixHtml}
+                        ${dwzDisclaimer}現在の算盤では、あなたの資産は逝去される前の <span class="text-rose-400 font-black text-lg">${bankruptAge}歳</span> の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>
+                        最終的にシミュレーション終了年齢（<span class="text-amber-400 font-black">${endAge}歳</span>）に達した時点では、合計で <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">約${formatAssetValue(deficitAmt)}</span> が【不足】する計算となります。<br><br>
+                        この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、年間支出を<br>
+                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(reduceSpendPerYear)}／年</span> 
+                        （すなわち、月々約 <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth)}／月</span>）
+                        【減らさなければ】なりません。
+                    `;
+
+                    if (adviceBox) {
+                        adviceBox.innerHTML = `「兵糧が最期を前に尽きるは軍師として痛恨 of 痛恨（※）。生活 of ステージ支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
+                    }
+                } else {
+                    const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
+                    const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
+
+                    msgBox.innerHTML = `
+                        ${advicePrefixHtml}
+                        ${dwzDisclaimer}現在の推定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
+                        <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(totalRemainingYen)}</span> を遺すことになります。<br><br>
+                        富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class="text-amber-400 font-extrabold">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、
+                        残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
+                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(additionalSpendPerYear)}／年</span> 
+                        （すなわち <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(additionalSpendPerMonth)}／月</span>）
+                        【多く】使わなければなりません。
+                    `;
+
+                    if (adviceBox) {
+                        adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは人生の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。」`;
+                    }
+                }
+
+                document.getElementById('simulator-view').classList.add('hidden');
+                document.getElementById('dwz-view').classList.remove('hidden');
+                document.getElementById('dwz-view').classList.add('flex');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    overlay.classList.add('pointer-events-none');
+                    cancelAnimationFrame(dissolveAnimId);
+                    showToast("💀 ダイ・ウィズ・ゼロ 判定を展開しました。");
+                }, 400);
+
+            }, 1200);
+        }
+
+        function backToSimulator() {
+            document.getElementById('dwz-view').classList.remove('flex');
+            document.getElementById('dwz-view').classList.add('hidden');
+            document.getElementById('simulator-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                try {
+                    const lines = text.split('\n');
+                    const parseCols = str => str.trim().split(/,(?=(?:[^"]*"){2})*[^"]*$/).map(c => c.replace(/^"|"$/g, ''));
+                    let imported = [];
+                    for(let i=1; i<lines.length; i++) {
+                        if (!lines[i].trim()) continue;
+                        const cols = parseCols(lines[i]);
+                        if(cols.length < 8) continue;
+                        imported.push({ yearLabel: cols[0], cash: parseInt(cols[1])||0, realestate: parseInt(cols[2])||0, stocks: parseInt(cols[3])||0, trust: parseInt(cols[4])||0, metal: parseInt(cols[5])||0, bonds: parseInt(cols[6])||0, total: parseInt(cols[7])||0 });
+                    }
+                    if (imported.length === 0) return;
+                    let labels = [], totalData = [];
+                    let datasetTemplates = { cash:{data:[]}, realestate:{data:[]}, stocks:{data:[]}, trust:{data:[]}, metal:{data:[]}, bonds:{data:[]} };
+                    imported.forEach(rec => {
+                        labels.push(rec.yearLabel); totalData.push(rec.total);
+                        datasetTemplates.cash.data.push(rec.cash); datasetTemplates.realestate.data.push(rec.realestate);
+                        datasetTemplates.stocks.data.push(rec.stocks); datasetTemplates.trust.data.push(rec.trust);
+                        datasetTemplates.metal.data.push(rec.metal); datasetTemplates.bonds.data.push(rec.bonds);
+                    });
+                    renderTableAndChart(labels, datasetTemplates, totalData, imported);
+                    showToast("📊 CSV読込に成功しました！");
+                } catch(err) { showToast("CSV読込に失敗しました。", "error"); }
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        function downloadCSV() {
+            if (!lastSimulationData) return;
+            let csvContent = "\uFEFF経過年(西暦/年齢),現金(円),不動産(円),株式(円),投資信託(円),貴金属(円),債券(円),総資産(円)\n";
+            lastSimulationData.forEach(rec => { csvContent += `"${rec.yearLabel.replace(' ','')}",${rec.cash},${rec.realestate},${rec.stocks},${rec.trust},${rec.metal},${rec.bonds},${rec.total}\n`; });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", "investment_simulation.csv");
+            link.click();
         }
 
         window.onload = function() { 
