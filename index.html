@@ -85,15 +85,15 @@
             <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                     <div class="relative flex items-center">
-                        <div onclick="runSimulation(); showToast('💎 ジェムの魔力により、未来が再計算されました！')" class="relative bg-amber-500 text-slate-950 p-3 rounded-xl text-2xl shadow-inner font-black animate-pulse cursor-pointer hover:bg-amber-400 transition-colors flex items-center justify-center select-none" title="クリックしてシミュレーションを実行">
+                        <div onclick="runSimulation(); showToast('💎 未来が再計算されました！')" class="relative bg-amber-500 text-slate-950 p-3 rounded-xl text-2xl shadow-inner font-black animate-pulse cursor-pointer hover:bg-amber-400 transition-colors flex items-center justify-center select-none" title="クリックしてシミュレーションを実行">
                             💎
                             <div class="hidden sm:flex absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
                                 <span class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-amber-500"></span>
-                                開始！
+                                試算開始！
                             </div>
                             <div class="sm:hidden absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-amber-500"></span>
-                                開始！
+                                試算開始！
                             </div>
                         </div>
                     </div>
@@ -313,7 +313,7 @@
                 </div>
 
                 <button onclick="runSimulation()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-calculator text-amber-400"></i> 各種設定で再試算を実行
+                    <i class="fa-solid fa-calculator text-amber-400"></i> 各種設定で試算を実行
                 </button>
             </section>
 
@@ -1705,7 +1705,7 @@
                     overlay.style.opacity = '0';
                     overlay.classList.add('pointer-events-none');
                     cancelAnimationFrame(dissolveAnimId);
-                    showToast("💀 ダイ・ウィズ・ゼロ極限軍略診断を展開しました。");
+                    showToast("💀 ダイ・ウィズ・ゼロ診断を展開しました。");
                 }, 400);
 
             }, 1200); // 霧散している長さ
