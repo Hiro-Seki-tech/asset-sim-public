@@ -1,5 +1,6 @@
 /**
  * 💡性能キャッシュフロー軍略盤 - 多言語化制御中枢 (js/i18n.js)
+ * 分割ファイル構成・GitHub Pages環境完全対応版
  */
 
 const SUPPORTED_LANGUAGES = ['ja', 'en'];
@@ -9,11 +10,11 @@ const STORAGE_KEY = 'gemkin_preferred_language';
 let currentTranslations = {};
 
 /**
- * 選択された言語のJSONファイルを非同期fetchする関数
+ * 選択された言語のJSONファイルを非同期取得する関数
  */
 async function loadTranslations(lang) {
     try {
-        // 💡修正：HTML側から見て「i18n」フォルダの中を確実に探せるパスに変更
+        // HTML側から見た「i18n」フォルダへの正確な相対ルート
         const response = await fetch(`./i18n/${lang}.json`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -26,7 +27,7 @@ async function loadTranslations(lang) {
 }
 
 /**
- * DOM内の data-i18n 属性を持つ全要素に翻訳を適用する関数
+ * DOM内の data-i18n 属性を持つ全要素に翻訳を流し込む関数
  */
 function applyTranslations() {
     const elements = document.querySelectorAll('[data-i18n]');
@@ -52,10 +53,9 @@ function applyTranslations() {
         }
     });
 
-    // 言語切り替え時に、シミュレータ側の動的テキスト（グラフタイトル等）も連動させる
+    // 💡重要：HTML側のメイン関数（runSimulation）が存在している場合のみ連動させる安全弁
     if (typeof window.runSimulation === 'function') {
-        // 英語ならグラフタイトルを英語に、日本語なら日本語に動的書き換え
-        const currentName = document.getElementById('scenario-input').value || 'カスタム';
+        const currentName = document.getElementById('scenario-input')?.value || 'カスタム';
         const titleEl = document.getElementById('graph-title-element');
         const currentLang = localStorage.getItem(STORAGE_KEY) || DEFAULT_LANGUAGE;
         
@@ -63,7 +63,13 @@ function applyTranslations() {
             titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> ` + 
                 (currentLang === 'en' ? `Lifetime Cash Flow for "${currentName}"` : `「${currentName}」の生涯キャッシュフロー`);
         }
-        window.runSimulation();
+        
+        // メインプログラムの初期化完了を確認して連動
+        try {
+            window.runSimulation();
+        } catch (e) {
+            console.warn("[i18n] シミュレーション関数の先行呼び出しを回避しました。");
+        }
     }
 }
 
@@ -84,9 +90,9 @@ async function switchLanguage(lang) {
 }
 
 /**
- * ページ読み込み時の初期化
+ * 💡修正：HTML側のすべてのメインスクリプト読み込みが完了（load）した後に安全に起動させる
  */
-document.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('load', async () => {
     const savedLang = localStorage.getItem(STORAGE_KEY);
     const browserLang = navigator.language.split('-')[0];
     
@@ -97,7 +103,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         targetLang = browserLang;
     }
     
-    await switchLanguage(targetLang);
+    // window.onload側の初期試算と衝突せぬよう、僅かに遅延を入れて結合
+    setTimeout(async () => {
+        await switchLanguage(targetLang);
+    }, 50);
 
     const switcher = document.getElementById('languageSwitcher');
     if (switcher) {
