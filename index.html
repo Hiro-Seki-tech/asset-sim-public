@@ -476,6 +476,56 @@
             }, 3000);
         }
 
+        /* ⚠️ Web Audio APIを用いた低音の警告・衝撃音生成 (小さめの音量) */
+        function playShockSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                
+                // 3つの波形発振器で深みと不穏さ、衝撃感を作る
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const osc3 = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+
+                osc1.type = 'sawtooth'; // 鋭い高調波
+                osc2.type = 'triangle'; // 丸みと重厚感
+                osc3.type = 'sine';     // 超低音の補強
+
+                const baseFreq = 85; // 重低音 (約F#〜Gの間)
+                osc1.frequency.setValueAtTime(baseFreq, ctx.currentTime);
+                // 不協和音階：トリトヌス（約1.35倍＝減5度。最高にショッキングな恐怖・警告の周波数）
+                osc2.frequency.setValueAtTime(baseFreq * 1.35, ctx.currentTime);
+                // 1オクターブ下の正弦波で映画トレイラーのような空気震動を作る
+                osc3.frequency.setValueAtTime(baseFreq * 0.5, ctx.currentTime);
+
+                // 時系列で周波数をドゥーーンと下降スイープさせて心臓を揺さぶる
+                osc1.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 1.2);
+                osc2.frequency.exponentialRampToValueAtTime(45, ctx.currentTime + 1.2);
+                osc3.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 1.2);
+
+                // 音量調整（お騒がせしない「小さめ」の最大0.12に設定。その後美しく消え入るように減衰）
+                gainNode.gain.setValueAtTime(0.12, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                osc3.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                osc1.start(ctx.currentTime);
+                osc2.start(ctx.currentTime);
+                osc3.start(ctx.currentTime);
+
+                osc1.stop(ctx.currentTime + 1.6);
+                osc2.stop(ctx.currentTime + 1.6);
+                osc3.stop(ctx.currentTime + 1.6);
+            } catch (e) {
+                console.warn("Web Audio APIによるサウンド再生に失敗しました:", e);
+            }
+        }
+
         /* ライフステージ定義の年齢連動 */
         function updateStageAges() {
             const startAge = parseInt(document.getElementById('start-age').value) || 40;
@@ -1397,6 +1447,9 @@
         }
 
         function transitionToDwz() {
+            // ⚠️ ダイウィズゼロ判定へ移行する際に、ショッキングな不穏音（警告・衝撃音）をWeb Audio APIで生成
+            playShockSound();
+
             const tooltipEl = document.getElementById('chart-tooltip');
             if (tooltipEl) {
                 tooltipEl.style.opacity = '0';
@@ -1445,7 +1498,7 @@
                 breakdownList.appendChild(div);
             });
 
-            // ⚠️ [4] 現金ショートの有無およびショート年齢の判定
+            // ⚠️ 現金ショートの有無およびショート年齢の判定
             let cashShortageAge = null;
             for (let i = 0; i < lastSimulationData.length; i++) {
                 if (lastSimulationData[i].cash < 0) {
@@ -1500,7 +1553,7 @@
                 `;
 
                 if (adviceBox) {
-                    adviceBox.innerHTML = `「兵糧が最期を前に尽きるは軍師として痛恨 of 痛恨（※）。生活のステージ支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
+                    adviceBox.innerHTML = `「兵糧が最期を前に尽きるは軍師として痛恨 of 痛恨（※）。生活 of ステージ支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
                 }
             } else {
                 const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
@@ -1510,7 +1563,6 @@
                 const yearText = formatAssetValue(additionalSpendPerYear);
                 const monthText = formatAssetValue(additionalSpendPerMonth);
 
-                // 📝 [2] 「現在の予定では」から「現在の推定では」に変更、および [4] 免責記述の挿入
                 msgBox.innerHTML = `
                     ${advicePrefixHtml}
                     ${dwzDisclaimer}現在の推定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
@@ -1522,7 +1574,6 @@
                     【多く】使わなければなりません。
                 `;
 
-                // 📝 [3] 「軍師の恥辱」から「人生の恥辱」に変更
                 if (adviceBox) {
                     adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは人生の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。」`;
                 }
