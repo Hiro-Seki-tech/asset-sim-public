@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
     <meta name="description" content="野村総合研究所の資産ピラミッドに準拠した、シンプルかつ超高性能な資産シミュレータ。あなたの未来のキャッシュフローを即座に可視化します。">
-    <meta property="og:title" content="💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！） | 人生のキャッシュフロー軍略盤">
-    <meta property="og:description" content="純金融資産の階層別デフォルト値から、あなたの未来 of 資産推移を即座に計算。">
+    <meta property="og:title" content="💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！） | 人性能キャッシュフロー軍略盤">
+    <meta property="og:description" content="純金融資産の階層別デフォルト値から、あなたの未来の資産推移を即座に計算。">
     <meta property="og:type" content="website">
 
     <title>💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！）</title>
@@ -45,12 +45,22 @@
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased transition-all duration-300">
 
     <!-- トースト通知 -->
     <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-20px] opacity-0 pointer-events-none transition-all duration-300 ease-out bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3">
         <span id="toast-icon" class="text-emerald-400 text-lg"><i class="fa-solid fa-circle-check"></i></span>
         <span id="toast-text" class="text-sm font-medium">通知メッセージ</span>
+    </div>
+
+    <!-- 💡選択肢B「黄金の砂時計・完全使い切りの霧散（ディゾルブ）」演出用オーバーレイ -->
+    <div id="transition-overlay" class="fixed inset-0 z-[100] pointer-events-none opacity-0 transition-opacity duration-500 bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
+        <!-- 粒子が飛び散るための専用エフェクトキャンバス -->
+        <canvas id="dissolve-canvas" class="absolute inset-0 w-full h-full"></canvas>
+        <div id="dissolve-status-text" class="absolute z-10 text-amber-400 font-mono text-xs sm:text-sm tracking-[0.2em] font-light uppercase text-center animate-pulse opacity-80">
+            <span>DISSOLVING ASSETS INTO EXPERIENCE...</span>
+            <span class="block text-[9px] text-slate-500 mt-2 tracking-widest">砂時計の最後の一粒まで、悔いなく。</span>
+        </div>
     </div>
 
     <!-- 浮遊ツールチップ -->
@@ -119,9 +129,9 @@
                             <button onclick="applyWorldLine('bright')" class="px-2.5 py-1.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition-colors border border-emerald-500/30 font-bold focus:outline-none">🚀 超高成長</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-emerald-400">🚀 超高成長（ハイパーインフレ・強気相場）</span><br>
-                                ・株式 / 投資信託: <span class="font-bold text-white">15.0%</span><br>
-                                ・貴金属 / 債券: <span class="font-bold text-white">5.0%</span><br>
-                                ・現金（普通預金等）: <span class="font-bold text-white">0.1%</span>
+                                • 株式 / 投資信託: <span class="font-bold text-white">15.0%</span><br>
+                                • 貴金属 / 債券: <span class="font-bold text-white">5.0%</span><br>
+                                • 現金（普通預金等）: <span class="font-bold text-white">0.1%</span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
@@ -130,9 +140,9 @@
                             <button onclick="applyWorldLine('mild_bull')" class="px-2.5 py-1.5 rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-colors border border-cyan-500/30 font-bold focus:outline-none">📈 安定上昇</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-cyan-400">📈 安定上昇（緩やかな成長・マイルドインフレ）</span><br>
-                                ・株式: <span class="font-bold text-white">10.0%</span> | 投資信託: <span class="font-bold text-white">8.0%</span><br>
-                                ・貴金属 / 債券: <span class="font-bold text-white">5.0%</span><br>
-                                ・現金（普通預金等）: <span class="font-bold text-white">0.1%</span>
+                                • 株式: <span class="font-bold text-white">10.0%</span> | 投資信託: <span class="font-bold text-white">8.0%</span><br>
+                                • 貴金属 / 債券: <span class="font-bold text-white">5.0%</span><br>
+                                • 現金（普通預金等）: <span class="font-bold text-white">0.1%</span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
@@ -141,9 +151,9 @@
                             <button onclick="applyWorldLine('normal')" class="px-2.5 py-1.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors border border-blue-500/30 font-bold focus:outline-none">🌱 巡航速度</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-blue-400">🌱 巡航速度（平時の現代日本・安定的成長）</span><br>
-                                ・株式: <span class="font-bold text-white">5.0%</span> | 投資信託: <span class="font-bold text-white">4.0%</span><br>
-                                ・貴金属 / 債券: <span class="font-bold text-white">4.0%</span><br>
-                                ・現金（普通預金等）: <span class="font-bold text-white">0.1%</span>
+                                • 株式: <span class="font-bold text-white">5.0%</span> | 投資信託: <span class="font-bold text-white">4.0%</span><br>
+                                • 貴金属 / 債券: <span class="font-bold text-white">4.0%</span><br>
+                                • 現金（普通預金等）: <span class="font-bold text-white">0.1%</span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
@@ -152,9 +162,9 @@
                             <button onclick="applyWorldLine('dark')" class="px-2.5 py-1.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors border border-rose-500/30 font-bold focus:outline-none">⛈️ 停滞下落</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-rose-400">⛈️ 停滞下落（スタグフレーション・資産デフレ）</span><br>
-                                ・株式: <span class="font-bold text-white">4.0%</span> | 投資信託: <span class="font-bold text-white">1.0%</span><br>
-                                ・貴金属: <span class="font-bold text-white">3.0%</span> | 債券: <span class="font-bold text-white">4.0%</span><br>
-                                ・現金（普通預金等）: <span class="font-bold text-white">0.0%</span>
+                                • 株式: <span class="font-bold text-white">4.0%</span> | 投資信託: <span class="font-bold text-white">1.0%</span><br>
+                                • 貴金属: <span class="font-bold text-white">3.0%</span> | 債券: <span class="font-bold text-white">4.0%</span><br>
+                                • 現金（普通預金等）: <span class="font-bold text-white">0.0%</span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
@@ -198,7 +208,7 @@
                     <div class="border-t border-slate-100 pt-3">
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                                <i class="fa-solid fa-briefcase text-emerald-500"></i> 给与所得
+                                <i class="fa-solid fa-briefcase text-emerald-500"></i> 給与所得
                             </span>
                             <span class="text-[10px] text-slate-400">毎年、現金口座に加算</span>
                         </div>
@@ -455,6 +465,10 @@
 
         const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
+        // トランジションキャンバス用アニメーション制御変数
+        let dissolveAnimId = null;
+        let particles = [];
+
         /* トースト表示処理 */
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -476,54 +490,125 @@
             }, 3000);
         }
 
-        /* ⚠️ Web Audio APIを用いた低音の警告・衝撃音生成 (小さめの音量) */
-        function playShockSound() {
+        /* ⚠️ 選択肢B「黄金の砂時計・完全霧散」専用のサラサラと崩れ去る神秘的な音（Web Audio API） */
+        function playDissolveSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
                 
-                // 3つの波形発振器で深みと不穏さ、衝撃感を作る
-                const osc1 = ctx.createOscillator();
-                const osc2 = ctx.createOscillator();
-                const osc3 = ctx.createOscillator();
-                const gainNode = ctx.createGain();
+                const duration = 1.6; // 1.6秒かけて砂が流れ落ちる
+                
+                // 1. サラサラとした砂の流れを作るためのホワイトノイズ
+                const sampleRate = ctx.sampleRate;
+                const bufferSize = sampleRate * duration;
+                const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noiseNode = ctx.createBufferSource();
+                noiseNode.buffer = buffer;
 
-                osc1.type = 'sawtooth'; // 鋭い高調波
-                osc2.type = 'triangle'; // 丸みと重厚感
-                osc3.type = 'sine';     // 超低音の補強
+                // 砂が風に舞うような周波数特性を作るバンドパスフィルター
+                const noiseFilter = ctx.createBiquadFilter();
+                noiseFilter.type = 'bandpass';
+                noiseFilter.frequency.setValueAtTime(800, ctx.currentTime);
+                // 周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
+                noiseFilter.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + duration);
+                noiseFilter.Q.setValueAtTime(1.5, ctx.currentTime);
 
-                const baseFreq = 85; // 重低音 (約F#〜Gの間)
-                osc1.frequency.setValueAtTime(baseFreq, ctx.currentTime);
-                // 不協和音階：トリトヌス（約1.35倍＝減5度。最高にショッキングな恐怖・警告の周波数）
-                osc2.frequency.setValueAtTime(baseFreq * 1.35, ctx.currentTime);
-                // 1オクターブ下の正弦波で映画トレイラーのような空気震動を作る
-                osc3.frequency.setValueAtTime(baseFreq * 0.5, ctx.currentTime);
+                const noiseGain = ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.04, ctx.currentTime); // 小さめの穏やかな音
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
-                // 時系列で周波数をドゥーーンと下降スイープさせて心臓を揺さぶる
-                osc1.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 1.2);
-                osc2.frequency.exponentialRampToValueAtTime(45, ctx.currentTime + 1.2);
-                osc3.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 1.2);
+                // 2. 黄金のきらめき、砂時計の硝子を連想させる高周波チャイム音
+                const chime1 = ctx.createOscillator();
+                const chime2 = ctx.createOscillator();
+                chime1.type = 'sine';
+                chime2.type = 'sine';
+                chime1.frequency.setValueAtTime(2200, ctx.currentTime); // 高い金属音
+                chime2.frequency.setValueAtTime(2850, ctx.currentTime); // 重ねて澄んだ高音を創出
 
-                // 音量調整（お騒がせしない「小さめ」の最大0.12に設定。その後美しく消え入るように減衰）
-                gainNode.gain.setValueAtTime(0.12, ctx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+                const chimeGain = ctx.createGain();
+                chimeGain.gain.setValueAtTime(0.02, ctx.currentTime); // かすかに響く音量
+                chimeGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration - 0.2);
 
-                osc1.connect(gainNode);
-                osc2.connect(gainNode);
-                osc3.connect(gainNode);
-                gainNode.connect(ctx.destination);
+                // 結線して再生
+                noiseNode.connect(noiseFilter);
+                noiseFilter.connect(noiseGain);
+                noiseGain.connect(ctx.destination);
 
-                osc1.start(ctx.currentTime);
-                osc2.start(ctx.currentTime);
-                osc3.start(ctx.currentTime);
+                chime1.connect(chimeGain);
+                chime2.connect(chimeGain);
+                chimeGain.connect(ctx.destination);
 
-                osc1.stop(ctx.currentTime + 1.6);
-                osc2.stop(ctx.currentTime + 1.6);
-                osc3.stop(ctx.currentTime + 1.6);
+                noiseNode.start(ctx.currentTime);
+                chime1.start(ctx.currentTime);
+                chime2.start(ctx.currentTime);
+
+                noiseNode.stop(ctx.currentTime + duration);
+                chime1.stop(ctx.currentTime + duration);
+                chime2.stop(ctx.currentTime + duration);
             } catch (e) {
-                console.warn("Web Audio APIによるサウンド再生に失敗しました:", e);
+                console.warn("Web Audio APIによる砂時計サウンド再生に失敗しました:", e);
             }
+        }
+
+        /* 黄金の砂粒子クラス定義 */
+        class GoldGrain {
+            constructor(w, h) {
+                this.canvasWidth = w;
+                this.canvasHeight = h;
+                // 画面中央や中央上部から砂のようにこぼれ落ち、または舞い散る
+                this.x = Math.random() * w;
+                this.y = Math.random() * h * 0.4 + h * 0.1; // 上中部に集中
+                this.size = Math.random() * 2.2 + 0.8;
+                // 風に流されるような軌道
+                this.vx = (Math.random() - 0.4) * 2.5; 
+                this.vy = Math.random() * 3 + 1.5; // 下方向に落ちる
+                this.alpha = 1.0;
+                // 個体差をつけて霧散の美しさを際立たせる
+                this.decay = Math.random() * 0.012 + 0.006;
+                // 黄金・アンバー色のカラーレンジ
+                const r = Math.floor(Math.random() * 45 + 210); // 210~255
+                const g = Math.floor(Math.random() * 60 + 140); // 140~200
+                this.color = `rgba(${r}, ${g}, 11,`;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+            draw(ctx) {
+                ctx.fillStyle = this.color + this.alpha + ')';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        /* 黄金パーティクルアニメーションループ */
+        function animateDissolve(canvas, ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 毎フレーム一定の黄金の粒子を注入
+            if (particles.length < 250) {
+                for (let i = 0; i < 6; i++) {
+                    particles.push(new GoldGrain(canvas.width, canvas.height));
+                }
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw(ctx);
+                if (p.alpha <= 0 || p.y > canvas.height) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            dissolveAnimId = requestAnimationFrame(() => animateDissolve(canvas, ctx));
         }
 
         /* ライフステージ定義の年齢連動 */
@@ -1446,9 +1531,10 @@
             });
         }
 
+        /* ⚠️ 選択肢B「黄金の砂時計・完全使い切りの霧散」のビジュアル・音響トランジション */
         function transitionToDwz() {
-            // ⚠️ ダイウィズゼロ判定へ移行する際に、ショッキングな不穏音（警告・衝撃音）をWeb Audio APIで生成
-            playShockSound();
+            // 1. 神秘的なきらめき砂時計サウンドを再生
+            playDissolveSound();
 
             const tooltipEl = document.getElementById('chart-tooltip');
             if (tooltipEl) {
@@ -1456,134 +1542,173 @@
                 tooltipEl.style.pointerEvents = 'none';
             }
 
-            runSimulation();
+            // 2. 霧散キャンバスの準備とアニメーション開始
+            const overlay = document.getElementById('transition-overlay');
+            const canvas = document.getElementById('dissolve-canvas');
+            const ctx = canvas.getContext('2d');
             
-            if (!lastSimulationData || lastSimulationData.length === 0) {
-                showToast("有効なシミュレーションデータがありません。", "error");
-                return;
+            // キャンバスサイズを現在の表示領域に同期
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // 粒子配列をクリアして初期化
+            particles = [];
+            for (let i = 0; i < 150; i++) {
+                particles.push(new GoldGrain(canvas.width, canvas.height));
             }
 
-            const currentAge = parseInt(document.getElementById('start-age').value) || 40;
-            const endAge = parseInt(document.getElementById('years').value) || 85;
-            const yearsRemaining = Math.max(endAge - currentAge, 1);
+            // アニメーションを駆動
+            if (dissolveAnimId) cancelAnimationFrame(dissolveAnimId);
+            animateDissolve(canvas, ctx);
 
-            const finalRecord = lastSimulationData[lastSimulationData.length - 1];
-            const totalRemainingYen = finalRecord.total; 
+            // オーバーレイを徐々にフェードインさせる (300ms)
+            overlay.classList.remove('pointer-events-none');
+            overlay.style.opacity = '1';
 
-            const msgBox = document.getElementById('dwz-message-box');
-            const adviceBox = document.getElementById('dwz-advice-text');
-            
-            const breakdownList = document.getElementById('dwz-breakdown-list');
-            breakdownList.innerHTML = '';
-            
-            const listItems = [
-                { name: '現金', val: finalRecord.cash, color: 'bg-slate-500' },
-                { name: '不動産', val: finalRecord.realestate, color: 'bg-rose-500' },
-                { name: '株式', val: finalRecord.stocks, color: 'bg-blue-500' },
-                { name: '投資信託', val: finalRecord.trust, color: 'bg-emerald-500' },
-                { name: '貴金属', val: finalRecord.metal, color: 'bg-amber-500' },
-                { name: '債券', val: finalRecord.bonds, color: 'bg-purple-500' }
-            ];
-
-            listItems.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center justify-between pb-1 border-b border-slate-800';
-                div.innerHTML = `
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full ${item.color}"></span>
-                        <span class="text-slate-400">${item.name}</span>
-                    </div>
-                    <span class="font-mono text-slate-100 font-bold">${formatAssetValue(item.val)}</span>
-                `;
-                breakdownList.appendChild(div);
-            });
-
-            // ⚠️ 現金ショートの有無およびショート年齢の判定
-            let cashShortageAge = null;
-            for (let i = 0; i < lastSimulationData.length; i++) {
-                if (lastSimulationData[i].cash < 0) {
-                    const ageMatch = lastSimulationData[i].yearLabel.match(/⚖️(\d+)歳/);
-                    if (ageMatch) {
-                        cashShortageAge = parseInt(ageMatch[1]);
-                    } else {
-                        cashShortageAge = currentAge + lastSimulationData[i].index;
-                    }
-                    break;
+            // 3. アニメーションが最高潮に達する1.1秒後にDWZ画面のデータ処理を行いビューを切り替え
+            setTimeout(() => {
+                runSimulation();
+                
+                if (!lastSimulationData || lastSimulationData.length === 0) {
+                    showToast("有効なシミュレーションデータがありません。", "error");
+                    overlay.style.opacity = '0';
+                    overlay.classList.add('pointer-events-none');
+                    cancelAnimationFrame(dissolveAnimId);
+                    return;
                 }
-            }
 
-            let advicePrefixHtml = '';
-            let dwzDisclaimer = '';
+                const currentAge = parseInt(document.getElementById('start-age').value) || 40;
+                const endAge = parseInt(document.getElementById('years').value) || 85;
+                const yearsRemaining = Math.max(endAge - currentAge, 1);
 
-            if (cashShortageAge !== null) {
-                advicePrefixHtml = `
-                    <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
-                        <span class="text-rose-400 text-lg mt-0.5">⚠️</span>
-                        <span>・このままでは、${cashShortageAge}歳で現金がショートして生活が成り立ちません。現金がショートする前に他の資産を売却するなどの策を講じた方がよいと思われます。</span>
-                    </div>
-                `;
-                dwzDisclaimer = '（仮に、現金がショートしたまま続けた場合ですが、）';
-            }
+                const finalRecord = lastSimulationData[lastSimulationData.length - 1];
+                const totalRemainingYen = finalRecord.total; 
 
-            if (totalRemainingYen < 0) {
-                let bankruptAge = endAge;
+                const msgBox = document.getElementById('dwz-message-box');
+                const adviceBox = document.getElementById('dwz-advice-text');
+                
+                const breakdownList = document.getElementById('dwz-breakdown-list');
+                breakdownList.innerHTML = '';
+                
+                const listItems = [
+                    { name: '現金', val: finalRecord.cash, color: 'bg-slate-500' },
+                    { name: '不動産', val: finalRecord.realestate, color: 'bg-rose-500' },
+                    { name: '株式', val: finalRecord.stocks, color: 'bg-blue-500' },
+                    { name: '投資信託', val: finalRecord.trust, color: 'bg-emerald-500' },
+                    { name: '貴金属', val: finalRecord.metal, color: 'bg-amber-500' },
+                    { name: '債券', val: finalRecord.bonds, color: 'bg-purple-500' }
+                ];
+
+                listItems.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center justify-between pb-1 border-b border-slate-800';
+                    div.innerHTML = `
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full ${item.color}"></span>
+                            <span class="text-slate-400">${item.name}</span>
+                        </div>
+                        <span class="font-mono text-slate-100 font-bold">${formatAssetValue(item.val)}</span>
+                    `;
+                    breakdownList.appendChild(div);
+                });
+
+                // 現金ショートの有無およびショート年齢の判定
+                let cashShortageAge = null;
                 for (let i = 0; i < lastSimulationData.length; i++) {
-                    if (lastSimulationData[i].total < 0) {
-                        bankruptAge = currentAge + lastSimulationData[i].index;
+                    if (lastSimulationData[i].cash < 0) {
+                        const ageMatch = lastSimulationData[i].yearLabel.match(/⚖️(\d+)歳/);
+                        if (ageMatch) {
+                            cashShortageAge = parseInt(ageMatch[1]);
+                        } else {
+                            cashShortageAge = currentAge + lastSimulationData[i].index;
+                        }
                         break;
                     }
                 }
 
-                const deficitAmt = Math.abs(totalRemainingYen);
-                const reduceSpendPerYear = Math.round(deficitAmt / yearsRemaining);
-                const reduceSpendPerMonth = Math.round(reduceSpendPerYear / 12);
+                let advicePrefixHtml = '';
+                let dwzDisclaimer = '';
 
-                const deficitText = formatAssetValue(deficitAmt);
-                const reduceYearText = formatAssetValue(reduceSpendPerYear);
-                const reduceMonthText = formatAssetValue(reduceSpendPerMonth);
-
-                msgBox.innerHTML = `
-                    ${advicePrefixHtml}
-                    ${dwzDisclaimer}現在の算盤では、あなたの資産は逝去される前の <span class="text-rose-400 font-black text-lg">${bankruptAge}歳</span> の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>
-                    最終的にシミュレーション終了年齢（<span class="text-amber-400 font-black">${endAge}歳</span>）に達した時点では、合計で <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">約${deficitText}</span> が【不足】する計算となります。<br><br>
-                    この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、年間支出を<br>
-                    <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${reduceYearText}／年</span> 
-                    （すなわち、月々約 <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${reduceMonthText}／月</span>）
-                    【減らさなければ】なりません。
-                `;
-
-                if (adviceBox) {
-                    adviceBox.innerHTML = `「兵糧が最期を前に尽きるは軍師として痛恨 of 痛恨（※）。生活 of ステージ支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
+                if (cashShortageAge !== null) {
+                    advicePrefixHtml = `
+                        <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
+                            <span class="text-rose-400 text-lg mt-0.5">⚠️</span>
+                            <span>・このままでは、${cashShortageAge}歳で現金がショートして生活が成り立ちません。現金がショートする前に他の資産を売却するなどの策を講じた方がよいと思われます。</span>
+                        </div>
+                    `;
+                    dwzDisclaimer = '（仮に、現金がショートしたまま続けた場合ですが、）';
                 }
-            } else {
-                const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
-                const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
 
-                const totalText = formatAssetValue(totalRemainingYen);
-                const yearText = formatAssetValue(additionalSpendPerYear);
-                const monthText = formatAssetValue(additionalSpendPerMonth);
+                if (totalRemainingYen < 0) {
+                    let bankruptAge = endAge;
+                    for (let i = 0; i < lastSimulationData.length; i++) {
+                        if (lastSimulationData[i].total < 0) {
+                            bankruptAge = currentAge + lastSimulationData[i].index;
+                            break;
+                        }
+                    }
 
-                msgBox.innerHTML = `
-                    ${advicePrefixHtml}
-                    ${dwzDisclaimer}現在の推定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
-                    <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${totalText}</span> を遺すことになります。<br><br>
-                    富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class="text-amber-400 font-extrabold">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、
-                    残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
-                    <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${yearText}／年</span> 
-                    （すなわち <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${monthText}／月</span>）
-                    【多く】使わなければなりません。
-                `;
+                    const deficitAmt = Math.abs(totalRemainingYen);
+                    const reduceSpendPerYear = Math.round(deficitAmt / yearsRemaining);
+                    const reduceSpendPerMonth = Math.round(reduceSpendPerYear / 12);
 
-                if (adviceBox) {
-                    adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは人生の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。」`;
+                    const deficitText = formatAssetValue(deficitAmt);
+                    const reduceYearText = formatAssetValue(reduceSpendPerYear);
+                    const reduceMonthText = formatAssetValue(reduceSpendPerMonth);
+
+                    msgBox.innerHTML = `
+                        ${advicePrefixHtml}
+                        ${dwzDisclaimer}現在の算盤では、あなたの資産は逝去される前の <span class="text-rose-400 font-black text-lg">${bankruptAge}歳</span> の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>
+                        最終的にシミュレーション終了年齢（<span class="text-amber-400 font-black">${endAge}歳</span>）に達した時点では、合計で <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">約${deficitText}</span> が【不足】する計算となります。<br><br>
+                        この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、年間支出を<br>
+                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${reduceYearText}／年</span> 
+                        （すなわち、月々約 <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${reduceMonthText}／月</span>）
+                        【減らさなければ】なりません。
+                    `;
+
+                    if (adviceBox) {
+                        adviceBox.innerHTML = `「兵糧が最期を前に尽きるは軍師として痛恨 of 痛恨（※）。生活 of ステージ支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
+                    }
+                } else {
+                    const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
+                    const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
+
+                    const totalText = formatAssetValue(totalRemainingYen);
+                    const yearText = formatAssetValue(additionalSpendPerYear);
+                    const monthText = formatAssetValue(additionalSpendPerMonth);
+
+                    msgBox.innerHTML = `
+                        ${advicePrefixHtml}
+                        ${dwzDisclaimer}現在の推定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
+                        <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${totalText}</span> を遺すことになります。<br><br>
+                        富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class="text-amber-400 font-extrabold">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、
+                        残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
+                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${yearText}／年</span> 
+                        （すなわち <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${monthText}／月</span>）
+                        【多く】使わなければなりません。
+                    `;
+
+                    if (adviceBox) {
+                        adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは人生の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。」`;
+                    }
                 }
-            }
 
-            document.getElementById('simulator-view').classList.add('hidden');
-            document.getElementById('dwz-view').classList.remove('hidden');
-            document.getElementById('dwz-view').classList.add('flex');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            showToast("💀 ダイ・ウィズ・ゼロ極限軍略診断を展開しました。");
+                // 表示の完全な切り替え
+                document.getElementById('simulator-view').classList.add('hidden');
+                document.getElementById('dwz-view').classList.remove('hidden');
+                document.getElementById('dwz-view').classList.add('flex');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // 4. 更に0.4秒後にパーティクルアニメーションを停止し、暗転を剥ぐ
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    overlay.classList.add('pointer-events-none');
+                    cancelAnimationFrame(dissolveAnimId);
+                    showToast("💀 ダイ・ウィズ・ゼロ極限軍略診断を展開しました。");
+                }, 400);
+
+            }, 1200); // 霧散している長さ
         }
 
         function backToSimulator() {
@@ -1640,6 +1765,15 @@
             const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
             document.getElementById('scenario-selector').value = lastScenario;
             applyScenario(lastScenario);
+            
+            // 画面リサイズ時にキャンバスをフィッティング
+            window.addEventListener('resize', () => {
+                const canvas = document.getElementById('dissolve-canvas');
+                if (canvas) {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+            });
         }
     </script>
 </body>
