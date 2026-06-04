@@ -6,7 +6,7 @@
     <meta name="robots" content="index, follow">
     <meta name="description" content="野村総合研究所の資産ピラミッドに準拠した、シンプルかつ超高性能な資産シミュレータ。あなたの未来のキャッシュフローを即座に可視化します。">
     <meta property="og:title" content="💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！） | 人生のキャッシュフロー軍略盤">
-    <meta property="og:description" content="純金融資産の階層別デフォルト値から、あなたの未来の資産推移を即座に計算。">
+    <meta property="og:description" content="純金融資産の階層別デフォルト値から、あなたの未来 of 資産推移を即座に計算。">
     <meta property="og:type" content="website">
 
     <title>💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！）</title>
@@ -198,7 +198,7 @@
                     <div class="border-t border-slate-100 pt-3">
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                                <i class="fa-solid fa-briefcase text-emerald-500"></i> 給与所得
+                                <i class="fa-solid fa-briefcase text-emerald-500"></i> 给与所得
                             </span>
                             <span class="text-[10px] text-slate-400">毎年、現金口座に加算</span>
                         </div>
@@ -389,7 +389,7 @@
                     <span class="text-3xl">💀</span>
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-amber-400">
-                            DIE WITH ZERO — 究極の生命燃焼警告 —
+                            DIE WITH ZERO — 生涯資金・完全使い切り警告 —
                         </h2>
                         <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5">The Army Counselor's Ultimate Strategy</p>
                     </div>
@@ -930,7 +930,7 @@
             const selectEl = document.getElementById('scenario-selector');
             const selectedText = selectEl.options[selectEl.selectedIndex].text;
             document.getElementById('scenario-input').value = selectedText;
-            localStorage.setItem('gemkin_active_scenario', scenario); // Save active scenario preference
+            localStorage.setItem('gemkin_active_scenario', scenario);
             applyScenario(scenario);
         }
 
@@ -980,7 +980,6 @@
                 const currentScenario = document.getElementById('scenario-selector').value;
                 const customName = document.getElementById('scenario-input').value;
                 
-                // 動的入力フィールドのユーザー入力値（value）をDOM属性に反映させ、innerHTMLが正確な値をキャプチャできるように同期
                 const containers = ['other-income-container', 'stage-container', 'income-container', 'expense-container'];
                 containers.forEach(id => {
                     const cont = document.getElementById(id);
@@ -1058,7 +1057,6 @@
             const currentName = document.getElementById('scenario-input').value || 'カスタム階層';
             titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${currentName}」の生涯キャッシュフロー`;
 
-            // 保存データが存在する場合はそれをロードして終了（デフォルト値の書き換えを防ぐ）
             if (loadFromLocalStorage(scenario)) {
                 runSimulation();
                 return;
@@ -1447,6 +1445,33 @@
                 breakdownList.appendChild(div);
             });
 
+            // ⚠️ [4] 現金ショートの有無およびショート年齢の判定
+            let cashShortageAge = null;
+            for (let i = 0; i < lastSimulationData.length; i++) {
+                if (lastSimulationData[i].cash < 0) {
+                    const ageMatch = lastSimulationData[i].yearLabel.match(/⚖️(\d+)歳/);
+                    if (ageMatch) {
+                        cashShortageAge = parseInt(ageMatch[1]);
+                    } else {
+                        cashShortageAge = currentAge + lastSimulationData[i].index;
+                    }
+                    break;
+                }
+            }
+
+            let advicePrefixHtml = '';
+            let dwzDisclaimer = '';
+
+            if (cashShortageAge !== null) {
+                advicePrefixHtml = `
+                    <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
+                        <span class="text-rose-400 text-lg mt-0.5">⚠️</span>
+                        <span>・このままでは、${cashShortageAge}歳で現金がショートして生活が成り立ちません。現金がショートする前に他の資産を売却するなどの策を講じた方がよいと思われます。</span>
+                    </div>
+                `;
+                dwzDisclaimer = '（仮に、現金がショートしたまま続けた場合ですが、）';
+            }
+
             if (totalRemainingYen < 0) {
                 let bankruptAge = endAge;
                 for (let i = 0; i < lastSimulationData.length; i++) {
@@ -1465,7 +1490,8 @@
                 const reduceMonthText = formatAssetValue(reduceSpendPerMonth);
 
                 msgBox.innerHTML = `
-                    現在の算盤では、あなたの資産は逝去される前の <span class="text-rose-400 font-black text-lg">${bankruptAge}歳</span> の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>
+                    ${advicePrefixHtml}
+                    ${dwzDisclaimer}現在の算盤では、あなたの資産は逝去される前の <span class="text-rose-400 font-black text-lg">${bankruptAge}歳</span> の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>
                     最終的にシミュレーション終了年齢（<span class="text-amber-400 font-black">${endAge}歳</span>）に達した時点では、合計で <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">約${deficitText}</span> が【不足】する計算となります。<br><br>
                     この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、年間支出を<br>
                     <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${reduceYearText}／年</span> 
@@ -1484,8 +1510,10 @@
                 const yearText = formatAssetValue(additionalSpendPerYear);
                 const monthText = formatAssetValue(additionalSpendPerMonth);
 
+                // 📝 [2] 「現在の予定では」から「現在の推定では」に変更、および [4] 免責記述の挿入
                 msgBox.innerHTML = `
-                    現在の予定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
+                    ${advicePrefixHtml}
+                    ${dwzDisclaimer}現在の推定では、あなたが亡くなるとき（＝シミュレーション終了年齢 <span class="text-amber-400 font-black">${endAge}歳</span>）に、
                     <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${totalText}</span> を遺すことになります。<br><br>
                     富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class="text-amber-400 font-extrabold">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、
                     残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、今よりも、<br>
@@ -1494,8 +1522,9 @@
                     【多く】使わなければなりません。
                 `;
 
+                // 📝 [3] 「軍師の恥辱」から「人生の恥辱」に変更
                 if (adviceBox) {
-                    adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは軍師の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。」`;
+                    adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは人生の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。」`;
                 }
             }
 
