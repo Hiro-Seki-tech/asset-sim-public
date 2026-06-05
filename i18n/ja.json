@@ -1,12 +1,9 @@
 {
-  "label_custom": "カスタム",
-  "title_graph_dynamic": "「{name}」の生涯キャッシュフロー",
-
   "meta_description": "野村総合研究所の資産ピラミッドに準拠した、シンプルかつ超高性能な資産シミュレータ。あなたの未来のキャッシュフローを即座に可視化します。",
   "og_title": "💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！） | 人性能キャッシュフロー軍略盤",
   "og_description": "純金融資産の階層別デフォルト値から、あなたの未来の資産推移を即座に計算。",
   "page_title": "💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！）",
-  "toast_message": "💎 未来が再計算されました！",
+  "toast_message": "通知メッセージ",
   "dissolve_message_en": "DISSOLVING ASSETS INTO EXPERIENCE...",
   "dissolve_message_ja": "砂時計の最後の一粒まで、悔いなく。",
   "tooltip_elapsed_years": "経過年次",
@@ -15,7 +12,6 @@
   "bubble_start_mobile": "試算開始！",
   "title_simulator": "資産・ライフシミュレータ",
   "badge_dwz": "（💀DIE WITH ZERO判定可能！）",
-  "header_description": "人生の軍略盤 — 日々の所得と生涯の生活費がリアルタイムに現金と連動する、あなただけの「人生の設計図」",
   "label_character_selection": "人物選択：",
   "opt_custom_input": "— 自由入力中 —",
   "opt_ultra_rich": "超富裕層（5億円以上）",
@@ -73,7 +69,7 @@
   "btn_add_metal_asset": "👑 貴金属追加",
   "btn_add_bond_asset": "📜 債券追加",
   "btn_recalculate": "各種設定で試算を実行",
-  "title_graph": "「準富裕層」の生涯キャッシュフロー",
+  "title_graph": "生涯キャッシュフロー",
   "desc_graph_tooltip_hint": "各プロット点にホバーすると資産割合(%)と額面（万円）が浮遊ポップアップします",
   "badge_cash_deficit_warning": "⚠️ 預金不足期間あり",
   "btn_save_settings": "💾 設定を保存",
@@ -91,12 +87,11 @@
   "th_bonds": "債券",
   "th_total_assets": "総資産",
   "footer_copyright": "© 2026 投資運用のジェムキン (Gemkin FinTech Lab). 無断転載及びハルシネーションはお断り申し上げます。",
+  "dwz-view": "",
   "dwz_alert_title": "DIE WITH ZERO !<br>— 生涯資金・完全使い切り警告 —",
   "dwz_strategy_sub_label": "The Army Counselor's Ultimate Strategy",
   "btn_return_to_sim": "シミュレータに戻る",
   "dwz_assets_portfolio_title": "逝去時の資産ポートフォリオ",
   "dwz_advisor_advice_title": "人生の軍師からのアドバイス",
-  "btn_re-plan_strategy": "資産・ライフプランシミュレータに戻って軍略を練り直す",
-  "btn_floating_dwz_check": "DIE WITH ZERO !",
-  "lbl_stage_title": "人生のステージ"
+  "btn_re-plan_strategy": "資産・ライフプランシミュレータに戻って軍略を練り直す"
 }
