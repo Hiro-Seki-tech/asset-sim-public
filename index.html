@@ -444,8 +444,6 @@
         </button>
     </div>
 
-    <script src="./js/i18n.js"></script>
-
     <script>
         let chartInstance = null;
         let tooltipPieChartInstance = null;
@@ -511,7 +509,7 @@
                 const noiseFilter = ctx.createBiquadFilter();
                 noiseFilter.type = 'bandpass';
                 noiseFilter.frequency.setValueAtTime(800, ctx.currentTime);
-                // 周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
+                // 周周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
                 noiseFilter.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + duration);
                 noiseFilter.Q.setValueAtTime(1.5, ctx.currentTime);
 
@@ -1008,6 +1006,7 @@
                     </div>
                     <div class="regular-invest-fields">
                         <label class="text-slate-400 block mb-0.5">月々積立 (万円/月)</label>
+                        <input type="number" class="asset-year-field" style="display:none;" value="${data.yearAmt || 0}">
                         <input type="number" class="asset-month-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.monthAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="grid grid-cols-5 items-center gap-1">
@@ -1790,5 +1789,7 @@
             });
         }
     </script>
+
+    <script src="./js/i18n.js"></script>
 </body>
 </html>
