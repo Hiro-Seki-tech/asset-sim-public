@@ -118,5 +118,10 @@
   "dynamic_asset_lbl_year": "Annual Invest (¥10k/y)",
   "dynamic_asset_lbl_month": "Monthly Invest (¥10k/m)",
   "dynamic_asset_lbl_buy_age": "Purchase Age",
-  "dynamic_asset_lbl_sell_age": "Sale Age"
+  "dynamic_asset_lbl_sell_age": "Sale Age",
+  "asset_type_realestate": "🏢 Property",
+  "asset_type_stocks": "📈 Stocks",
+  "asset_type_trust": "💼 Funds",
+  "asset_type_metal": "👑 Metals",
+  "asset_type_bonds": "📜 Bonds"
 }

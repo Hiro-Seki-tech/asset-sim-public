@@ -118,5 +118,10 @@
   "dynamic_asset_lbl_year": "年初投資 (万円/年)",
   "dynamic_asset_lbl_month": "月々積立 (万円/月)",
   "dynamic_asset_lbl_buy_age": "購入年齢",
-  "dynamic_asset_lbl_sell_age": "売却年齢"
+  "dynamic_asset_lbl_sell_age": "売却年齢",
+  "asset_type_realestate": "🏢 不動産",
+  "asset_type_stocks": "📈 株式",
+  "asset_type_trust": "💼 投資信託",
+  "asset_type_metal": "👑 貴金属",
+  "asset_type_bonds": "📜 債券"
 }
