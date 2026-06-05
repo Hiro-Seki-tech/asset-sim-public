@@ -12,7 +12,7 @@
     <title data-i18n="page_title">💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！）</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link class="ui-icon-pack" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; }
@@ -612,13 +612,13 @@
             const rows = document.querySelectorAll('.stage-row');
             let currentStart = startAge;
 
+            // 💡辞書の読み込み判定を追加（ステップ1-B：動的多言語化）
+            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+            const baseTitle = isEn ? (currentTranslations['dynamic_stage_title'] || 'Life Stage') : (currentTranslations['dynamic_stage_title'] || '人生のステージ');
+
             rows.forEach((row, index) => {
                 const titleSpan = row.querySelector('.stage-title');
                 if (titleSpan) {
-                    // 💡第1手修正：日本語・英語辞書からタイトルヘッダーを動的に自動生成
-                    const baseTitle = (typeof currentTranslations !== 'undefined' && currentTranslations['title_living_costs']) 
-                        ? currentTranslations['title_living_costs'].replace(/💸\s*/, '').split('（')[0].trim()
-                        : '人生のステージ';
                     titleSpan.innerHTML = `<i class="fa-solid fa-layer-group mr-1"></i>${baseTitle} ${romanNumerals[index] || (index + 1)}`;
                 }
                 
@@ -642,12 +642,12 @@
             const div = document.createElement('div');
             div.className = 'stage-row bg-rose-50/10 p-3 rounded-xl border border-rose-100/40 flex flex-col gap-2 text-[11px]';
             
-            // 💡第1手修正：動的追加フィールドのテキストパーツを現在の言語に同期
+            // 💡JavaScript直書きを完全撤去し、先ほど配備したJSON辞書から動的取得（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
-            const lblTo = isEn ? ' to ' : ' ～ ';
-            const lblAge = isEn ? ' years old' : ' 歳';
-            const lblBurn = isEn ? 'Expenses (Life Cost):' : '支出（人生の出費）:';
-            const lblUnit = isEn ? ' ¥10k/Year' : ' 万円/年';
+            const lblTo = isEn ? (currentTranslations['dynamic_lbl_to'] || ' to ') : (currentTranslations['dynamic_lbl_to'] || ' ～ ');
+            const lblAge = isEn ? (currentTranslations['dynamic_lbl_age'] || ' years old') : (currentTranslations['dynamic_lbl_age'] || ' 歳');
+            const lblBurn = isEn ? (currentTranslations['dynamic_lbl_burn'] || 'Expenses (Life Cost):') : (currentTranslations['dynamic_lbl_burn'] || '支出（人生の出費）:');
+            const lblUnit = isEn ? (currentTranslations['dynamic_lbl_unit_year'] || ' ¥10k/Year') : (currentTranslations['dynamic_lbl_unit_year'] || ' 万円/年');
 
             div.innerHTML = `
                 <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
@@ -678,19 +678,19 @@
             const div = document.createElement('div');
             div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡第1手修正：その他所得追加パーツの完全多言語化
+            // 💡JavaScript直書きを完全撤去し、先ほど配備したJSON辞書から動的取得（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
-            const defaultName = isEn ? "Pension" : name;
-            const lblName = isEn ? "Income Name" : "所得の名称";
-            const lblAmt = isEn ? "Amt (¥10k/y)" : "所得額(万/年)";
-            const lblStart = isEn ? "Start Age" : "開始年齢";
-            const lblEnd = isEn ? "End Age" : "終了年齢";
-            const lblTo = isEn ? "to" : "～";
+            const defaultName = isEn ? (currentTranslations['dynamic_lbl_pension_default'] || "Pension") : (currentTranslations['dynamic_lbl_pension_default'] || "年金");
+            const lblName = isEn ? (currentTranslations['dynamic_lbl_inc_name'] || "Income Name") : (currentTranslations['dynamic_lbl_inc_name'] || "所得の名称");
+            const lblAmt = isEn ? (currentTranslations['dynamic_lbl_inc_amt_year'] || "Amt (¥10k/y)") : (currentTranslations['dynamic_lbl_inc_amt_year'] || "所得額(万/年)");
+            const lblStart = isEn ? (currentTranslations['dynamic_lbl_start_age'] || "Start Age") : (currentTranslations['dynamic_lbl_start_age'] || "開始年齢");
+            const lblEnd = isEn ? (currentTranslations['dynamic_lbl_end_age'] || "End Age") : (currentTranslations['dynamic_lbl_end_age'] || "終了年齢");
+            const lblTo = isEn ? (currentTranslations['dynamic_lbl_to'] || "to") : (currentTranslations['dynamic_lbl_to'] || "～");
 
             div.innerHTML = `
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblName}</span>
-                    <input type="text" class="other-inc-name rounded border border-slate-200 p-1 font-semibold text-center" value="${defaultName}">
+                    <input type="text" class="other-inc-name rounded border border-slate-200 p-1 font-semibold text-center" value="${name === "年金" ? defaultName : name}">
                 </div>
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
@@ -716,13 +716,13 @@
             const div = document.createElement('div');
             div.className = 'income-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡第1手修正：臨時収入追加パーツの完全多言語化
+            // 💡JavaScript直書きを完全撤去し、先ほど配備したJSON辞書から動的取得（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
-            const defaultMemo = isEn ? "Retirement Bonus" : memo;
-            const lblMemo = isEn ? "Description" : "収入の名称";
-            const lblAge = isEn ? "Age" : "発生年齢";
-            const lblAmt = isEn ? "Amt (¥10k)" : "金額(万円)";
-            const lblTarget = isEn ? "Destination" : "入金先";
+            const defaultMemo = isEn ? (currentTranslations['dynamic_lbl_retire_default'] || "Retirement Bonus") : (currentTranslations['dynamic_lbl_retire_default'] || "退職金");
+            const lblMemo = isEn ? (currentTranslations['dynamic_lbl_memo'] || "Description") : (currentTranslations['dynamic_lbl_memo'] || "名称");
+            const lblAge = isEn ? (currentTranslations['dynamic_lbl_age_occur'] || "Age") : (currentTranslations['dynamic_lbl_age_occur'] || "発生年齢");
+            const lblAmt = isEn ? (currentTranslations['dynamic_lbl_amt_wan'] || "Amt (¥10k)") : (currentTranslations['dynamic_lbl_amt_wan'] || "金額(万円)");
+            const lblTarget = isEn ? (currentTranslations['dynamic_lbl_target'] || "Destination") : (currentTranslations['dynamic_lbl_target'] || "入金先");
             
             const optCash = isEn ? "Cash" : "現金";
             const optRE = isEn ? "Property" : "不動産";
@@ -734,7 +734,7 @@
             div.innerHTML = `
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblMemo}</span>
-                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="${defaultMemo}" placeholder="">
+                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="${memo === "退職金" ? defaultMemo : memo}" placeholder="">
                 </div>
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAge}</span>
@@ -766,17 +766,17 @@
             const div = document.createElement('div');
             div.className = 'expense-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡第1手修正：臨時出費追加パーツの完全多言語化
+            // 💡JavaScript直書きを完全撤去し、先ほど配備したJSON辞書から動的取得（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
-            const defaultMemo = isEn ? "Special Event" : memo;
-            const lblMemo = isEn ? "Description" : "出費の名称";
-            const lblAge = isEn ? "Age" : "発生年齢";
-            const lblAmt = isEn ? "Amt (¥10k)" : "金額(万円)";
+            const defaultMemo = isEn ? (currentTranslations['dynamic_lbl_event_default'] || "Special Event") : (currentTranslations['dynamic_lbl_event_default'] || "イベント出費");
+            const lblMemo = isEn ? (currentTranslations['dynamic_lbl_memo'] || "Description") : (currentTranslations['dynamic_lbl_memo'] || "名称");
+            const lblAge = isEn ? (currentTranslations['dynamic_lbl_age_occur'] || "Age") : (currentTranslations['dynamic_lbl_age_occur'] || "発生年齢");
+            const lblAmt = isEn ? (currentTranslations['dynamic_lbl_amt_wan'] || "Amt (¥10k)") : (currentTranslations['dynamic_lbl_amt_wan'] || "金額(万円)");
 
             div.innerHTML = `
                 <div class="col-span-4 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblMemo}</span>
-                    <input type="text" class="expense-memo rounded border border-slate-200 p-1 font-medium text-center" value="${defaultMemo}">
+                    <input type="text" class="expense-memo rounded border border-slate-200 p-1 font-medium text-center" value="${memo === "イベント出費" ? defaultMemo : memo}">
                 </div>
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAge}</span>
@@ -1099,7 +1099,14 @@
         function handleUserTypeInput() {
             const inputVal = document.getElementById('scenario-input').value || '名無し';
             const titleEl = document.getElementById('graph-title-element');
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${inputVal}」の生涯キャッシュフロー`;
+            
+            // 💡グラフのタイトルを現在の言語環境を自動検知して完璧に動的切り替え（ステップ1-B）
+            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+            if (isEn) {
+                titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow of "${inputVal}"`;
+            } else {
+                titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${inputVal}」の生涯キャッシュフロー`;
+            }
             document.getElementById('scenario-selector').value = 'custom';
         }
 
@@ -1142,7 +1149,12 @@
                 if (state.customName) {
                     document.getElementById('scenario-input').value = state.customName;
                     const titleEl = document.getElementById('graph-title-element');
-                    titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${state.customName}」の生涯キャッシュフロー`;
+                    const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+                    if (isEn) {
+                        titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow of "${state.customName}"`;
+                    } else {
+                        titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${state.customName}」の生涯キャッシュフロー`;
+                    }
                 }
                 
                 localStorage.setItem('gemkin_active_scenario', scenario);
@@ -1233,9 +1245,22 @@
 
             const titleEl = document.getElementById('graph-title-element');
             const currentName = document.getElementById('scenario-input').value || 'カスタム階層';
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${currentName}」の生涯キャッシュフロー`;
+            
+            // 💡初期化読み込み時の言語環境連動防衛（ステップ1-B：動的タイトル更新）
+            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+            if (isEn) {
+                titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow of "${currentName}"`;
+            } else {
+                titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${currentName}」の生涯キャッシュフロー`;
+            }
 
             if (loadFromLocalStorage(scenario)) {
+                const freshName = document.getElementById('scenario-input').value;
+                if (isEn) {
+                    titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow of "${freshName}"`;
+                } else {
+                    titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${freshName}」の生涯キャッシュフロー`;
+                }
                 runSimulation();
                 return;
             }
@@ -1249,16 +1274,16 @@
                 document.getElementById('init-cash').value = 15000;
                 document.getElementById('rate-cash').value = 0.2;
                 
-                addOtherIncomeRow("事業オーナー配当金", 2000, 50, 90);
+                addOtherIncomeRow(isEn ? "Business Owner Dividend" : "事業オーナー配当金", 2000, 50, 90);
                 addStageRow(3200, 70);   
                 addStageRow(2200, 90);  
-                addIncomeRow("海外不動産売却益", 65, 10000, "cash");
-                addExpenseRow("資産管理法人設立・海外移住費用", 55, 3000);
-                addExpenseRow("超高級有料シニアレジデンス前払入居金", 78, 12000);
+                addIncomeRow(isEn ? "Overseas Property Sale" : "海外不動産売却益", 65, 10000, "cash");
+                addExpenseRow(isEn ? "Asset Holding Corp / Relocation" : "資産管理法人設立・海外移住費用", 55, 3000);
+                addExpenseRow(isEn ? "Luxury Senior Residence Pre-entry" : "超高級有料シニアレジデンス前払入居金", 78, 12000);
                 
-                addAssetElement({ name: "米国プライベートエクイティ", type: "stocks", initAmt: 20000, rate: 8.0, yearAmt: 1000, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 85 });
-                addAssetElement({ name: "コアインデックス投信", type: "trust", initAmt: 15000, rate: 5.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 90 });
-                addAssetElement({ name: "金インゴット(現物)", type: "metal", initAmt: 5000, rate: 4.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 90 });
+                addAssetElement({ name: isEn ? "US Private Equity" : "米国プライベートエクイティ", type: "stocks", initAmt: 20000, rate: 8.0, yearAmt: 1000, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 85 });
+                addAssetElement({ name: isEn ? "Core Index Fund" : "コアインデックス投信", type: "trust", initAmt: 15000, rate: 5.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 90 });
+                addAssetElement({ name: isEn ? "Gold Bullion (Physical)" : "金インゴット(現物)", type: "metal", initAmt: 5000, rate: 4.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 90 });
 
             } else if (scenario === 'rich') {
                 document.getElementById('start-year').value = 2026;
@@ -1269,15 +1294,15 @@
                 document.getElementById('init-cash').value = 5000;
                 document.getElementById('rate-cash').value = 0.1;
                 
-                addOtherIncomeRow("未公開株配当等", 300, 45, 85);
+                addOtherIncomeRow(isEn ? "Unlisted Stock Dividend" : "未公開株配当等", 300, 45, 85);
                 addStageRow(1600, 65);
                 addStageRow(1100, 85);
-                addIncomeRow("役員退職慰労金", 60, 5000, "trust");
-                addExpenseRow("別荘購入費用", 50, 2000);
-                addExpenseRow("プライベートケア付き高級老人ホーム入居金", 75, 4500);
+                addIncomeRow(isEn ? "Executive Retirement Bonus" : "役員退職慰労金", 60, 5000, "trust");
+                addExpenseRow(isEn ? "Villa Purchase Cost" : "別荘購入費用", 50, 2000);
+                addExpenseRow(isEn ? "Premium Care Senior Home Entry" : "プライベートケア付き高級老人ホーム入居金", 75, 4500);
                 
-                addAssetElement({ name: "欧米高配当個別株", type: "stocks", initAmt: 6000, rate: 6.0, yearAmt: 200, monthAmt: 0, payout: "cashout", startAge: 45, endAge: 80 });
-                addAssetElement({ name: "世界分散ファンド", type: "trust", initAmt: 8000, rate: 4.5, yearAmt: 300, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 85 });
+                addAssetElement({ name: isEn ? "US/EU High Dividend Stocks" : "欧米高配当個別株", type: "stocks", initAmt: 6000, rate: 6.0, yearAmt: 200, monthAmt: 0, payout: "cashout", startAge: 45, endAge: 80 });
+                addAssetElement({ name: isEn ? "Global Diversified Fund" : "世界分散ファンド", type: "trust", initAmt: 8000, rate: 4.5, yearAmt: 300, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 85 });
 
             } else if (scenario === 'sub_rich') {
                 document.getElementById('start-year').value = 2026;
@@ -1288,15 +1313,15 @@
                 document.getElementById('init-cash').value = 2500;
                 document.getElementById('rate-cash').value = 0.1;
                 
-                addOtherIncomeRow("厚生・国民年金", 220, 65, 85);
+                addOtherIncomeRow(isEn ? "Public Pension" : "厚生・国民年金", 220, 65, 85);
                 addStageRow(800, 65);  
                 addStageRow(580, 85);   
-                addIncomeRow("大企業定年退職金", 65, 2000, "trust");
-                addExpenseRow("住宅ローン一括繰上返済", 50, 1500);
-                addExpenseRow("ケア付き有料シニアホーム保証前払金", 78, 2000);
+                addIncomeRow(isEn ? "Corporate Retirement Bonus" : "大企業定年退職金", 65, 2000, "trust");
+                addExpenseRow(isEn ? "Mortgage Lump-sum Repayment" : "住宅ローン一括繰上返済", 50, 1500);
+                addExpenseRow(isEn ? "Premium Senior Home Deposit" : "ケア付き有料シニアホーム保証前払金", 78, 2000);
                 
-                addAssetElement({ name: "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
-                addAssetElement({ name: "優良インデックス投信", type: "trust", initAmt: 3500, rate: 4.0, yearAmt: 120, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 85 });
+                addAssetElement({ name: isEn ? "Company Stock Ownership Plan" : "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
+                addAssetElement({ name: isEn ? "Global Index Fund" : "優良インデックス投信", type: "trust", initAmt: 3500, rate: 4.0, yearAmt: 120, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 85 });
 
             } else if (scenario === 'upper_mass') {
                 document.getElementById('start-year').value = 2026;
@@ -1307,14 +1332,14 @@
                 document.getElementById('init-cash').value = 1500;
                 document.getElementById('rate-cash').value = 0.1;
                 
-                addOtherIncomeRow("基礎・厚生年金", 180, 65, 85);
+                addOtherIncomeRow(isEn ? "Basic/Welfare Pension" : "基礎・厚生年金", 180, 65, 85);
                 addStageRow(550, 60);
                 addStageRow(420, 85);
-                addIncomeRow("中小企業退職金", 60, 1000, "cash");
-                addExpenseRow("子供の大学進学学費", 45, 400);
-                addExpenseRow("シニア世代向け自宅リフォーム・介護改修費用", 72, 800);
+                addIncomeRow(isEn ? "Mid-size Firm Retirement Bonus" : "中小企業退職金", 60, 1000, "cash");
+                addExpenseRow(isEn ? "Children's University Tuition" : "子供の大学進学学費", 45, 400);
+                addExpenseRow(isEn ? "Senior Home Renovation Cost" : "シニア世代向け自宅リフォーム・介護改修費用", 72, 800);
                 
-                addAssetElement({ name: "つみたて新NISA(オルカン)", type: "trust", initAmt: 2000, rate: 4.0, yearAmt: 0, monthAmt: 10, startAge: 35, endAge: 85 });
+                addAssetElement({ name: isEn ? "All Country Index Fund" : "つみたて新NISA(オルカン)", type: "trust", initAmt: 2000, rate: 4.0, yearAmt: 0, monthAmt: 10, startAge: 35, endAge: 85 });
 
             } else {
                 document.getElementById('start-year').value = 2026;
@@ -1325,14 +1350,14 @@
                 document.getElementById('init-cash').value = 600;
                 document.getElementById('rate-cash').value = 0.05;
                 
-                addOtherIncomeRow("老齢基礎年金", 130, 65, 85);
+                addOtherIncomeRow(isEn ? "Basic Old-Age Pension" : "老齢基礎年金", 130, 65, 85);
                 addStageRow(420, 65);
                 addStageRow(320, 85);
-                addIncomeRow("小規模退職一時金", 65, 500, "cash");
-                addExpenseRow("自動車買い替え費用", 40, 250);
-                addExpenseRow("後期高齢期バリアフリー改修・介護補助費用", 75, 400);
+                addIncomeRow(isEn ? "Small Scale Retirement Bonus" : "小規模退職一時金", 65, 500, "cash");
+                addExpenseRow(isEn ? "Car Replacement Cost" : "自動車買い替え費用", 40, 250);
+                addExpenseRow(isEn ? "Barrier-Free Renovation Cost" : "後期高齢期バリアフリー改修・介護補助費用", 75, 400);
                 
-                addAssetElement({ name: "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 85 });
+                addAssetElement({ name: isEn ? "Initial Saving Investment Fund" : "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 85 });
             }
             runSimulation();
         }
@@ -1790,6 +1815,7 @@
         }
     </script>
 
+    <!-- 💡すべてのシミュレータ設定が完了した直後に、多言語エンジンの網を起動させる絶対の順序 -->
     <script src="./js/i18n.js"></script>
 </body>
 </html>
