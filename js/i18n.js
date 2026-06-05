@@ -1,108 +1,69 @@
-/**
- * 💡性能キャッシュフロー軍略盤 - 多言語化制御中枢 (js/i18n.js)
- * 分割ファイル構成・GitHub Pages環境完全対応版
- */
-
-const SUPPORTED_LANGUAGES = ['ja', 'en'];
-const DEFAULT_LANGUAGE = 'ja';
-const STORAGE_KEY = 'gemkin_preferred_language';
-
+// 💡多言語翻訳エンジン基盤（将来の中国語・スペイン語拡張対応）
 let currentTranslations = {};
 
-/**
- * 選択された言語のJSONファイルを非同期取得する関数
- */
-async function loadTranslations(lang) {
+// 言語ファイルを非同期で読み込み、画面全体に網を張ったdata-i18n属性を書き換える関数
+async function switchLanguage(lang) {
     try {
         const response = await fetch(`./i18n/${lang}.json`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) throw new Error(`言語ファイルの読み込みに失敗: ${lang}`);
+        
         currentTranslations = await response.json();
+        
+        // 1. 静的UIテキストの書き換え（data-i18nを持つ全要素が対象）
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (currentTranslations[key] !== undefined) {
+                // metaタグやinputのプレースホルダー、通常のタグで処理を分岐
+                if (el.tagName === 'META') {
+                    if (el.hasAttribute('content')) el.setAttribute('content', currentTranslations[key]);
+                } else if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+                    el.setAttribute('placeholder', currentTranslations[key]);
+                } else {
+                    // HTMLタグ（spanなど）が含まれていても美しく描写できるようinnerHTMLで展開
+                    el.innerHTML = currentTranslations[key];
+                }
+            }
+        });
+
+        // 2. ブラウザのタブ名（ページタイトル）の更新
+        if (currentTranslations['page_title']) {
+            document.title = currentTranslations['page_title'];
+        }
+
+        // 3. グラフや動的UIの文字を言語に同期させるため再試算をキック
+        // （※初回ロード時など、シミュレータ側の関数が存在する場合のみ実行）
+        if (typeof runSimulation === 'function') {
+            // 人物選択の表記リフレッシュ
+            const scenario = document.getElementById('scenario-selector').value;
+            if (scenario !== 'custom') {
+                const selectEl = document.getElementById('scenario-selector');
+                document.getElementById('scenario-input').value = selectEl.options[selectEl.selectedIndex].text;
+            }
+            runSimulation();
+        }
+
+        // 現在の言語設定をブラウザに記憶
+        localStorage.setItem('gemkin_preferred_lang', lang);
+
     } catch (error) {
-        console.error(`[i18n] 翻訳ファイルの取得に失敗しました (${lang}):`, error);
-        currentTranslations = {};
+        console.error('多言語化エンジンの駆動エラー:', error);
     }
 }
 
-/**
- * DOM内の data-i18n 属性を持つ全要素に翻訳を流し込む関数
- */
-function applyTranslations() {
-    const elements = document.querySelectorAll('[data-i18n]');
-    
-    elements.forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (!key || !currentTranslations[key]) return;
+// ドキュメント読み込み完了時の初期化布陣
+document.addEventListener('DOMContentLoaded', () => {
+    const switcher = document.getElementById('languageSwitcher');
+    if (!switcher) return;
 
-        const translation = currentTranslations[key];
+    // ブラウザの記憶、または初期値として日本語（ja）を装填
+    const savedLang = localStorage.getItem('gemkin_preferred_lang') || 'ja';
+    switcher.value = savedLang;
 
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            if (el.hasAttribute('placeholder')) el.setAttribute('placeholder', translation);
-        } else if (el.tagName === 'META') {
-            if (el.hasAttribute('content')) el.setAttribute('content', translation);
-        } else if (el.tagName === 'OPTION') {
-            el.textContent = translation;
-        } else {
-            el.innerHTML = translation;
-        }
+    // 言語スイッチ変更時の迎撃トリガーを設定
+    switcher.addEventListener('change', (e) => {
+        switchLanguage(e.target.value);
     });
 
-    // グラフタイトルの動的翻訳
-    if (typeof window.runSimulation === 'function') {
-        const currentName = document.getElementById('scenario-input')?.value 
-            || currentTranslations["label_custom"];
-
-        const titleEl = document.getElementById('graph-title-element');
-        if (titleEl) {
-            const template = currentTranslations["title_graph_dynamic"];
-            titleEl.innerHTML = template.replace("{name}", currentName);
-        }
-
-        try {
-            window.runSimulation();
-        } catch (e) {
-            console.warn("[i18n] シミュレーション関数の先行呼び出しを回避しました。");
-        }
-    }
-}
-
-/**
- * 言語環境を切り替える主機能
- */
-async function switchLanguage(lang) {
-    if (!SUPPORTED_LANGUAGES.includes(lang)) lang = DEFAULT_LANGUAGE;
-    
-    await loadTranslations(lang);
-    applyTranslations();
-    localStorage.setItem(STORAGE_KEY, lang);
-    
-    const switcher = document.getElementById('languageSwitcher');
-    if (switcher) switcher.value = lang;
-}
-
-/**
- * HTML側のすべてのメインスクリプト読み込み後に起動
- */
-window.addEventListener('load', async () => {
-    const savedLang = localStorage.getItem(STORAGE_KEY);
-    const browserLang = navigator.language.split('-')[0];
-    
-    let targetLang = DEFAULT_LANGUAGE;
-    if (savedLang && SUPPORTED_LANGUAGES.includes(savedLang)) {
-        targetLang = savedLang;
-    } else if (SUPPORTED_LANGUAGES.includes(browserLang)) {
-        targetLang = browserLang;
-    }
-    
-    setTimeout(async () => {
-        await switchLanguage(targetLang);
-    }, 50);
-
-    const switcher = document.getElementById('languageSwitcher');
-    if (switcher) {
-        switcher.addEventListener('change', (e) => {
-            switchLanguage(e.target.value);
-        });
-    }
+    // 初期言語の展開
+    switchLanguage(savedLang);
 });
-
-window.gemkinSwitchLanguage = switchLanguage;
