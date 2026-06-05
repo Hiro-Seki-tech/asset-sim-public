@@ -123,5 +123,16 @@
   "asset_type_stocks": "📈 Stocks",
   "asset_type_trust": "💼 Funds",
   "asset_type_metal": "👑 Metals",
-  "asset_type_bonds": "📜 Bonds"
+  "asset_type_bonds": "📜 Bonds",
+  "tooltip_lbl_year_suffix": " Year",
+  "tooltip_lbl_year_wrapper": " ",
+  "tooltip_lbl_age_wrapper": "yo",
+  "tooltip_lbl_total_center": "Total Net",
+  "tooltip_lbl_prev_year_diff": "YoY Diff: ",
+  "tooltip_asset_cash": "Cash",
+  "tooltip_asset_realestate": "Property",
+  "tooltip_asset_stocks": "Stocks",
+  "tooltip_asset_trust": "Funds",
+  "tooltip_asset_metal": "Metals",
+  "tooltip_asset_bonds": "Bonds"
 }

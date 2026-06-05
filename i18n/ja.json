@@ -123,5 +123,16 @@
   "asset_type_stocks": "📈 株式",
   "asset_type_trust": "💼 投資信託",
   "asset_type_metal": "👑 貴金属",
-  "asset_type_bonds": "📜 債券"
+  "asset_type_bonds": "📜 債券",
+  "tooltip_lbl_year_suffix": "年目",
+  "tooltip_lbl_year_wrapper": "年",
+  "tooltip_lbl_age_wrapper": "歳",
+  "tooltip_lbl_total_center": "総資産",
+  "tooltip_lbl_prev_year_diff": "前年比: ",
+  "tooltip_asset_cash": "現 金",
+  "tooltip_asset_realestate": "不動産",
+  "tooltip_asset_stocks": "株 式",
+  "tooltip_asset_trust": "投資信託",
+  "tooltip_asset_metal": "貴金属",
+  "tooltip_asset_bonds": "債 券"
 }
