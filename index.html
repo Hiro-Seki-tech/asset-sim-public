@@ -12,7 +12,7 @@
     <title data-i18n="page_title">💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！）</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link class="ui-icon-pack" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; }
@@ -245,9 +245,11 @@
                             <span class="font-bold text-rose-700 text-xs flex items-center gap-1.5">
                                 <i class="fa-solid fa-circle-minus text-rose-500"></i> <span data-i18n="title_living_costs">💸 年間生活費（人生の出費）</span>
                             </span>
-                            <button type="button" onclick="addStageRow()" class="px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded hover:bg-rose-100 transition-colors" data-i18n="btn_add_stage">
-                                ＋ ステージ追加
-                            </button>
+                            <span id="p-add-stage-clicker-wrap">
+                                <button type="button" onclick="addStageRow()" class="px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded hover:bg-rose-100 transition-colors" data-i18n="btn_add_stage">
+                                    ＋ ステージ追加
+                                </button>
+                            </span>
                         </div>
                         <div id="stage-container" class="flex flex-col gap-3 max-h-72 overflow-y-auto custom-scrollbar pr-1"></div>
                     </div>
@@ -444,6 +446,8 @@
         </button>
     </div>
 
+    <script src="./js/i18n.js"></script>
+
     <script>
         let chartInstance = null;
         let tooltipPieChartInstance = null;
@@ -509,7 +513,7 @@
                 const noiseFilter = ctx.createBiquadFilter();
                 noiseFilter.type = 'bandpass';
                 noiseFilter.frequency.setValueAtTime(800, ctx.currentTime);
-                // 周周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
+                // 周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
                 noiseFilter.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + duration);
                 noiseFilter.Q.setValueAtTime(1.5, ctx.currentTime);
 
@@ -612,7 +616,6 @@
             const rows = document.querySelectorAll('.stage-row');
             let currentStart = startAge;
 
-            // 💡辞書の読み込み判定を追加（ステップ1-B：動的多言語化）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const baseTitle = isEn ? (currentTranslations['dynamic_stage_title'] || 'Life Stage') : (currentTranslations['dynamic_stage_title'] || '人生のステージ');
 
@@ -642,7 +645,6 @@
             const div = document.createElement('div');
             div.className = 'stage-row bg-rose-50/10 p-3 rounded-xl border border-rose-100/40 flex flex-col gap-2 text-[11px]';
             
-            // 💡JavaScript直書きを完全撤去し、先ほど配備したJSON辞書から動的取得（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const lblTo = isEn ? (currentTranslations['dynamic_lbl_to'] || ' to ') : (currentTranslations['dynamic_lbl_to'] || ' ～ ');
             const lblAge = isEn ? (currentTranslations['dynamic_lbl_age'] || ' years old') : (currentTranslations['dynamic_lbl_age'] || ' 歳');
@@ -678,7 +680,6 @@
             const div = document.createElement('div');
             div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡JavaScript直書きを完全撤去し、先ほど配備したJSON辞書から動的取得（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultName = isEn ? (currentTranslations['dynamic_lbl_pension_default'] || "Pension") : (currentTranslations['dynamic_lbl_pension_default'] || "年金");
             const lblName = isEn ? (currentTranslations['dynamic_lbl_inc_name'] || "Income Name") : (currentTranslations['dynamic_lbl_inc_name'] || "所得の名称");
@@ -716,7 +717,6 @@
             const div = document.createElement('div');
             div.className = 'income-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡JavaScript直書きを完全撤去し、先ほど配備したJSON辞書から動的取得（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? (currentTranslations['dynamic_lbl_retire_default'] || "Retirement Bonus") : (currentTranslations['dynamic_lbl_retire_default'] || "退職金");
             const lblMemo = isEn ? (currentTranslations['dynamic_lbl_memo'] || "Description") : (currentTranslations['dynamic_lbl_memo'] || "名称");
@@ -766,7 +766,6 @@
             const div = document.createElement('div');
             div.className = 'expense-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡JavaScript直書きを完全撤去し、先ほど配備したJSON辞書から動的取得（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? (currentTranslations['dynamic_lbl_event_default'] || "Special Event") : (currentTranslations['dynamic_lbl_event_default'] || "イベント出費");
             const lblMemo = isEn ? (currentTranslations['dynamic_lbl_memo'] || "Description") : (currentTranslations['dynamic_lbl_memo'] || "名称");
@@ -861,7 +860,7 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         cutout: '72%',
-                        plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                        plugins: { legend: { position: 'top' }, tooltip: { enabled: false } }
                     }
                 });
             }
@@ -973,6 +972,18 @@
 
             const typeLabelText = { realestate: '🏢 不動産', stocks: '📈 株式', trust: '💼 投資信託', metal: '👑 貴金属', bonds: '📜 債券' }[data.type];
 
+            // 💡個別投資アセット内の固定ラベル群をJSON辞書から動的引き当てに変形（ステップ1-B補修）
+            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+            const lblInit = isEn ? (currentTranslations['dynamic_asset_lbl_init'] || "Initial Amt") : (currentTranslations['dynamic_asset_lbl_init'] || "初期/購入額 (万円)");
+            const lblRate = isEn ? (currentTranslations['dynamic_asset_lbl_rate'] || "Est. Rate") : (currentTranslations['dynamic_asset_lbl_rate'] || "想定年利 (%)");
+            const lblPayout = isEn ? (currentTranslations['dynamic_asset_lbl_payout'] || "Payout Type") : (currentTranslations['dynamic_asset_lbl_payout'] || "利益受取");
+            const lblReinvest = isEn ? (currentTranslations['dynamic_asset_lbl_reinvest'] || "Reinvest") : (currentTranslations['dynamic_asset_lbl_reinvest'] || "再投資");
+            const lblCashout = isEn ? (currentTranslations['dynamic_asset_lbl_cashout'] || "Cash Out") : (currentTranslations['dynamic_asset_lbl_cashout'] || "現金受取");
+            const lblYear = isEn ? (currentTranslations['dynamic_asset_lbl_year'] || "Annual Invest") : (currentTranslations['dynamic_asset_lbl_year'] || "年初投資 (万円/年)");
+            const lblMonth = isEn ? (currentTranslations['dynamic_asset_lbl_month'] || "Monthly Invest") : (currentTranslations['dynamic_asset_lbl_month'] || "月々積立 (万円/月)");
+            const lblBuyAge = isEn ? (currentTranslations['dynamic_asset_lbl_buy_age'] || "Buy Age") : (currentTranslations['dynamic_asset_lbl_buy_age'] || "購入年齢");
+            const lblSellAge = isEn ? (currentTranslations['dynamic_asset_lbl_sell_age'] || "Sell Age") : (currentTranslations['dynamic_asset_lbl_sell_age'] || "売却年齢");
+
             div.innerHTML = `
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                     <div class="flex items-center gap-2">
@@ -986,37 +997,37 @@
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[10px]">
                     <div>
-                        <label class="text-slate-400 block mb-0.5">初期/購入額 (万円)</label>
+                        <label class="text-slate-400 block mb-0.5">${lblInit}</label>
                         <input type="number" class="asset-init-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.initAmt}" oninput="runSimulation();">
                     </div>
                     <div>
-                        <label class="text-slate-400 block mb-0.5">想定年利 (%)</label>
+                        <label class="text-slate-400 block mb-0.5">${lblRate}</label>
                         <input type="number" class="asset-rate-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.rate}" step="0.1" oninput="runSimulation();">
                     </div>
                     <div>
-                        <label class="text-slate-400 block mb-0.5">利益受取</label>
+                        <label class="text-slate-400 block mb-0.5">${lblPayout}</label>
                         <select class="asset-payout-field w-full rounded border border-slate-200 p-1 bg-white font-semibold" onchange="runSimulation();">
-                            <option value="reinvest" ${data.payout === 'reinvest' ? 'selected' : ''}>再投資</option>
-                            <option value="cashout" ${data.payout === 'cashout' ? 'selected' : ''}>現金受取</option>
+                            <option value="reinvest" ${data.payout === 'reinvest' ? 'selected' : ''}>${lblReinvest}</option>
+                            <option value="cashout" ${data.payout === 'cashout' ? 'selected' : ''}>${lblCashout}</option>
                         </select>
                     </div>
                     <div class="regular-invest-fields">
-                        <label class="text-slate-400 block mb-0.5">年初投資 (万円/年)</label>
+                        <label class="text-slate-400 block mb-0.5">${lblYear}</label>
                         <input type="number" class="asset-year-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.yearAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="regular-invest-fields">
-                        <label class="text-slate-400 block mb-0.5">月々積立 (万円/月)</label>
+                        <label class="text-slate-400 block mb-0.5">${lblMonth}</label>
                         <input type="number" class="asset-year-field" style="display:none;" value="${data.yearAmt || 0}">
                         <input type="number" class="asset-month-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.monthAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="grid grid-cols-5 items-center gap-1">
                         <div class="col-span-2">
-                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">購入年齢</label>
+                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">${lblBuyAge}</label>
                             <input type="number" class="asset-start-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.startAge}" oninput="runSimulation();">
                         </div>
                         <span class="col-span-1 text-center text-slate-400 mt-3 font-bold">-</span>
                         <div class="col-span-2">
-                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">売却年齢</label>
+                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">${lblSellAge}</label>
                             <input type="number" class="asset-end-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.endAge}" oninput="runSimulation();">
                         </div>
                     </div>
@@ -1100,7 +1111,6 @@
             const inputVal = document.getElementById('scenario-input').value || '名無し';
             const titleEl = document.getElementById('graph-title-element');
             
-            // 💡グラフのタイトルを現在の言語環境を自動検知して完璧に動的切り替え（ステップ1-B）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             if (isEn) {
                 titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow of "${inputVal}"`;
@@ -1246,7 +1256,6 @@
             const titleEl = document.getElementById('graph-title-element');
             const currentName = document.getElementById('scenario-input').value || 'カスタム階層';
             
-            // 💡初期化読み込み時の言語環境連動防衛（ステップ1-B：動的タイトル更新）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             if (isEn) {
                 titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow of "${currentName}"`;
@@ -1814,8 +1823,5 @@
             });
         }
     </script>
-
-    <!-- 💡すべてのシミュレータ設定が完了した直後に、多言語エンジンの網を起動させる絶対の順序 -->
-    <script src="./js/i18n.js"></script>
 </body>
 </html>
