@@ -109,5 +109,14 @@
   "dynamic_lbl_memo": "名称",
   "dynamic_lbl_age_occur": "発生年齢",
   "dynamic_lbl_amt_wan": "金額(万円)",
-  "dynamic_lbl_target": "入金先"
+  "dynamic_lbl_target": "入金先",
+  "dynamic_asset_lbl_init": "初期/購入額 (万円)",
+  "dynamic_asset_lbl_rate": "想定年利 (%)",
+  "dynamic_asset_lbl_payout": "利益受取",
+  "dynamic_asset_lbl_reinvest": "再投資",
+  "dynamic_asset_lbl_cashout": "現金受取",
+  "dynamic_asset_lbl_year": "年初投資 (万円/年)",
+  "dynamic_asset_lbl_month": "月々積立 (万円/月)",
+  "dynamic_asset_lbl_buy_age": "購入年齢",
+  "dynamic_asset_lbl_sell_age": "売却年齢"
 }

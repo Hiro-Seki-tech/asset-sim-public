@@ -109,5 +109,14 @@
   "dynamic_lbl_memo": "Description",
   "dynamic_lbl_age_occur": "Age",
   "dynamic_lbl_amt_wan": "Amt (¥10k)",
-  "dynamic_lbl_target": "Destination"
+  "dynamic_lbl_target": "Destination",
+  "dynamic_asset_lbl_init": "Initial Amt (¥10k)",
+  "dynamic_asset_lbl_rate": "Est. Annual Rate (%)",
+  "dynamic_asset_lbl_payout": "Payout Type",
+  "dynamic_asset_lbl_reinvest": "Reinvest",
+  "dynamic_asset_lbl_cashout": "Cash Out",
+  "dynamic_asset_lbl_year": "Annual Invest (¥10k/y)",
+  "dynamic_asset_lbl_month": "Monthly Invest (¥10k/m)",
+  "dynamic_asset_lbl_buy_age": "Purchase Age",
+  "dynamic_asset_lbl_sell_age": "Sale Age"
 }
