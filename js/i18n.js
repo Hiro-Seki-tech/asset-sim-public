@@ -14,11 +14,8 @@ let currentTranslations = {};
  */
 async function loadTranslations(lang) {
     try {
-        // HTML側から見た「i18n」フォルダへの正確な相対ルート
         const response = await fetch(`./i18n/${lang}.json`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         currentTranslations = await response.json();
     } catch (error) {
         console.error(`[i18n] 翻訳ファイルの取得に失敗しました (${lang}):`, error);
@@ -39,13 +36,9 @@ function applyTranslations() {
         const translation = currentTranslations[key];
 
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            if (el.hasAttribute('placeholder')) {
-                el.setAttribute('placeholder', translation);
-            }
+            if (el.hasAttribute('placeholder')) el.setAttribute('placeholder', translation);
         } else if (el.tagName === 'META') {
-            if (el.hasAttribute('content')) {
-                el.setAttribute('content', translation);
-            }
+            if (el.hasAttribute('content')) el.setAttribute('content', translation);
         } else if (el.tagName === 'OPTION') {
             el.textContent = translation;
         } else {
@@ -53,18 +46,17 @@ function applyTranslations() {
         }
     });
 
-    // 💡重要：HTML側のメイン関数（runSimulation）が存在している場合のみ連動させる安全弁
+    // グラフタイトルの動的翻訳
     if (typeof window.runSimulation === 'function') {
-        const currentName = document.getElementById('scenario-input')?.value || 'カスタム';
+        const currentName = document.getElementById('scenario-input')?.value 
+            || currentTranslations["label_custom"];
+
         const titleEl = document.getElementById('graph-title-element');
-        const currentLang = localStorage.getItem(STORAGE_KEY) || DEFAULT_LANGUAGE;
-        
         if (titleEl) {
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> ` + 
-                (currentLang === 'en' ? `Lifetime Cash Flow for "${currentName}"` : `「${currentName}」の生涯キャッシュフロー`);
+            const template = currentTranslations["title_graph_dynamic"];
+            titleEl.innerHTML = template.replace("{name}", currentName);
         }
-        
-        // メインプログラムの初期化完了を確認して連動
+
         try {
             window.runSimulation();
         } catch (e) {
@@ -84,13 +76,11 @@ async function switchLanguage(lang) {
     localStorage.setItem(STORAGE_KEY, lang);
     
     const switcher = document.getElementById('languageSwitcher');
-    if (switcher) {
-        switcher.value = lang;
-    }
+    if (switcher) switcher.value = lang;
 }
 
 /**
- * 💡修正：HTML側のすべてのメインスクリプト読み込みが完了（load）した後に安全に起動させる
+ * HTML側のすべてのメインスクリプト読み込み後に起動
  */
 window.addEventListener('load', async () => {
     const savedLang = localStorage.getItem(STORAGE_KEY);
@@ -103,7 +93,6 @@ window.addEventListener('load', async () => {
         targetLang = browserLang;
     }
     
-    // window.onload側の初期試算と衝突せぬよう、僅かに遅延を入れて結合
     setTimeout(async () => {
         await switchLanguage(targetLang);
     }, 50);
