@@ -93,5 +93,21 @@
   "btn_return_to_sim": "シミュレータに戻る",
   "dwz_assets_portfolio_title": "逝去時の資産ポートフォリオ",
   "dwz_advisor_advice_title": "人生の軍師からのアドバイス",
-  "btn_re-plan_strategy": "資産・ライフプランシミュレータに戻って軍略を練り直す"
+  "btn_re-plan_strategy": "資産・ライフプランシミュレータに戻って軍略を練り直す",
+  "dynamic_stage_title": "人生のステージ",
+  "dynamic_lbl_to": " ～ ",
+  "dynamic_lbl_age": " 歳",
+  "dynamic_lbl_burn": "支出（人生の出費）:",
+  "dynamic_lbl_unit_year": " 万円/年",
+  "dynamic_lbl_pension_default": "年金",
+  "dynamic_lbl_inc_name": "所得の名称",
+  "dynamic_lbl_inc_amt_year": "所得額(万/年)",
+  "dynamic_lbl_start_age": "開始年齢",
+  "dynamic_lbl_end_age": "終了年齢",
+  "dynamic_lbl_retire_default": "退職金",
+  "dynamic_lbl_event_default": "イベント出費",
+  "dynamic_lbl_memo": "名称",
+  "dynamic_lbl_age_occur": "発生年齢",
+  "dynamic_lbl_amt_wan": "金額(万円)",
+  "dynamic_lbl_target": "入金先"
 }

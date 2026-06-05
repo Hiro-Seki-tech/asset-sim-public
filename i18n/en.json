@@ -93,5 +93,21 @@
   "btn_return_to_sim": "Return to Simulator",
   "dwz_assets_portfolio_title": "Asset Portfolio at Passing",
   "dwz_advisor_advice_title": "Advice from the Military Counselor",
-  "btn_re-plan_strategy": "Return to Asset & Life Simulator to Re-plan Strategy"
+  "btn_re-plan_strategy": "Return to Asset & Life Simulator to Re-plan Strategy",
+  "dynamic_stage_title": "Life Stage",
+  "dynamic_lbl_to": " to ",
+  "dynamic_lbl_age": " years old",
+  "dynamic_lbl_burn": "Expenses (Life Cost):",
+  "dynamic_lbl_unit_year": " ¥10k/Year",
+  "dynamic_lbl_pension_default": "Pension",
+  "dynamic_lbl_inc_name": "Income Name",
+  "dynamic_lbl_inc_amt_year": "Amt (¥10k/y)",
+  "dynamic_lbl_start_age": "Start Age",
+  "dynamic_lbl_end_age": "End Age",
+  "dynamic_lbl_retire_default": "Retirement Bonus",
+  "dynamic_lbl_event_default": "Special Event",
+  "dynamic_lbl_memo": "Description",
+  "dynamic_lbl_age_occur": "Age",
+  "dynamic_lbl_amt_wan": "Amt (¥10k)",
+  "dynamic_lbl_target": "Destination"
 }
