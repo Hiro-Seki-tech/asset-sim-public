@@ -245,11 +245,9 @@
                             <span class="font-bold text-rose-700 text-xs flex items-center gap-1.5">
                                 <i class="fa-solid fa-circle-minus text-rose-500"></i> <span data-i18n="title_living_costs">💸 年間生活費（人生の出費）</span>
                             </span>
-                            <span id="p-add-stage-clicker-wrap">
-                                <button type="button" onclick="addStageRow()" class="px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded hover:bg-rose-100 transition-colors" data-i18n="btn_add_stage">
-                                    ＋ ステージ追加
-                                </button>
-                            </span>
+                            <button type="button" onclick="addStageRow()" class="px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded hover:bg-rose-100 transition-colors" data-i18n="btn_add_stage">
+                                ＋ ステージ追加
+                            </button>
                         </div>
                         <div id="stage-container" class="flex flex-col gap-3 max-h-72 overflow-y-auto custom-scrollbar pr-1"></div>
                     </div>
@@ -591,7 +589,7 @@
         function animateDissolve(canvas, ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 毎フレーム一定の黄金の粒子を注入
+            // 毎フレーム一定 of 黄金の粒子を注入
             if (particles.length < 250) {
                 for (let i = 0; i < 6; i++) {
                     particles.push(new GoldGrain(canvas.width, canvas.height));
@@ -970,10 +968,12 @@
                 if (type === 'bonds') div.classList.add('border-purple-500');
             };
 
-            const typeLabelText = { realestate: '🏢 不動産', stocks: '📈 株式', trust: '💼 投資信託', metal: '👑 貴金属', bonds: '📜 債券' }[data.type];
-
-            // 💡個別投資アセット内の固定ラベル群をJSON辞書から動的引き当てに変形（ステップ1-B補修）
+            // 💡アセットのタイプ名も辞書から美しく裏返るように変更（ステップ1-C）
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+            const typeLabelText = isEn 
+                ? (currentTranslations['asset_type_' + data.type] || data.type)
+                : (currentTranslations['asset_type_' + data.type] || data.type);
+
             const lblInit = isEn ? (currentTranslations['dynamic_asset_lbl_init'] || "Initial Amt") : (currentTranslations['dynamic_asset_lbl_init'] || "初期/購入額 (万円)");
             const lblRate = isEn ? (currentTranslations['dynamic_asset_lbl_rate'] || "Est. Rate") : (currentTranslations['dynamic_asset_lbl_rate'] || "想定年利 (%)");
             const lblPayout = isEn ? (currentTranslations['dynamic_asset_lbl_payout'] || "Payout Type") : (currentTranslations['dynamic_asset_lbl_payout'] || "利益受取");
@@ -1129,6 +1129,7 @@
             applyScenario(scenario);
         }
 
+        // 💡復元ロジックを言語と連動するように調律（ステップ1-C：復元エンジンの大改修）
         function loadFromLocalStorage(scenario) {
             try {
                 const saved = localStorage.getItem('gemkin_unrivaled_config_' + scenario);
@@ -1143,10 +1144,35 @@
                 document.getElementById('init-cash').value = state.initCash;
                 document.getElementById('rate-cash').value = state.rateCash;
                 
-                document.getElementById('other-income-container').innerHTML = state.otherIncomeHTML || '';
-                document.getElementById('stage-container').innerHTML = state.stageHTML || '';
-                document.getElementById('income-container').innerHTML = state.incomeHTML || '';
-                document.getElementById('expense-container').innerHTML = state.expenseHTML || '';
+                // HTMLごと復元するのではなく、中身のデータを配列として復元し、
+                // 翻訳後の新しいHTMLテンプレートで画面に綺麗に流し込み直すことで、日本語居残りを完全根絶！
+                document.getElementById('other-income-container').innerHTML = '';
+                if (state.otherIncomesList && Array.isArray(state.otherIncomesList)) {
+                    state.otherIncomesList.forEach(item => addOtherIncomeRow(item.name, item.amount, item.start, item.end));
+                } else {
+                    document.getElementById('other-income-container').innerHTML = state.otherIncomeHTML || '';
+                }
+
+                document.getElementById('stage-container').innerHTML = '';
+                if (state.stagesList && Array.isArray(state.stagesList)) {
+                    state.stagesList.forEach(item => addStageRow(item.amount, item.endAge));
+                } else {
+                    document.getElementById('stage-container').innerHTML = state.stageHTML || '';
+                }
+
+                document.getElementById('income-container').innerHTML = '';
+                if (state.extraIncomesList && Array.isArray(state.extraIncomesList)) {
+                    state.extraIncomesList.forEach(item => addIncomeRow(item.memo, item.age, item.amount, item.target));
+                } else {
+                    document.getElementById('income-container').innerHTML = state.incomeHTML || '';
+                }
+
+                document.getElementById('expense-container').innerHTML = '';
+                if (state.extraExpensesList && Array.isArray(state.extraExpensesList)) {
+                    state.extraExpensesList.forEach(item => addExpenseRow(item.memo, item.age, item.amount));
+                } else {
+                    document.getElementById('expense-container').innerHTML = state.expenseHTML || '';
+                }
                 
                 const container = document.getElementById('dynamic-assets-container');
                 container.innerHTML = '';
@@ -1170,33 +1196,17 @@
                 localStorage.setItem('gemkin_active_scenario', scenario);
                 return true;
             } catch(e) {
-                console.error("ロードに失敗しました:", e);
+                console.error("記憶データの展開に失敗しました:", e);
                 return false;
             }
         }
 
+        // 💡保存ロジックに完全なオブジェクトデータ構造を追加配備（ステップ1-C）
         function saveToLocalStorage() {
             try {
                 const currentScenario = document.getElementById('scenario-selector').value;
                 const customName = document.getElementById('scenario-input').value;
                 
-                const containers = ['other-income-container', 'stage-container', 'income-container', 'expense-container'];
-                containers.forEach(id => {
-                    const cont = document.getElementById(id);
-                    if (cont) {
-                        cont.querySelectorAll('input, select').forEach(el => {
-                            if (el.tagName === 'SELECT') {
-                                Array.from(el.options).forEach(opt => {
-                                    if (opt.value === el.value) opt.setAttribute('selected', 'selected');
-                                    else opt.removeAttribute('selected');
-                                });
-                            } else {
-                                el.setAttribute('value', el.value);
-                            }
-                        });
-                    }
-                });
-
                 const state = {
                     customName: customName,
                     startYear: document.getElementById('start-year').value,
@@ -1206,10 +1216,30 @@
                     salaryLimit: document.getElementById('salary-limit').value,
                     initCash: document.getElementById('init-cash').value,
                     rateCash: document.getElementById('rate-cash').value,
-                    otherIncomeHTML: document.getElementById('other-income-container').innerHTML,
-                    stageHTML: document.getElementById('stage-container').innerHTML,
-                    incomeHTML: document.getElementById('income-container').innerHTML,
-                    expenseHTML: document.getElementById('expense-container').innerHTML,
+                    
+                    // 💡後からの多言語リロードに耐える高密度データ配列を一緒に内包
+                    otherIncomesList: Array.from(document.querySelectorAll('.other-income-row')).map(row => ({
+                        name: row.querySelector('.other-inc-name').value,
+                        amount: row.querySelector('.other-inc-amount').value,
+                        start: row.querySelector('.other-inc-start').value,
+                        end: row.querySelector('.other-inc-end').value
+                    })),
+                    stagesList: Array.from(document.querySelectorAll('.stage-row')).map(row => ({
+                        amount: row.querySelector('.stage-amount').value,
+                        endAge: row.querySelector('.stage-end').value
+                    })),
+                    extraIncomesList: Array.from(document.querySelectorAll('.income-row')).map(row => ({
+                        memo: row.querySelector('.income-memo').value,
+                        age: row.querySelector('.income-age').value,
+                        amount: row.querySelector('.income-amount').value,
+                        target: row.querySelector('.income-target').value
+                    })),
+                    extraExpensesList: Array.from(document.querySelectorAll('.expense-row')).map(row => ({
+                        memo: row.querySelector('.expense-memo').value,
+                        age: row.querySelector('.expense-age').value,
+                        amount: row.querySelector('.expense-amount').value
+                    })),
+
                     assets: Array.from(document.querySelectorAll('.asset-card')).map(card => ({
                         name: card.querySelector('.asset-name-field').value,
                         type: card.querySelector('.asset-type-field').value,
