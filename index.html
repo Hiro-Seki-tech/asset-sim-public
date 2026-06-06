@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -400,7 +401,7 @@
                     <span class="text-3xl">💀</span>
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-amber-400" data-i18n="dwz_alert_title">
-                            DIE WITH ZERO !<br>— 生涯資金・完全使い切り警告 —
+                            DIE WITH ZERO !<br>— 生涯資産・完全使い切り警告 —
                         </h2>
                         <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5" data-i18n="dwz_strategy_sub_label">The Army Counselor's Ultimate Strategy</p>
                     </div>
@@ -1658,10 +1659,10 @@
                     advicePrefixHtml = `
                         <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
                             <span>⚠️</span>
-                            <span>このままでは、${cashShortageAge}歳で現金が不足して生活が成り立ちません。現金が不足する前に他の資産を売却するなどの策を講じた方がよいと思われます。</span>
+                            <span>このままでは、${cashShortageAge}歳で現金（キャッシュ）が不足して生活が成り立ちません。現金が不足する前に他の資産を売却するなどの策を講じた方がよいと思われます。</span>
                         </div>
                     `;
-                    dwzDisclaimer = '（仮に、現金が不足したまま続けた場合）';
+                    dwzDisclaimer = '（仮に、現金が不足した状態でシミュレーションを続けた場合）';
                 }
 
                 if (totalRemainingYen < 0) {
@@ -1679,8 +1680,8 @@
 
                     msgBox.innerHTML = `
                         ${advicePrefixHtml}
-                        ${dwzDisclaimer}現在の算盤では、あなたの資産は逝去される前の <span class="text-rose-400 font-black text-lg">${bankruptAge}歳</span> の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>
-                        最終的にシミュレーション終了年齢（<span class="text-amber-400 font-black">${endAge}歳</span>）に達した時点では、合計で <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">約${formatAssetValue(deficitAmt)}</span> が【不足】する計算となります。<br><br>
+                        ${dwzDisclaimer}現在の算盤では、あなたの総資産は逝去される前の <span class="text-rose-400 font-black text-lg">${bankruptAge}歳</span> の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>
+                        最終的に逝去されるシミュレーション終了年齢（<span class="text-amber-400 font-black">${endAge}歳</span>）に達した時点では、合計で <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">約${formatAssetValue(deficitAmt)}</span> が【不足】する計算となります。<br><br>
                         この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された <span class="text-amber-400 font-extrabold">${yearsRemaining}年間</span>、年間支出を<br>
                         <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(reduceSpendPerYear)}／年</span> 
                         （すなわち、月々約 <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth)}／月</span>）
@@ -1688,7 +1689,7 @@
                     `;
 
                     if (adviceBox) {
-                        adviceBox.innerHTML = `「兵糧が最期を前に尽きるは軍師として痛恨の極み（※）。生活の各ステージにおける支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
+                        adviceBox.innerHTML = `「兵糧が最期を前に尽きるは痛恨の極み。生活の各ステージにおける支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
                     }
                 } else {
                     const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
