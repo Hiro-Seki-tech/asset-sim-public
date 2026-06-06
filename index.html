@@ -72,7 +72,14 @@
                 <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">0万円</span>
             </div>
         </div>
-        <div id="tooltip-breakdown" class="text-[11px] max-sm:text-[10px] grid grid-cols-1 gap-y-1 text-slate-300 border-t border-slate-800 pt-2"></div>
+        <div class="relative w-full h-32 flex items-center justify-center">
+            <canvas id="tooltipPieChart" class="w-full h-full"></canvas>
+            <div class="absolute flex flex-col items-center justify-center text-center">
+                <span id="tooltip-total-center-lbl" class="text-[10px] text-slate-400 uppercase tracking-widest leading-none" data-i18n="tooltip_lbl_total_center">総資産</span>
+                <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">0万円</span>
+            </div>
+        </div>
+        <div id="tooltip-breakdown" class="text-[11px] max-sm:text-[10px] grid grid-cols-1 gap-y-1 max-sm:gap-y-0.5 text-slate-300 border-t border-slate-800 pt-2"></div>
         <div id="tooltip-diff" class="text-[11px] text-center border-t border-slate-800 pt-2 font-bold"></div>
     </div>
 
@@ -154,7 +161,7 @@
 
                         <div class="relative group" tabindex="0">
                             <button onclick="applyWorldLine('normal')" class="px-2.5 py-1.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors border border-blue-500/30 font-bold focus:outline-none" data-i18n="btn_macro_normal">🌱 巡航速度</button>
-                            <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
+                            <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-blue-400" data-i18n="tooltip_macro_normal_title">🌱 巡航速度（平時の現代日本・安定的成長）</span><br>
                                 <span data-i18n="tooltip_macro_normal_item1">• 株式: <span class="font-bold text-white">5.0%</span> | 投資信託: <span class="font-bold text-white">4.0%</span></span><br>
                                 <span data-i18n="tooltip_macro_normal_item2">• 貴金属 / 債券: <span class="font-bold text-white">4.0%</span></span><br>
@@ -218,7 +225,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="text-slate-400 text-[10px] block mb-1" data-i18n="lbl_salary_amount">所得額 (万円/年)</label>
+                                <label class="text-slate-400 text-[10px] block mb-1" data-i18n="lbl、salary_amount">所得額 (万円/年)</label>
                                 <input type="number" id="salary-amount" value="800" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
                             </div>
                             <div>
@@ -1296,14 +1303,6 @@
             } catch(e) { showToast("保存に失敗しました。", "error"); }
         }
 
-        function clearLocalStorage() {
-            localStorage.clear();
-            showToast("🧹 記憶領域をすべて初期化しました。");
-            const lastScenario = 'sub_rich';
-            document.getElementById('scenario-selector').value = lastScenario;
-            applyScenario(lastScenario);
-        }
-
         function applyScenario(scenario) {
             const otherContainer = document.getElementById('other-income-container');
             const stageContainer = document.getElementById('stage-container');
@@ -1704,7 +1703,7 @@
             });
         }
 
-        // 💀 DIE WITH ZERO 動的エンジン ＆ ⚠️【[5][6] 徹底修正エリア】
+        // 💀 DIE WITH ZERO 動的エンジン ＆ ⚠️【[5][6] 狙撃修正エリア】
         function transitionToDwz() {
             playDissolveSound();
             const tooltipEl = document.getElementById('chart-tooltip');
@@ -1794,7 +1793,7 @@
                 let advicePrefixHtml = '';
                 let dwzDisclaimer = '';
 
-                // 💡【修正点[5]】HTML側の重複を無くし、JSON側の「dwz_alert_icon_text」をそのまま単一で流し込む
+                // 💡【修正点[5]】二重アイコンを根絶。辞書内のキー単一で美しく描画
                 const iconText = getI18nText('dwz_alert_icon_text', '⚠️ 警告: ');
 
                 if (cashShortageAge !== null) {
@@ -1812,7 +1811,7 @@
                 const lblUnitYear = getI18nText('dwz_msg_unit_year', ' / 年');
                 const lblUnitMonth = getI18nText('dwz_msg_unit_month', ' / 月');
 
-                // 💡【修正点[6]】フォールバックに日本語を直書きせず、多言語リソースだけで文章を組み立てる
+                // 💡【修正点[6]】ハードコーディングされた日本語フォールバックを排除し、JSONの各パーツをシームレスに結合
                 if (totalRemainingYen < 0) {
                     let bankruptAge = endAge;
                     for (let i = 0; i < lastSimulationData.length; i++) {
@@ -1842,7 +1841,9 @@
                         ${txtCalcHint}<span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth, true)}</span>${lblUnitMonth}${txtCalcHintTail}
                     `;
 
-                    adviceBox.innerHTML = getI18nText('dwz_advice_shortage', "");
+                    if (adviceBox) {
+                        adviceBox.innerHTML = getI18nText('dwz_advice_shortage', "");
+                    }
                 } else {
                     const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
                     const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
@@ -1863,8 +1864,13 @@
                         ${txtSurplusCalcHint}<span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(additionalSpendPerMonth, true)}</span>${lblUnitMonth}${txtSurplusCalcTail}
                     `;
 
-                    adviceBox.innerHTML = getI18nText('dwz_advice_surplus', "");
+                    if (adviceBox) {
+                        adviceBox.innerHTML = getI18nText('dwz_advice_surplus', "");
+                    }
                 }
+
+                document.getElementById('dwz-assets-portfolio-lbl').textContent = getI18nText('dwz_assets_portfolio_title', '逝去時の資産ポートフォリオ');
+                document.getElementById('dwz-advisor-advice-lbl').textContent = getI18nText('dwz_advisor_advice_title', '人生の軍師からのアドバイス');
 
                 document.getElementById('simulator-view').classList.add('hidden');
                 document.getElementById('dwz-view').classList.remove('hidden');
