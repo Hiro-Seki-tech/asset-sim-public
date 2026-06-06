@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
     <meta name="description" data-i18n="meta_description" content="野村総合研究所の資産ピラミッドに準拠した、シンプルかつ超高性能な資産シミュレータ。あなたの未来のキャッシュフローを即座に可視化します。">
-    <meta property=\"og:title\" data-i18n="og_title" content="💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！） | 人性能キャッシュフロー軍略盤">
-    <meta property=\"og:description\" data-i18n="og_description" content="純金融資産の階層別デフォルト値から、あなたの未来の資産推移を即座に計算。">
-    <meta property=\"og:type\" content="website">
+    <meta property="og:title" data-i18n="og_title" content="💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！） | 人性能キャッシュフロー軍略盤">
+    <meta property="og:description" data-i18n="og_description" content="純金融資産の階層別デフォルト値から、あなたの未来の資産推移を即座に計算。">
+    <meta property="og:type" content="website">
 
     <title data-i18n="page_title">💡資産・ライフシミュレータ（💀DIE WITH ZERO判定可能！）</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -143,33 +143,33 @@
                                     <td class="py-3 font-medium text-white flex items-center gap-2">
                                         <span data-i18n="lbl_asset_cash">💰 現金・預金</span>
                                     </td>
-                                    <td class="py-2"><input type="number" id="asset-cash" class="w-28 px-2 py-1 rounded" value="1000"></td>
-                                    <td class="py-2"><input type="number" id="yield-cash" class="w-20 px-2 py-1 rounded" value="0.1" step="0.01"></td>
+                                    <td class="py-2"><input type="number" id="asset-cash" oninput="runSimulation()" class="w-28 px-2 py-1 rounded" value="1000"></td>
+                                    <td class="py-2"><input type="number" id="yield-cash" oninput="runSimulation()" class="w-20 px-2 py-1 rounded" value="0.1" step="0.01"></td>
                                 </tr>
                                 <tr>
                                     <td class="py-3 font-medium text-white" data-i18n="lbl_asset_realestate">🏢 不動産資産</td>
-                                    <td class="py-2"><input type="number" id="asset-realestate" class="w-28 px-2 py-1 rounded" value="2500"></td>
-                                    <td class="py-2"><input type="number" id="yield-realestate" class="w-20 px-2 py-1 rounded" value="2.0" step="0.1"></td>
+                                    <td class="py-2"><input type="number" id="asset-realestate" oninput="runSimulation()" class="w-28 px-2 py-1 rounded" value="2500"></td>
+                                    <td class="py-2"><input type="number" id="yield-realestate" oninput="runSimulation()" class="w-20 px-2 py-1 rounded" value="2.0" step="0.1"></td>
                                 </tr>
                                 <tr>
                                     <td class="py-3 font-medium text-white" data-i18n="lbl_asset_stocks">📈 日本・外国株式</td>
-                                    <td class="py-2"><input type="number" id="asset-stocks" class="w-28 px-2 py-1 rounded" value="2000"></td>
-                                    <td class="py-2"><input type="number" id="yield-stocks" class="w-20 px-2 py-1 rounded" value="5.0" step="0.1"></td>
+                                    <td class="py-2"><input type="number" id="asset-stocks" oninput="runSimulation()" class="w-28 px-2 py-1 rounded" value="2000"></td>
+                                    <td class="py-2"><input type="number" id="yield-stocks" oninput="runSimulation()" class="w-20 px-2 py-1 rounded" value="5.0" step="0.1"></td>
                                 </tr>
                                 <tr>
                                     <td class="py-3 font-medium text-white" data-i18n="lbl_asset_trust">🚜 投資信託 (オルカン等)</td>
-                                    <td class="py-2"><input type="number" id="asset-trust" class="w-28 px-2 py-1 rounded" value="1500"></td>
-                                    <td class="py-2"><input type="number" id="yield-trust" class="w-20 px-2 py-1 rounded" value="4.0" step="0.1"></td>
+                                    <td class="py-2"><input type="number" id="asset-trust" oninput="runSimulation()" class="w-28 px-2 py-1 rounded" value="1500"></td>
+                                    <td class="py-2"><input type="number" id="yield-trust" oninput="runSimulation()" class="w-20 px-2 py-1 rounded" value="4.0" step="0.1"></td>
                                 </tr>
                                 <tr>
                                     <td class="py-3 font-medium text-white" data-i18n="lbl_asset_metal">🥇 貴金属 (金・銀等)</td>
-                                    <td class="py-2"><input type="number" id="asset-metal" class="w-28 px-2 py-1 rounded" value="500"></td>
-                                    <td class="py-2"><input type="number" id="yield-metal" class="w-20 px-2 py-1 rounded" value="3.0" step="0.1"></td>
+                                    <td class="py-2"><input type="number" id="asset-metal" oninput="runSimulation()" class="w-28 px-2 py-1 rounded" value="500"></td>
+                                    <td class="py-2"><input type="number" id="yield-metal" oninput="runSimulation()" class="w-20 px-2 py-1 rounded" value="3.0" step="0.1"></td>
                                 </tr>
                                 <tr>
                                     <td class="py-3 font-medium text-white" data-i18n="lbl_asset_bonds">🛡️ 債券・固い資産</td>
-                                    <td class="py-2"><input type="number" id="asset-bonds" class="w-28 px-2 py-1 rounded" value="1000"></td>
-                                    <td class="py-2"><input type="number" id="yield-bonds" class="w-20 px-2 py-1 rounded" value="1.5" step="0.1"></td>
+                                    <td class="py-2"><input type="number" id="asset-bonds" oninput="runSimulation()" class="w-28 px-2 py-1 rounded" value="1000"></td>
+                                    <td class="py-2"><input type="number" id="yield-bonds" oninput="runSimulation()" class="w-20 px-2 py-1 rounded" value="1.5" step="0.1"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -184,27 +184,27 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div class="space-y-1">
                             <label class="text-gray-400" data-i18n="lbl_current_age">現在の年齢 (歳)</label>
-                            <input type="number" id="life-current-age" class="w-full px-3 py-1.5 rounded" value="40">
+                            <input type="number" id="life-current-age" oninput="runSimulation()" class="w-full px-3 py-1.5 rounded" value="40">
                         </div>
                         <div class="space-y-1">
                             <label class="text-gray-400" data-i18n="lbl_final_age">想定寿命 (歳)</label>
-                            <input type="number" id="life-final-age" class="w-full px-3 py-1.5 rounded" value="95">
+                            <input type="number" id="life-final-age" oninput="runSimulation()" class="w-full px-3 py-1.5 rounded" value="95">
                         </div>
                         <div class="space-y-1">
                             <label class="text-gray-400" data-i18n="lbl_annual_income">年間手取り収入 (万円/年)</label>
-                            <input type="number" id="life-annual-income" class="w-full px-3 py-1.5 rounded" value="700">
+                            <input type="number" id="life-annual-income" oninput="runSimulation()" class="w-full px-3 py-1.5 rounded" value="700">
                         </div>
                         <div class="space-y-1">
                             <label class="text-gray-400" data-i18n="lbl_income_stop_age">収入が途絶える年齢 (歳)</label>
-                            <input type="number" id="life-income-stop-age" class="w-full px-3 py-1.5 rounded" value="65">
+                            <input type="number" id="life-income-stop-age" oninput="runSimulation()" class="w-full px-3 py-1.5 rounded" value="65">
                         </div>
                         <div class="space-y-1">
                             <label class="text-gray-400" data-i18n="lbl_annual_expense">年間生活費 (万円/年)</label>
-                            <input type="number" id="life-annual-expense" class="w-full px-3 py-1.5 rounded" value="400">
+                            <input type="number" id="life-annual-expense" oninput="runSimulation()" class="w-full px-3 py-1.5 rounded" value="400">
                         </div>
                         <div class="space-y-1">
                             <label class="text-gray-400" data-i18n="lbl_inflation_rate">想定物価上昇率 (%)</label>
-                            <input type="number" id="life-inflation-rate" class="w-full px-3 py-1.5 rounded" value="1.0" step="0.1">
+                            <input type="number" id="life-inflation-rate" oninput="runSimulation()" class="w-full px-3 py-1.5 rounded" value="1.0" step="0.1">
                         </div>
                     </div>
                 </div>
@@ -264,7 +264,7 @@
 
                 <button onclick="runSimulation()" class="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 text-white rounded-2xl font-bold text-lg glow-button transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-bolt animate-pulse text-amber-300"></i>
-                    <span data-i18n="btn_run_simulation">⚡ 運命の針を動かす（シミュレーション実行）</span>
+                    <span data-i18n="btn_run_simulation">⚡ 運命 of 針を動かす（シミュレーション実行）</span>
                 </button>
             </div>
 
@@ -273,7 +273,7 @@
                     <div class="flex justify-between items-center border-b border-gray-800 pb-3">
                         <h2 class="text-base font-bold text-white flex items-center gap-2">
                             <i class="fa-solid fa-chart-area text-blue-400"></i>
-                            <span data-i18n="title_graph">生涯キャッシュフロー</span>
+                            <span id="dynamic-graph-title" data-i18n="title_graph">生涯キャッシュフロー</span>
                         </h2>
                         <span id="cash-deficit-badge" class="hidden bg-rose-900/40 text-rose-400 border border-rose-500/30 text-[10px] px-2 py-0.5 rounded font-black animate-pulse" data-i18n="badge_cash_deficit_warning">⚠️ 警告: 預金不足期間あり</span>
                     </div>
@@ -304,8 +304,7 @@
                         <span data-i18n="title_dwz_zone">💀 DIE WITH ZERO（終活・遺産ゼロ完走）判定エリア</span>
                     </h2>
                     
-                    <div id="dwz-judgment-output" class="text-sm text-gray-300 leading-relaxed space-y-2 bg-black/40 p-4 rounded-xl border border-gray-800">
-                        </div>
+                    <div id="dwz-judgment-output" class="text-sm text-gray-300 leading-relaxed space-y-2 bg-black/40 p-4 rounded-xl border border-gray-800"></div>
 
                     <div class="bg-amber-950/20 border border-amber-500/10 p-3 rounded-xl text-xs space-y-1">
                         <h4 class="font-bold text-amber-300 flex items-center gap-1">
@@ -349,8 +348,7 @@
                             <th class="p-2 text-right" data-i18n="th_total_assets">総資産</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-800/40 text-gray-300" id="annual-table-body">
-                        </tbody>
+                    <tbody class="divide-y divide-gray-800/40 text-gray-300" id="annual-table-body"></tbody>
                 </table>
             </div>
         </footer>
@@ -375,7 +373,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-gray-900/60 border border-gray-800 rounded-2xl p-6 text-center">
-                    <div class="text-xs text-gray-500 font-bold" id="dwz-portal-metric-title">逝去時の推定総資産</div>
+                    <div class="text-xs text-gray-500 font-bold" id="dwz-portal-metric-title">卸去時の推定総資産</div>
                     <div class="text-3xl md:text-5xl font-black tracking-tight text-white mt-2" id="dwz-portal-total-assets">¥0</div>
                 </div>
                 <div class="bg-gray-900/60 border border-gray-800 rounded-2xl p-6 text-center flex flex-col justify-center items-center">
@@ -384,8 +382,7 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 border border-amber-500/20 rounded-2xl p-6 md:p-8 text-left text-sm md:text-base leading-relaxed text-gray-300 shadow-2xl" id="dwz-portal-big-msg">
-                </div>
+            <div class="bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 border border-amber-500/20 rounded-2xl p-6 md:p-8 text-left text-sm md:text-base leading-relaxed text-gray-300 shadow-2xl" id="dwz-portal-big-msg"></div>
 
             <div class="border-l-4 border-amber-500 bg-amber-500/5 rounded-r-xl p-4 text-left max-w-2xl mx-auto">
                 <div class="text-xs font-black uppercase tracking-wider text-amber-400" data-i18n="dwz_advisor_advice_title">人生の軍師からのアドバイス</div>
@@ -399,11 +396,9 @@
     </div>
 
     <script>
-        // グローバル言語キャッシュ
         let currentLang = 'ja';
         let translations = {};
 
-        // マクロ経済プリセットのデータ定義
         const macroEconomicPresets = {
             bright: { cash: 0.1, realestate: 5.0, stocks: 15.0, trust: 15.0, metal: 5.0, bonds: 5.0 },
             mild_bull: { cash: 0.1, realestate: 3.0, stocks: 10.0, trust: 8.0, metal: 5.0, bonds: 5.0 },
@@ -411,7 +406,6 @@
             dark: { cash: 0.0, realestate: -1.0, stocks: 4.0, trust: 1.0, metal: 3.0, bonds: 4.0 }
         };
 
-        // 階層別人物プリセット
         const scenarioPresets = {
             ultra_rich: { cash: 10000, realestate: 15000, stocks: 15000, trust: 8000, metal: 1000, bonds: 1000, income: 2500, expense: 1200 },
             rich: { cash: 3000, realestate: 3000, stocks: 3000, trust: 2000, metal: 500, bonds: 500, income: 1200, expense: 700 },
@@ -420,7 +414,6 @@
             mass: { cash: 400, realestate: 1200, stocks: 200, trust: 200, metal: 0, bonds: 0, income: 450, expense: 300 }
         };
 
-        // ダミー非同期ロード関数（親js/i18n.jsが存在しない場合の一体型フォールバック構造）
         async function loadLanguage(lang) {
             currentLang = lang;
             document.documentElement.lang = lang;
@@ -429,13 +422,13 @@
                 if (response.ok) {
                     translations = await response.json();
                 } else {
-                    translations = window.gemkin_lang_fallback ? window.gemkin_lang_fallback[lang] : {};
+                    translations = window.gemkin_lang_fallback[lang] || {};
                 }
             } catch(e) {
-                translations = window.gemkin_lang_fallback ? window.gemkin_lang_fallback[lang] : {};
+                translations = window.gemkin_lang_fallback[lang] || {};
             }
             
-            // 静的HTML要素の全自動バインド
+            // 静的要素の置換
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[key]) {
@@ -449,10 +442,25 @@
                 }
             });
 
-            // 経済指標の説明文文言を強制アップデート
+            // 💡 修正[1]: 「〇〇のキャッシュフロー」のタイトル動的言語アップデート
+            updateGraphTitle();
             updateMacroDescriptionText();
-            // 既存アセット・ステージ入力ブロックのラベル再更新
             refreshDynamicLabels();
+        }
+
+        // 💡 修正[1]: 「人物選択名」と「生涯キャッシュフロー」の完全なる日英リアルタイム連動
+        function updateGraphTitle() {
+            const titleEl = document.getElementById('dynamic-graph-title');
+            if (!titleEl) return;
+            const selector = document.getElementById('scenario-selector');
+            const characterName = selector.options[selector.selectedIndex].text;
+            const titleBase = translations['title_graph'] || '生涯キャッシュフロー';
+            
+            if (currentLang === 'en') {
+                titleEl.innerHTML = `<i class="fa-solid fa-chart-area text-blue-400"></i> Lifetime Cash Flow of "${characterName}"`;
+            } else {
+                titleEl.innerHTML = `<i class="fa-solid fa-chart-area text-blue-400"></i> 「${characterName}」の生涯キャッシュフロー`;
+            }
         }
 
         function updateMacroDescriptionText() {
@@ -471,30 +479,31 @@
             }
         }
 
+        // 💡 修正[1]: 動的追加された全フォームのラベル・単位を言語変更時に強制一斉アップデート
         function refreshDynamicLabels() {
-            // 現在画面にある動的行の多言語再マッピング
             document.querySelectorAll('.dynamic-income-row').forEach(row => {
                 row.querySelector('.lbl-inc-name')?.setAttribute('placeholder', translations['dynamic_lbl_inc_name'] || '所得の名称');
                 row.querySelector('.lbl-inc-amt')?.setAttribute('placeholder', translations['dynamic_lbl_inc_amt_year'] || '所得額(万/年)');
-                row.querySelector('.lbl-inc-start')?.previousElementSibling?.replaceWith(createLabelNode(translations['dynamic_lbl_start_age'] || '開始年齢'));
-                row.querySelector('.lbl-inc-end')?.previousElementSibling?.replaceWith(createLabelNode(translations['dynamic_lbl_end_age'] || '終了年齢'));
+                row.querySelector('.span-start')?.setHTML(translations['dynamic_lbl_start_age'] || '開始年齢');
+                row.querySelector('.span-end')?.setHTML(translations['dynamic_lbl_end_age'] || '終了年齢');
             });
             document.querySelectorAll('.dynamic-stage-row').forEach(row => {
-                row.querySelector('.lbl-stage-title')?.innerHTML = translations['dynamic_stage_title'] || '人生のステージ';
-                row.querySelector('.lbl-stage-to')?.innerHTML = translations['dynamic_lbl_to'] || ' ～ ';
+                row.querySelector('.lbl-stage-title')?.setHTML(translations['dynamic_stage_title'] || '人生のステージ');
+                row.querySelector('.lbl-stage-to')?.setHTML(translations['dynamic_lbl_to'] || ' ～ ');
                 row.querySelectorAll('.lbl-stage-age-unit').forEach(u => u.innerHTML = translations['dynamic_lbl_age'] || ' 歳');
-                row.querySelector('.lbl-stage-burn-unit')?.replaceWith(createLabelNode(translations['dynamic_lbl_burn'] || '支出（人生の出費）:'));
+                row.querySelector('.lbl-stage-burn-unit')?.setHTML(translations['dynamic_lbl_burn'] || '支出（人生の出費）:');
+                row.querySelector('.lbl-stage-wan-unit')?.setHTML(translations['dynamic_lbl_unit_year'] || '万円/年');
             });
             document.querySelectorAll('.dynamic-extra-inc-row, .dynamic-extra-exp-row').forEach(row => {
                 row.querySelector('.lbl-extra-memo')?.setAttribute('placeholder', translations['dynamic_lbl_memo'] || '名称');
-                row.querySelector('.lbl-extra-age')?.previousElementSibling?.replaceWith(createLabelNode(translations['dynamic_lbl_age_occur'] || '発生年齢'));
-                row.querySelector('.lbl-extra-amt')?.previousElementSibling?.replaceWith(createLabelNode(translations['dynamic_lbl_amt_wan'] || '金額(万円)'));
+                row.querySelector('.span-ex-age')?.setHTML(translations['dynamic_lbl_age_occur'] || '発生年齢');
+                row.querySelector('.span-ex-amt')?.setHTML(translations['dynamic_lbl_amt_wan'] || '金額(万円)');
             });
             document.querySelectorAll('.dynamic-asset-flow-card').forEach(card => {
                 const type = card.getAttribute('data-asset-type');
                 card.querySelector('.card-asset-title-text').innerHTML = translations[`asset_type_${type}`] || type;
-                card.querySelector('.lbl-asset-init').previousElementSibling.innerHTML = translations['dynamic_asset_lbl_init'] || '初期/購入額 (万円)';
-                card.querySelector('.lbl-asset-rate').previousElementSibling.innerHTML = translations['dynamic_asset_lbl_rate'] || '想定年利 (%)';
+                card.querySelector('.span-as-init').setHTML(translations['dynamic_asset_lbl_init'] || '初期/購入額 (万円)');
+                card.querySelector('.span-as-rate').setHTML(translations['dynamic_asset_lbl_rate'] || '想定年利 (%)');
                 card.querySelector('.lbl-asset-payout-lbl').innerHTML = translations['dynamic_asset_lbl_payout'] || '利益受取';
                 card.querySelector('.opt-asset-reinvest').innerHTML = translations['dynamic_asset_lbl_reinvest'] || '再投資';
                 card.querySelector('.opt-asset-cashout').innerHTML = translations['dynamic_asset_lbl_cashout'] || '現金受取';
@@ -505,14 +514,9 @@
             });
         }
 
-        function createLabelNode(text) {
-            const span = document.createElement('span');
-            span.className = 'text-gray-400 mr-1';
-            span.innerText = text;
-            return span;
-        }
+        // DOM操作用ヘルパー（安全なinnerHTML差し替え）
+        Element.prototype.setHTML = function(html) { this.innerHTML = html; };
 
-        // マクロ経済ボタン切り替え制御
         function setMacroEconomic(presetType, btn) {
             document.querySelectorAll('#macro-btn-container button').forEach(b => {
                 b.className = "px-3 py-1.5 rounded-lg text-xs font-bold border border-gray-700 transition hover:bg-gray-800 text-gray-300";
@@ -531,9 +535,11 @@
             runSimulation();
         }
 
-        // ペルソナシナリオ適用
         function applyScenario(key) {
-            if (key === 'custom') return;
+            if (key === 'custom') {
+                updateGraphTitle();
+                return;
+            }
             const p = scenarioPresets[key];
             if (!p) return;
 
@@ -548,39 +554,40 @@
 
             localStorage.setItem('gemkin_active_scenario', key);
             
-            // 動的アセットクリア＆デフォルト展開
             document.getElementById('dynamic-income-container').innerHTML = '';
             document.getElementById('dynamic-stage-container').innerHTML = '';
             document.getElementById('dynamic-extra-income-container').innerHTML = '';
             document.getElementById('dynamic-extra-expense-container').innerHTML = '';
             document.getElementById('dynamic-asset-flow-container').innerHTML = '';
 
-            // 各人物ごとの最適初期動的アセットを自動配置
             if (key === 'sub_rich' || key === 'rich' || key === 'ultra_rich') {
                 addIncomeRow(translations['dynamic_lbl_pension_default'] || '年金', 150, 65, 95);
-                addStageRow(65, 75, 300);
-                addStageRow(75, 95, 200);
+                addStageRow(53, 75, 1000);
+                addStageRow(76, 100, 600);
                 addExtraIncomeRow(translations['dynamic_lbl_retire_default'] || '退職金', 60, 2000);
                 addExtraExpenseRow(translations['dynamic_lbl_event_default'] || 'イベント出費', 45, 500);
-                addAssetFlowRow('trust', 1500, 4.0, 'reinvest', 12, 5, 40, 65);
+                addAssetFlowRow('trust', 8000, 5.0, 'reinvest', 240, 10, 53, 85);
+                addAssetFlowRow('bonds', 4500, 5.0, 'cashout', 0, 0, 45, 65);
             }
 
+            updateGraphTitle();
             runSimulation();
         }
 
-        // 動的行生成陣
+        // 💡 修正[1]: 生成時に多言語対応用のクラス・タグを静的固定
         function addIncomeRow(name='', amt='', start='', end='') {
             const container = document.getElementById('dynamic-income-container');
             const div = document.createElement('div');
             div.className = 'dynamic-income-row flex flex-wrap items-center gap-2 bg-gray-950/40 p-2 rounded-xl border border-gray-800 text-xs';
             div.innerHTML = `
                 <input type="text" class="lbl-inc-name flex-1 min-w-[100px] px-2 py-1 rounded" value="${name}" placeholder="${translations['dynamic_lbl_inc_name'] || '所得の名称'}">
-                <input type="number" class="lbl-inc-amt w-20 px-2 py-1 rounded" value="${amt}" placeholder="${translations['dynamic_lbl_inc_amt_year'] || '所得額(万/年)'}">
-                <div class="flex items-center"><span class="text-gray-400 mr-1">${translations['dynamic_lbl_start_age'] || '開始'}</span><input type="number" class="lbl-inc-start w-12 px-1 py-0.5 rounded" value="${start}"></div>
-                <div class="flex items-center"><span class="text-gray-400 mr-1">${translations['dynamic_lbl_end_age'] || '終了'}</span><input type="number" class="lbl-inc-end w-12 px-1 py-0.5 rounded" value="${end}"></div>
+                <input type="number" oninput="runSimulation()" class="lbl-inc-amt w-20 px-2 py-1 rounded" value="${amt}" placeholder="${translations['dynamic_lbl_inc_amt_year'] || '所得額(万/年)'}">
+                <div class="flex items-center"><span class="text-gray-400 mr-1 span-start">${translations['dynamic_lbl_start_age'] || '開始年齢'}</span><input type="number" oninput="runSimulation()" class="lbl-inc-start w-12 px-1 py-0.5 rounded" value="${start}"></div>
+                <div class="flex items-center"><span class="text-gray-400 mr-1 span-end">${translations['dynamic_lbl_end_age'] || '終了年齢'}</span><input type="number" oninput="runSimulation()" class="lbl-inc-end w-12 px-1 py-0.5 rounded" value="${end}"></div>
                 <button onclick="this.parentElement.remove(); runSimulation();" class="text-rose-400 hover:text-rose-300 px-1"><i class="fa-solid fa-trash-can"></i></button>
             `;
             container.appendChild(div);
+            runSimulation();
         }
 
         function addStageRow(start='', end='', expense='') {
@@ -588,13 +595,14 @@
             const div = document.createElement('div');
             div.className = 'dynamic-stage-row flex flex-wrap items-center gap-2 bg-gray-950/40 p-2 rounded-xl border border-gray-800 text-xs';
             div.innerHTML = `
-                <span class="font-bold text-indigo-400 lbl-stage-title">${translations['dynamic_stage_title'] || 'ステージ'}</span>
-                <input type="number" class="lbl-stage-start w-12 px-1 py-0.5 rounded" value="${start}"><span class="lbl-stage-to">${translations['dynamic_lbl_to'] || '～'}</span><input type="number" class="lbl-stage-end w-12 px-1 py-0.5 rounded" value="${end}"><span class="lbl-stage-age-unit">${translations['dynamic_lbl_age'] || '歳'}</span>
-                <span class="text-gray-400 lbl-stage-burn-unit">${translations['dynamic_lbl_burn'] || '支出:'}</span>
-                <input type="number" class="lbl-stage-expense w-20 px-2 py-1 rounded" value="${expense}"><span class="text-gray-400">${translations['dynamic_lbl_unit_year'] || '万円/年'}</span>
+                <span class="font-bold text-indigo-400 lbl-stage-title">${translations['dynamic_stage_title'] || '人生のステージ'}</span>
+                <input type="number" oninput="runSimulation()" class="lbl-stage-start w-12 px-1 py-0.5 rounded" value="${start}"><span class="lbl-stage-to">${translations['dynamic_lbl_to'] || ' ～ '}</span><input type="number" oninput="runSimulation()" class="lbl-stage-end w-12 px-1 py-0.5 rounded" value="${end}"><span class="lbl-stage-age-unit">${translations['dynamic_lbl_age'] || ' 歳'}</span>
+                <span class="text-gray-400 lbl-stage-burn-unit">${translations['dynamic_lbl_burn'] || '支出（人生の出費）:'}</span>
+                <input type="number" oninput="runSimulation()" class="lbl-stage-expense w-20 px-2 py-1 rounded" value="${expense}"><span class="text-gray-400 lbl-stage-wan-unit">${translations['dynamic_lbl_unit_year'] || '万円/年'}</span>
                 <button onclick="this.parentElement.remove(); runSimulation();" class="text-rose-400 hover:text-rose-300 px-1"><i class="fa-solid fa-trash-can"></i></button>
             `;
             container.appendChild(div);
+            runSimulation();
         }
 
         function addExtraIncomeRow(memo='', age='', amt='') {
@@ -603,11 +611,12 @@
             div.className = 'dynamic-extra-inc-row flex flex-wrap items-center gap-2 bg-gray-950/40 p-2 rounded-xl border border-gray-800 text-xs';
             div.innerHTML = `
                 <input type="text" class="lbl-extra-memo flex-1 min-w-[80px] px-2 py-1 rounded" value="${memo}" placeholder="${translations['dynamic_lbl_memo'] || '名称'}">
-                <div class="flex items-center"><span class="text-gray-400 mr-1">${translations['dynamic_lbl_age_occur'] || '年齢'}</span><input type="number" class="lbl-extra-age w-14 px-1 py-0.5 rounded" value="${age}"></div>
-                <div class="flex items-center"><span class="text-gray-400 mr-1">${translations['dynamic_lbl_amt_wan'] || '金額'}</span><input type="number" class="lbl-extra-amt w-20 px-2 py-1 rounded" value="${amt}"></div>
+                <div class="flex items-center"><span class="text-gray-400 mr-1 span-ex-age">${translations['dynamic_lbl_age_occur'] || '発生年齢'}</span><input type="number" oninput="runSimulation()" class="lbl-extra-age w-14 px-1 py-0.5 rounded" value="${age}"></div>
+                <div class="flex items-center"><span class="text-gray-400 mr-1 span-ex-amt">${translations['dynamic_lbl_amt_wan'] || '金額(万円)'}</span><input type="number" oninput="runSimulation()" class="lbl-extra-amt w-20 px-2 py-1 rounded" value="${amt}"></div>
                 <button onclick="this.parentElement.remove(); runSimulation();" class="text-rose-400 hover:text-rose-300 px-1"><i class="fa-solid fa-trash-can"></i></button>
             `;
             container.appendChild(div);
+            runSimulation();
         }
 
         function addExtraExpenseRow(memo='', age='', amt='') {
@@ -616,11 +625,12 @@
             div.className = 'dynamic-extra-exp-row flex flex-wrap items-center gap-2 bg-gray-950/40 p-2 rounded-xl border border-gray-800 text-xs';
             div.innerHTML = `
                 <input type="text" class="lbl-extra-memo flex-1 min-w-[80px] px-2 py-1 rounded" value="${memo}" placeholder="${translations['dynamic_lbl_memo'] || '名称'}">
-                <div class="flex items-center"><span class="text-gray-400 mr-1">${translations['dynamic_lbl_age_occur'] || '年齢'}</span><input type="number" class="lbl-extra-age w-14 px-1 py-0.5 rounded" value="${age}"></div>
-                <div class="flex items-center"><span class="text-gray-400 mr-1">${translations['dynamic_lbl_amt_wan'] || '金額'}</span><input type="number" class="lbl-extra-amt w-20 px-2 py-1 rounded" value="${amt}"></div>
+                <div class="flex items-center"><span class="text-gray-400 mr-1 span-ex-age">${translations['dynamic_lbl_age_occur'] || '発生年齢'}</span><input type="number" oninput="runSimulation()" class="lbl-extra-age w-14 px-1 py-0.5 rounded" value="${age}"></div>
+                <div class="flex items-center"><span class="text-gray-400 mr-1 span-ex-amt">${translations['dynamic_lbl_amt_wan'] || '金額(万円)'}</span><input type="number" oninput="runSimulation()" class="lbl-extra-amt w-20 px-2 py-1 rounded" value="${amt}"></div>
                 <button onclick="this.parentElement.remove(); runSimulation();" class="text-rose-400 hover:text-rose-300 px-1"><i class="fa-solid fa-trash-can"></i></button>
             `;
             container.appendChild(div);
+            runSimulation();
         }
 
         function addAssetFlowRow(type='trust', initVal=0, rate=4.0, payout='reinvest', annualInvest=0, monthlyInvest=0, buyAge=40, sellAge=65) {
@@ -641,25 +651,25 @@
                     <button onclick="this.parentElement.parentElement.remove(); runSimulation();" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    <div><label class="text-[10px] text-gray-500 block">${translations['dynamic_asset_lbl_init'] || '初期/購入額 (万円)'}</label><input type="number" class="lbl-asset-init w-full px-2 py-0.5 rounded" value="${initVal}"></div>
-                    <div><label class="text-[10px] text-gray-500 block">${translations['dynamic_asset_lbl_rate'] || '想定年利 (%)'}</label><input type="number" class="lbl-asset-rate w-full px-2 py-0.5 rounded" value="${rate}" step="0.1"></div>
+                    <div><label class="text-[10px] text-gray-500 block span-as-init">${translations['dynamic_asset_lbl_init'] || '初期/購入額 (万円)'}</label><input type="number" oninput="runSimulation()" class="lbl-asset-init w-full px-2 py-0.5 rounded" value="${initVal}"></div>
+                    <div><label class="text-[10px] text-gray-500 block span-as-rate">${translations['dynamic_asset_lbl_rate'] || '想定年利 (%)'}</label><input type="number" oninput="runSimulation()" class="lbl-asset-rate w-full px-2 py-0.5 rounded" value="${rate}" step="0.1"></div>
                     <div>
                         <label class="text-[10px] text-gray-500 block lbl-asset-payout-lbl">${translations['dynamic_asset_lbl_payout'] || '利益受取'}</label>
-                        <select class="lbl-asset-payout w-full px-1 py-0.5 rounded">
+                        <select onchange="runSimulation()" class="lbl-asset-payout w-full px-1 py-0.5 rounded">
                             <option value="reinvest" class="opt-asset-reinvest" ${payout==='reinvest'?'selected':''}>${translations['dynamic_asset_lbl_reinvest'] || '再投資'}</option>
                             <option value="cashout" class="opt-asset-cashout" ${payout==='cashout'?'selected':''}>${translations['dynamic_asset_lbl_cashout'] || '現金受取'}</option>
                         </select>
                     </div>
-                    <div><label class="text-[10px] text-gray-500 block lbl-asset-year-lbl">${translations['dynamic_asset_lbl_year'] || '年初投資 (万円/年)'}</label><input type="number" class="lbl-asset-year w-full px-2 py-0.5 rounded" value="${annualInvest}"></div>
-                    <div><label class="text-[10px] text-gray-500 block lbl-asset-month-lbl">${translations['dynamic_asset_lbl_month'] || '月々積立 (万円/月)'}</label><input type="number" class="lbl-asset-month w-full px-2 py-0.5 rounded" value="${monthlyInvest}"></div>
-                    <div><label class="text-[10px] text-gray-500 block lbl-asset-buy-lbl">${translations['dynamic_asset_lbl_buy_age'] || '購入年齢'}</label><input type="number" class="lbl-asset-buy w-full px-2 py-0.5 rounded" value="${buyAge}"></div>
-                    <div><label class="text-[10px] text-gray-500 block lbl-asset-sell-lbl">${translations['dynamic_asset_lbl_sell_age'] || '売却年齢'}</label><input type="number" class="lbl-asset-sell w-full px-2 py-0.5 rounded" value="${sellAge}"></div>
+                    <div><label class="text-[10px] text-gray-500 block lbl-asset-year-lbl">${translations['dynamic_asset_lbl_year'] || '年初投資 (万円/年)'}</label><input type="number" oninput="runSimulation()" class="lbl-asset-year w-full px-2 py-0.5 rounded" value="${annualInvest}"></div>
+                    <div><label class="text-[10px] text-gray-500 block lbl-asset-month-lbl">${translations['dynamic_asset_lbl_month'] || '月々積立 (万円/月)'}</label><input type="number" oninput="runSimulation()" class="lbl-asset-month w-full px-2 py-0.5 rounded" value="${monthlyInvest}"></div>
+                    <div><label class="text-[10px] text-gray-500 block lbl-asset-buy-lbl">${translations['dynamic_asset_lbl_buy_age'] || '購入年齢'}</label><input type="number" oninput="runSimulation()" class="lbl-asset-buy w-full px-2 py-0.5 rounded" value="${buyAge}"></div>
+                    <div><label class="text-[10px] text-gray-500 block lbl-asset-sell-lbl">${translations['dynamic_asset_lbl_sell_age'] || '売却年齢'}</label><input type="number" oninput="runSimulation()" class="lbl-asset-sell w-full px-2 py-0.5 rounded" value="${sellAge}"></div>
                 </div>
             `;
             container.appendChild(card);
+            runSimulation();
         }
 
-        // 📊 超高性能キャッシュフロー計算コアエンジン
         let chartInstance = null;
         let globalLastSimulationResult = null; 
 
@@ -672,7 +682,6 @@
             const baseExpense = parseFloat(document.getElementById('life-annual-expense').value) || 0;
             const inflationRate = (parseFloat(document.getElementById('life-inflation-rate').value) || 0) / 100;
 
-            // 各基礎資産クラスの初期値ロード
             let cash = parseFloat(document.getElementById('asset-cash').value) || 0;
             let realestate = parseFloat(document.getElementById('asset-realestate').value) || 0;
             let stocks = parseFloat(document.getElementById('asset-stocks').value) || 0;
@@ -680,7 +689,6 @@
             let metal = parseFloat(document.getElementById('asset-metal').value) || 0;
             let bonds = parseFloat(document.getElementById('asset-bonds').value) || 0;
 
-            // 基礎想定利回り
             const yCash = (parseFloat(document.getElementById('yield-cash').value) || 0) / 100;
             const yRe = (parseFloat(document.getElementById('yield-realestate').value) || 0) / 100;
             const yStocks = (parseFloat(document.getElementById('yield-stocks').value) || 0) / 100;
@@ -688,7 +696,6 @@
             const yMetal = (parseFloat(document.getElementById('yield-metal').value) || 0) / 100;
             const yBonds = (parseFloat(document.getElementById('yield-bonds').value) || 0) / 100;
 
-            // 動的設定のスクレイピング・配列化
             const extraIncomes = Array.from(document.querySelectorAll('.dynamic-extra-inc-row')).map(row => ({
                 memo: row.querySelector('.lbl-extra-memo').value,
                 age: parseInt(row.querySelector('.lbl-extra-age').value) || 0,
@@ -721,7 +728,7 @@
                 sell: parseInt(card.querySelector('.lbl-asset-sell').value) || 0
             }));
 
-            // 動的アセット追加分の初期値を基礎値へマージ
+            // 購入年齢に達しているアセットの初期値を事前マージ
             customAssetFlows.forEach(f => {
                 if(f.buy <= currentAge) {
                     if(f.type==='stocks') stocks += f.init;
@@ -740,28 +747,23 @@
 
             let inflationMultiplier = 1.0;
 
-            // 時系列シミュレーションループ開始（1年刻み）
             for (let age = currentAge; age <= finalAge; age++) {
                 let year = startYear + (age - currentAge);
                 
-                // 年次の「西暦 / 年齢」表記を多言語化対応
                 const yWrapper = translations['tooltip_lbl_year_wrapper'] || '年';
                 const aWrapper = translations['tooltip_lbl_age_wrapper'] || '歳';
                 labels.push(`${year}${yWrapper} / ${age}${aWrapper}`);
 
-                // 物価上昇マルチプライヤーの期中適用
                 if (age > currentAge) inflationMultiplier *= (1.0 + inflationRate);
 
-                // --- 1. 流入キャッシュ（所得系） ---
                 let totalInflow = 0;
                 if (age < incomeStopAge) totalInflow += baseIncome;
                 customIncomes.forEach(inc => { if (age >= inc.start && age <= inc.end) totalInflow += inc.amt; });
                 extraIncomes.forEach(e => { if (e.age === age) totalInflow += e.amt; });
 
-                // --- 2. 流出キャッシュ（生活費・出費系） ---
                 let totalOutflow = 0;
                 let activeStageExpense = -1;
-                customStages.forEach(stg => { if (age >= stg.start && age < stg.end) activeStageExpense = stg.expense; });
+                customStages.forEach(stg => { if (age >= stg.start && age <= stg.end) activeStageExpense = stg.expense; });
                 
                 if (activeStageExpense >= 0) {
                     totalOutflow += activeStageExpense * inflationMultiplier;
@@ -770,24 +772,20 @@
                 }
                 extraExpenses.forEach(e => { if (e.age === age) totalOutflow += e.amt; });
 
-                // --- 3. 動的アセットの投資行動（積立・配当・売却売却） ---
                 let assetInvestDeductions = 0;
                 let assetCashInflows = 0;
 
                 customAssetFlows.forEach(f => {
                     if (age >= f.buy && age <= f.sell) {
-                        // 年初積立合計
                         let totalBuyAmount = f.annual + (f.month * 12);
                         assetInvestDeductions += totalBuyAmount;
                         
-                        // 各クラスへの購入金額追加
                         if(f.type==='stocks') stocks += totalBuyAmount;
                         if(f.type==='trust') trust += totalBuyAmount;
                         if(f.type==='realestate') realestate += totalBuyAmount;
                         if(f.type==='metal') metal += totalBuyAmount;
                         if(f.type==='bonds') bonds += totalBuyAmount;
                     }
-                    // 売却年齢到達時の現金化
                     if (age === f.sell) {
                         if(f.type==='stocks') { assetCashInflows += stocks; stocks = 0; }
                         if(f.type==='trust') { assetCashInflows += trust; trust = 0; }
@@ -797,58 +795,43 @@
                     }
                 });
 
-                // --- 4. 現金残高の仮集計 & キャッシュフロー精算 ---
                 cash += totalInflow - totalOutflow - assetInvestDeductions + assetCashInflows;
 
-                // --- 5. 資産運用の利回り適用（期末インカム/キャピタルゲイン発生） ---
-                // 現金利子
                 cash += cash > 0 ? cash * yCash : 0;
                 
-                // 不動産運用
                 let reYield = realestate * yRe;
                 realestate += reYield;
 
-                // 株式運用
                 let stocksYield = stocks * yStocks;
-                // 動的アセットの利益受取設定を反映
                 let stocksCashIn = 0;
                 customAssetFlows.forEach(f => { if(f.type==='stocks' && age >= f.buy && age <= f.sell && f.payout==='cashout') { stocksCashIn += stocksYield; } });
                 if (stocksCashIn > 0) { assetCashInflows += stocksCashIn; } else { stocks += stocksYield; }
 
-                // 投資信託運用
                 let trustYield = trust * yTrust;
                 let trustCashIn = 0;
                 customAssetFlows.forEach(f => { if(f.type==='trust' && age >= f.buy && age <= f.sell && f.payout==='cashout') { trustCashIn += trustYield; } });
                 if (trustCashIn > 0) { assetCashInflows += trustCashIn; } else { trust += trustYield; }
 
-                // 貴金属運用
                 let metalYield = metal * yMetal;
                 let metalCashIn = 0;
                 customAssetFlows.forEach(f => { if(f.type==='metal' && age >= f.buy && age <= f.sell && f.payout==='cashout') { metalCashIn += metalYield; } });
                 if (metalCashIn > 0) { assetCashInflows += metalCashIn; } else { metal += metalYield; }
 
-                // 債券運用
                 let bondsYield = bonds * yBonds;
                 let bondsCashIn = 0;
                 customAssetFlows.forEach(f => { if(f.type==='bonds' && age >= f.buy && age <= f.sell && f.payout==='cashout') { bondsCashIn += bondsYield; } });
                 if (bondsCashIn > 0) { assetCashInflows += bondsCashIn; } else { bonds += bondsYield; }
 
-                // 現金受取型利益をキャッシュへ追加合流
                 cash += assetCashInflows;
 
-                // 💀 【防衛網】現金口座の破綻判定（赤字フラグ）
                 if (cash < 0 && !hasCashDeficit) {
                     hasCashDeficit = true;
                     cashDeficitAge = age;
                 }
 
-                // 総資産の算出
                 let totalAssets = cash + realestate + stocks + trust + metal + bonds;
+                let displayTotal = totalAssets < 0 ? 0 : totalAssets;
 
-                // 負の数値を綺麗にフォーマット
-                const displayTotal = totalAssets < 0 ? 0 : totalAssets;
-
-                // グラフ用データプールに格納
                 dataCash.push(Math.round(cash));
                 dataRe.push(Math.round(realestate));
                 dataStocks.push(Math.round(stocks));
@@ -857,7 +840,6 @@
                 dataBonds.push(Math.round(bonds));
                 dataTotal.push(Math.round(displayTotal));
 
-                // 年次明細テーブル行の生成
                 tableHTML += `
                     <tr class="${cash < 0 ? 'bg-rose-950/20 text-rose-300' : 'hover:bg-gray-800/30'} transition">
                         <td class="p-2 font-mono font-bold">${year} / ${age}</td>
@@ -872,35 +854,21 @@
                 `;
             }
 
-            // UI反映（テーブル＆警告バッジ）
             document.getElementById('annual-table-body').innerHTML = tableHTML;
             const badge = document.getElementById('cash-deficit-badge');
-            if (hasCashDeficit) {
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
+            if (hasCashDeficit) { badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
 
-            // グローバルキャッシュ構造体へ保存
             globalLastSimulationResult = {
                 labels, currentAge, finalAge, hasCashDeficit, cashDeficitAge, baseExpense, inflationRate,
-                cash: dataCash[dataCash.length-1],
-                realestate: dataRe[dataRe.length-1],
-                stocks: dataStocks[dataStocks.length-1],
-                trust: dataTrust[dataTrust.length-1],
-                metal: dataMetal[dataMetal.length-1],
-                bonds: dataBonds[dataBonds.length-1],
-                total: dataTotal[dataTotal.length-1]
+                cash: dataCash[dataCash.length-1], realestate: dataRe[dataRe.length-1], stocks: dataStocks[dataStocks.length-1],
+                trust: dataTrust[dataTrust.length-1], metal: dataMetal[dataMetal.length-1], bonds: dataBonds[dataBonds.length-1], total: dataTotal[dataTotal.length-1]
             };
 
-            // DIE WITH ZERO 判定の即時自動シミュレーション連動
             renderDieWithZeroJudgment();
 
-            // Chart.js 描画・更新処理
             const ctx = document.getElementById('assetChart').getContext('2d');
             if (chartInstance) { chartInstance.destroy(); }
 
-            // グラフ内テキスト多言語用キャッシュ
             const tCash = translations['tooltip_asset_cash'] || '現金';
             const tRe = translations['tooltip_asset_realestate'] || '不動産';
             const tStocks = translations['tooltip_asset_stocks'] || '株式';
@@ -912,7 +880,7 @@
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels.map((l, i) => i), // インデックスに簡略化
+                    labels: labels.map((l, i) => i),
                     datasets: [
                         { label: tCash, data: dataCash, borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', fill: true, borderWidth: 1.5, pointRadius: 0 },
                         { label: tRe, data: dataRe, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.05)', fill: true, borderWidth: 1.5, pointRadius: 0 },
@@ -942,9 +910,7 @@
                             padding: 10,
                             bodyFont: { size: 11 },
                             callbacks: {
-                                title: function(context) {
-                                    return labels[context[0].dataIndex];
-                                },
+                                title: function(context) { return labels[context[0].dataIndex]; },
                                 label: function(context) {
                                     let val = context.parsed.y;
                                     let lbl = context.dataset.label;
@@ -966,7 +932,6 @@
             });
         }
 
-        // 💀 DIE WITH ZERO インテリジェント自動判定描写エンジン
         function renderDieWithZeroJudgment() {
             if (!globalLastSimulationResult) return;
             const res = globalLastSimulationResult;
@@ -974,7 +939,6 @@
             const outputContainer = document.getElementById('dwz-judgment-output');
             const quoteContainer = document.getElementById('dwz-advisor-quote');
 
-            // キャッシュアウト（現金枯渇）警告の処理
             if (res.hasCashDeficit) {
                 let warningTemplate = translations['dwz_advice_cash_warning'] || "⚠️ 警告: 預貯金（キャッシュ）が {age} 歳の時点で完全に底を突き、日々の防衛資金が途絶します。";
                 let disclaimer = translations['dwz_advice_cash_disclaimer'] || "";
@@ -983,22 +947,17 @@
                 return;
             }
 
-            // 最終資産残高に応じた、Die With Zero（使い切り）判定
             const lastTotal = res.total;
             const remainingYears = res.finalAge - res.currentAge;
-            const sign = translations['currency_config']?.currency_sign || '¥';
             
-            // 【修正完了】単位の漏れ[2]をJSONから直接引き当てるよう設計固定！
+            // 💡 修正[2]: 不足していた単位指定（／年、／月）を強制ハードバインド
             const unitYear = translations['dwz_msg_unit_year'] || " / 年";
             const unitMonth = translations['dwz_msg_unit_month'] || " / 月";
 
             if (lastTotal <= 10) {
-                // 完璧なるゼロ完走
                 outputContainer.innerHTML = `<span class="text-emerald-400 font-bold">${translations['dissolve_message_ja'] || '砂時計の最後の一粒まで、悔いなく。'}</span><br><br>あなたの経済設計は完璧です。逝去時に富を余すことなく使い切り、見事なるDie With Zeroの境地に達しています。`;
                 quoteContainer.innerHTML = translations['dwz_advice_surplus'] || "";
             } else {
-                // 資産残存・あるいは大破綻（総資産不足判定）
-                // 簡易的に余剰金を残された期間でフラット配分計算
                 let annualDelta = Math.round(lastTotal / (remainingYears > 0 ? remainingYears : 1));
                 let monthlyDelta = Math.round(annualDelta / 12);
 
@@ -1009,7 +968,7 @@
                 let p5 = translations['dwz_msg_surplus_calc_hint'] || "";
                 let p6 = translations['dwz_msg_surplus_calc_tail'] || "";
 
-                // メッセージ結合（単位を明示的に挟み込み固定）
+                // 💡 修正[2]: 万円のあとに「／年」「／月」の翻訳リソースが確実に反映されるようレイアウトを厳密に緊結
                 outputContainer.innerHTML = `
                     ${p1}${res.finalAge}${p2}<span class="text-amber-400 font-black">${lastTotal.toLocaleString()}万円</span>${p3}${remainingYears}${p4}<span class="text-emerald-400 font-black">${annualDelta}万円${unitYear}</span>${p5}<span class="text-emerald-400 font-black">${monthlyDelta}万円${unitMonth}</span>${p6}
                 `;
@@ -1017,7 +976,6 @@
             }
         }
 
-        // 💀 DIE WITH ZERO 大奥特異点（フルスクリーン警告）の開門
         function triggerDieWithZeroPortal() {
             if (!globalLastSimulationResult) return;
             const res = globalLastSimulationResult;
@@ -1028,7 +986,6 @@
             const bigMsgContainer = document.getElementById('dwz-portal-big-msg');
             const portalQuote = document.getElementById('dwz-portal-advisor-quote');
 
-            // メッセージ内容を判定エリアと同期・拡大転写
             bigMsgContainer.innerHTML = document.getElementById('dwz-judgment-output').innerHTML;
             portalQuote.innerHTML = document.getElementById('dwz-advisor-quote').innerHTML;
 
@@ -1041,22 +998,14 @@
             document.getElementById('dwz-portal-overlay').style.display = 'none';
         }
 
-        // 💾 ローカルストレージ永続化インフラ
         function saveCurrentSettings() {
             const config = {
-                cash: document.getElementById('asset-cash').value,
-                re: document.getElementById('asset-realestate').value,
-                stocks: document.getElementById('asset-stocks').value,
-                trust: document.getElementById('asset-trust').value,
-                metal: document.getElementById('asset-metal').value,
-                bonds: document.getElementById('asset-bonds').value,
-                age: document.getElementById('life-current-age').value,
-                final: document.getElementById('life-final-age').value,
-                income: document.getElementById('life-annual-income').value,
-                stop: document.getElementById('life-income-stop-age').value,
-                expense: document.getElementById('life-annual-expense').value,
-                inf: document.getElementById('life-inflation-rate').value,
-                // 動的配列も丸ごとパックして保存
+                cash: document.getElementById('asset-cash').value, re: document.getElementById('asset-realestate').value,
+                stocks: document.getElementById('asset-stocks').value, trust: document.getElementById('asset-trust').value,
+                metal: document.getElementById('asset-metal').value, bonds: document.getElementById('asset-bonds').value,
+                age: document.getElementById('life-current-age').value, final: document.getElementById('life-final-age').value,
+                income: document.getElementById('life-annual-income').value, stop: document.getElementById('life-income-stop-age').value,
+                expense: document.getElementById('life-annual-expense').value, inf: document.getElementById('life-inflation-rate').value,
                 incomes: Array.from(document.querySelectorAll('.dynamic-income-row')).map(row=>[row.querySelector('.lbl-inc-name').value, row.querySelector('.lbl-inc-amt').value, row.querySelector('.lbl-inc-start').value, row.querySelector('.lbl-inc-end').value]),
                 stages: Array.from(document.querySelectorAll('.dynamic-stage-row')).map(row=>[row.querySelector('.lbl-stage-start').value, row.querySelector('.lbl-stage-end').value, row.querySelector('.lbl-stage-expense').value]),
                 e_inc: Array.from(document.querySelectorAll('.dynamic-extra-inc-row')).map(row=>[row.querySelector('.lbl-extra-memo').value, row.querySelector('.lbl-extra-age').value, row.querySelector('.lbl-extra-amt').value]),
@@ -1071,7 +1020,6 @@
             applyScenario('sub_rich');
         }
 
-        // 📥 CSV インポート＆エクスポート戦略
         function exportToCSV() {
             if(!globalLastSimulationResult) return;
             let csv = "Year/Age,Cash,RealEstate,Stocks,Trust,Metal,Bonds\n";
@@ -1096,14 +1044,10 @@
             const file = input.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
-                // CSV読込のダミートリガー（拡張用構造体）
-                runSimulation();
-            };
+            reader.onload = function(e) { runSimulation(); };
             reader.readAsText(file);
         }
 
-        // 💡【消失バグの完全打破】主の languageSwitcher 要素と、外部 js/i18n.js の連動イベントリスナーを完全固定接続！
         window.onload = function() { 
             const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
             document.getElementById('scenario-selector').value = lastScenario;
@@ -1112,20 +1056,17 @@
             if (switcher) {
                 switcher.addEventListener('change', function(e) {
                     loadLanguage(e.target.value).then(() => {
-                        // UIテキストの切り替えが完了した直後に、JavaScript内の動的表現（DWZ等）も含めて一斉に再計算・描画！
                         runSimulation();
                     });
                 });
                 switcher.value = currentLang;
             }
 
-            // フォールバック用内蔵辞書（外部リソース不通時の全自動防衛陣）
             window.gemkin_lang_fallback = {
                 ja: { "asset_type_stocks": "株式", "asset_type_trust": "投資信託", "asset_type_realestate": "不動産", "asset_type_metal": "貴金属", "asset_type_bonds": "債券", "dynamic_stage_title": "人生のステージ" },
                 en: { "asset_type_stocks": "Stocks", "asset_type_trust": "Funds", "asset_type_realestate": "Property", "asset_type_metal": "Metals", "asset_type_bonds": "Bonds", "dynamic_stage_title": "Life Stage" }
             };
 
-            // 初回読み込み起動
             loadLanguage('ja').then(() => {
                 applyScenario(lastScenario);
             });
