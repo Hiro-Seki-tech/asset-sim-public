@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -159,7 +159,7 @@
                                 <span data-i18n="tooltip_macro_normal_item1">• 株式: <span class="font-bold text-white">5.0%</span> | 投資信託: <span class="font-bold text-white">4.0%</span></span><br>
                                 <span data-i18n="tooltip_macro_normal_item2">• 貴金属 / 債券: <span class="font-bold text-white">4.0%</span></span><br>
                                 <span data-i18n="tooltip_macro_normal_item3">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
-                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-amber-500"></span>
+                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
 
@@ -1466,7 +1466,7 @@
                 addExpenseRow(isEn ? "Mortgage Lump-sum Repayment" : "住宅ローン一括繰上返済", 50, 1500);
                 addExpenseRow(isEn ? "Premium Senior Home Deposit" : "ケア付き有料シニアホーム保証前払金", 78, 2000);
                 
-                addAssetElement({ name: isEn ? "Company Stock Ownership Plan" : "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, textAge: 65, startAge: 40, endAge: 65 });
+                addAssetElement({ name: isEn ? "Company Stock Ownership Plan" : "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
                 addAssetElement({ name: isEn ? "Global Index Fund" : "優良インデックス投信", type: "trust", initAmt: 3500, rate: 4.0, yearAmt: 120, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 85 });
 
             } else if (scenario === 'upper_mass') {
@@ -1760,21 +1760,13 @@
                         legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, 
                         tooltip: { enabled: false, external: customTooltipHandler } 
                     },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        interaction: { mode: 'index', intersect: false },
-                        plugins: { 
-                            legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, 
-                            tooltip: { enabled: false, external: customTooltipHandler } 
-                        },
-                    },
                     scales: { 
                         x: { grid: { display: false } }, 
                         y: { 
                             beginAtZero: true, 
                             ticks: { 
                                 callback: function(value) {
-                                    // 💡グラフの縦軸の目盛り表現もハードコードな「万」を排除し、完全動的フォーマッタに全面委託！
+                                    // 💡グラフの縦軸の目盛り表現も完全動的フォーマッタに全面委託！
                                     return formatAssetValue(value);
                                 }
                             } 
@@ -2014,9 +2006,27 @@
             link.click();
         }
 
+        // 💡【消失バグの特効薬】主の languageSwitcher 要素と、外部 js/i18n.js の連携イベントリスナーをここに完全再接続！
         window.onload = function() { 
             const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
             document.getElementById('scenario-selector').value = lastScenario;
+            
+            // セレクトボックスの変更イベントをリッスンし、外部の多言語エンジンと再計算を確実に誘発
+            const switcher = document.getElementById('languageSwitcher');
+            if (switcher) {
+                switcher.addEventListener('change', function(e) {
+                    if (typeof loadLanguage === 'function') {
+                        loadLanguage(e.target.value).then(() => {
+                            runSimulation();
+                        });
+                    }
+                });
+                // 初期ロード時の選択状態を同期
+                if (typeof currentLang !== 'undefined') {
+                    switcher.value = currentLang;
+                }
+            }
+
             applyScenario(lastScenario);
             
             window.addEventListener('resize', () => {
