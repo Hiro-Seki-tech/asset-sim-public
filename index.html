@@ -161,7 +161,7 @@
 
                         <div class="relative group" tabindex="0">
                             <button onclick="applyWorldLine('normal')" class="px-2.5 py-1.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors border border-blue-500/30 font-bold focus:outline-none" data-i18n="btn_macro_normal">🌱 巡航速度</button>
-                            <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
+                            <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-blue-400" data-i18n="tooltip_macro_normal_title">🌱 巡航速度（平時の現代日本・安定的成長）</span><br>
                                 <span data-i18n="tooltip_macro_normal_item1">• 株式: <span class="font-bold text-white">5.0%</span> | 投資信託: <span class="font-bold text-white">4.0%</span></span><br>
                                 <span data-i18n="tooltip_macro_normal_item2">• 貴金属 / 債券: <span class="font-bold text-white">4.0%</span></span><br>
@@ -225,7 +225,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="text-slate-400 text-[10px] block mb-1" data-i18n="lbl、salary_amount">所得額 (万円/年)</label>
+                                <label class="text-slate-400 text-[10px] block mb-1" data-i18n="lbl_salary_amount">所得額 (万円/年)</label>
                                 <input type="number" id="salary-amount" value="800" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
                             </div>
                             <div>
@@ -1303,6 +1303,14 @@
             } catch(e) { showToast("保存に失敗しました。", "error"); }
         }
 
+        function clearLocalStorage() {
+            localStorage.clear();
+            showToast("🧹 記憶領域をすべて初期化しました。");
+            const lastScenario = 'sub_rich';
+            document.getElementById('scenario-selector').value = lastScenario;
+            applyScenario(lastScenario);
+        }
+
         function applyScenario(scenario) {
             const otherContainer = document.getElementById('other-income-container');
             const stageContainer = document.getElementById('stage-container');
@@ -1703,7 +1711,7 @@
             });
         }
 
-        // 💀 DIE WITH ZERO 動的エンジン ＆ ⚠️【[5][6] 狙撃修正エリア】
+        // 💀 DIE WITH ZERO 動的エンジン ＆ ⚠️【修正点[2]の完全撲滅】単位同期ロジック
         function transitionToDwz() {
             playDissolveSound();
             const tooltipEl = document.getElementById('chart-tooltip');
@@ -1793,25 +1801,24 @@
                 let advicePrefixHtml = '';
                 let dwzDisclaimer = '';
 
-                // 💡【修正点[5]】二重アイコンを根絶。辞書内のキー単一で美しく描画
-                const iconText = getI18nText('dwz_alert_icon_text', '⚠️ 警告: ');
+                const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
 
                 if (cashShortageAge !== null) {
-                    const baseWarningByMst = getI18nText('dwz_advice_cash_warning', '預貯金（キャッシュ）が {age} 歳の時点で完全に底を突き、日々の防衛資金が途絶します。他の資産を売却して補填する軍略を至急ご検討ください。').replace('{age}', cashShortageAge);
+                    const baseWarningByMst = getI18nText('dwz_advice_cash_warning', '⚠️ 警告: 預貯金（キャッシュ）が {age} 歳の時点で完全に底を突き、日々の防衛資金が途絶します。他の資産を売却して補填する軍略を至急ご検討ください。').replace('{age}', cashShortageAge);
 
                     advicePrefixHtml = `
                         <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
-                            <span>${iconText}</span>
+                            <span>⚠️</span>
                             <span>${baseWarningByMst}</span>
                         </div>
                     `;
                     dwzDisclaimer = getI18nText('dwz_advice_cash_disclaimer', '※本シミュレータは、不動産や株式などの総資産が残っていても、現金を使い切った時点でキャッシュアウト警告を発動する仕様となっております。');
                 }
 
+                // 💡【修正点[2]の確信】結合が外れていた「 / 年」や「 / 月」の国際化リソース単位をここで安全にロード
                 const lblUnitYear = getI18nText('dwz_msg_unit_year', ' / 年');
                 const lblUnitMonth = getI18nText('dwz_msg_unit_month', ' / 月');
 
-                // 💡【修正点[6]】ハードコーディングされた日本語フォールバックを排除し、JSONの各パーツをシームレスに結合
                 if (totalRemainingYen < 0) {
                     let bankruptAge = endAge;
                     for (let i = 0; i < lastSimulationData.length; i++) {
@@ -1825,50 +1832,51 @@
                     const reduceSpendPerYear = Math.round(deficitAmt / yearsRemaining);
                     const reduceSpendPerMonth = Math.round(reduceSpendPerYear / 12);
 
-                    const txtPrefix = getI18nText('dwz_msg_shortage_prefix', '');
-                    const txtMiddle = getI18nText('dwz_msg_shortage_middle', '');
-                    const txtSuffix = getI18nText('dwz_msg_shortage_suffix', '');
-                    const txtTail = getI18nText('dwz_msg_shortage_tail', '');
-                    const txtFinal = getI18nText('dwz_msg_shortage_final', '');
-                    const txtCalcHint = getI18nText('dwz_msg_shortage_calc_hint', '');
-                    const txtCalcHintTail = getI18nText('dwz_msg_shortage_calc_tail', '');
+                    const txtPrefix = getI18nText('dwz_msg_shortage_prefix', '現在の算盤では、あなたの資産は逝去される前の');
+                    const txtMiddle = getI18nText('dwz_msg_shortage_middle', '歳の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>最終的に逝去する年齢（');
+                    const txtSuffix = getI18nText('dwz_msg_shortage_suffix', '歳）では、合計で');
+                    const txtTail = getI18nText('dwz_msg_shortage_tail', 'が【不足】する計算となります。<br><br>この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された');
+                    const txtFinal = getI18nText('dwz_msg_shortage_final', '年間、年間支出を');
+                    const txtCalcHint = getI18nText('dwz_msg_shortage_calc_hint', '（すなわち、月々約');
+                    const txtCalcHintTail = getI18nText('dwz_msg_shortage_calc_tail', '）【減らさなければ】なりません。');
 
                     msgBox.innerHTML = `
                         ${advicePrefixHtml}
                         <div class="text-xs text-slate-400 mb-2">${dwzDisclaimer}</div>
-                        ${txtPrefix}<span class="text-rose-400 font-black text-lg">${bankruptAge}</span>${txtMiddle}<span class="text-amber-400 font-black">${endAge}</span>${txtSuffix}<span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(deficitAmt)}</span>${txtTail}<span class="text-amber-400 font-extrabold">${yearsRemaining}</span>${txtFinal}<br>
+                        ${txtPrefix} <span class="text-rose-400 font-black text-lg">${bankruptAge}</span> ${txtMiddle}<span class="text-amber-400 font-black">${endAge}</span>${txtSuffix} <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(deficitAmt)}</span> ${txtTail} <span class="text-amber-400 font-extrabold">${yearsRemaining}</span> ${txtFinal}<br>
                         <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(reduceSpendPerYear, true)}</span>${lblUnitYear} 
-                        ${txtCalcHint}<span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth, true)}</span>${lblUnitMonth}${txtCalcHintTail}
+                        ${txtCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth, true)}</span>${lblUnitMonth}${txtCalcHintTail}
                     `;
 
                     if (adviceBox) {
-                        adviceBox.innerHTML = getI18nText('dwz_advice_shortage', "");
+                        adviceBox.innerHTML = getI18nText('dwz_advice_shortage', "「兵糧が尽きかけた状態で最後の決戦に挑むのは、将として最大の不覚。今すぐ生活水準の防衛陣を敷くか、運用利回りの改善を図るべし。」");
                     }
                 } else {
                     const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
                     const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
 
-                    const txtSurplusPrefix = getI18nText('dwz_msg_surplus_prefix', '');
-                    const txtSurplusMiddle = getI18nText('dwz_msg_surplus_middle', '');
-                    const txtSurplusSuffix = getI18nText('dwz_msg_surplus_suffix', '');
-                    const txtSurplusTail = getI18nText('dwz_msg_surplus_tail', '');
-                    const txtSurplusCalcHint = getI18nText('dwz_msg_surplus_calc_hint', '');
-                    const txtSurplusCalcTail = getI18nText('dwz_msg_surplus_calc_tail', '');
+                    const txtSurplusPrefix = getI18nText('dwz_msg_surplus_prefix', '現在の推定では、あなたが亡くなるとき（＝最終的に逝去する年齢');
+                    const txtSurplusMiddle = getI18nText('dwz_msg_surplus_middle', '歳）に、総資産が約');
+                    const txtSurplusSuffix = getI18nText('dwz_msg_surplus_suffix', '【残る】見込みです。<br><br>人生の最後に巨万の富を残して死ぬという経済的「無駄」を完全に削ぎ落とし、完璧なる<span class="text-amber-400 font-black">Die With Zero（資産ゼロでの大劇終）</span>を達成するためには、残された');
+                    const txtSurplusTail = getI18nText('dwz_msg_surplus_tail', '年間で、年間支出をあと');
+                    const txtSurplusCalcHint = getI18nText('dwz_msg_surplus_calc_hint', '（月々にして約');
+                    const txtSurplusCalcTail = getI18nText('dwz_msg_surplus_calc_tail', '）【増やし】、人生の体験価値へ投資することが推奨されます。');
 
                     msgBox.innerHTML = `
                         ${advicePrefixHtml}
                         <div class="text-xs text-slate-400 mb-2">${dwzDisclaimer}</div>
-                        ${txtSurplusPrefix}<span class="text-amber-400 font-black">${endAge}</span>${txtSurplusMiddle}
-                        <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(totalRemainingYen)}</span>${txtSurplusSuffix}<span class="text-amber-400 font-extrabold">${yearsRemaining}</span>${txtSurplusTail}<br>
+                        ${txtSurplusPrefix} <span class="text-amber-400 font-black">${endAge}</span> ${txtSurplusMiddle}
+                        <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(totalRemainingYen)}</span> ${txtSurplusSuffix} <span class="text-amber-400 font-extrabold">${yearsRemaining}</span> ${txtSurplusTail}<br>
                         <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(additionalSpendPerYear, true)}</span>${lblUnitYear} 
-                        ${txtSurplusCalcHint}<span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(additionalSpendPerMonth, true)}</span>${lblUnitMonth}${txtSurplusCalcTail}
+                        ${txtSurplusCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(additionalSpendPerMonth, true)}</span>${lblUnitMonth}${txtSurplusCalcTail}
                     `;
 
                     if (adviceBox) {
-                        adviceBox.innerHTML = getI18nText('dwz_advice_surplus', "");
+                        adviceBox.innerHTML = getI18nText('dwz_advice_surplus', "「富を抱いたまま墓場へ入るは人生の恥辱、これすなわち人間の効用の最大化に失敗した証拠。動けるうちに、経験という名のアセットへ資金を再配分されよ。」");
                     }
                 }
 
+                // 💡【最終陣 UI一斉掃射】DWZビュー内の固定文字ラベルもロード中の言語辞書で強制同期
                 document.getElementById('dwz-assets-portfolio-lbl').textContent = getI18nText('dwz_assets_portfolio_title', '逝去時の資産ポートフォリオ');
                 document.getElementById('dwz-advisor-advice-lbl').textContent = getI18nText('dwz_advisor_advice_title', '人生の軍師からのアドバイス');
 
@@ -1878,7 +1886,6 @@
                 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
-                const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
                 setTimeout(() => {
                     overlay.style.opacity = '0';
                     overlay.classList.add('pointer-events-none');
