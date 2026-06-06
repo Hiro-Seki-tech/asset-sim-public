@@ -72,6 +72,13 @@
                 <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">0万円</span>
             </div>
         </div>
+        <div class="relative w-full h-32 flex items-center justify-center">
+            <canvas id="tooltipPieChart" class="w-full h-full"></canvas>
+            <div class="absolute flex flex-col items-center justify-center text-center">
+                <span id="tooltip-total-center-lbl" class="text-[10px] text-slate-400 uppercase tracking-widest leading-none" data-i18n="tooltip_lbl_total_center">総資産</span>
+                <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">0万円</span>
+            </div>
+        </div>
         <div id="tooltip-breakdown" class="text-[11px] max-sm:text-[10px] grid grid-cols-1 gap-y-1 max-sm:gap-y-0.5 text-slate-300 border-t border-slate-800 pt-2"></div>
         <div id="tooltip-diff" class="text-[11px] text-center border-t border-slate-800 pt-2 font-bold"></div>
     </div>
@@ -598,82 +605,12 @@
             dissolveAnimId = requestAnimationFrame(() => animateDissolve(canvas, ctx));
         }
 
-        // 💡【重要】言語リソースから動的な名称を安全に引き出すヘルパー
+        // 💡【修正点[1]の布石】言語リソースから動的な名称を安全に引き出すヘルパー
         function getI18nText(key, fallback) {
             if (typeof _cachedDictionary !== 'undefined' && _cachedDictionary && _cachedDictionary[key]) {
                 return _cachedDictionary[key];
             }
             return fallback;
-        }
-
-        /* 🌏 言語切替時に画面上のすべての動的追加枠の「システム説明ラベル」を強制一斉同期するスキャンエンジン */
-        function translateDynamicLabels() {
-            // その他所得の固定ラベル同期
-            document.querySelectorAll('.other-income-row').forEach(row => {
-                const lbls = row.querySelectorAll('.sys-lbl');
-                if (lbls[0]) lbls[0].textContent = getI18nText('dynamic_lbl_inc_name', '所得の名称');
-                if (lbls[1]) lbls[1].textContent = getI18nText('dynamic_lbl_inc_amt_year', '所得額(万/年)');
-                if (lbls[2]) lbls[2].textContent = getI18nText('dynamic_lbl_start_age', '開始年齢');
-                if (lbls[3]) lbls[3].textContent = getI18nText('dynamic_lbl_end_age', '終了年齢');
-                const toEl = row.querySelector('.sys-to');
-                if (toEl) toEl.textContent = getI18nText('dynamic_lbl_to', '～');
-            });
-
-            // 年間生活費ステージの固定ラベル同期
-            document.querySelectorAll('.stage-row').forEach(row => {
-                updateStageAges(); // 内部で人生のステージの文字を更新
-                const toEl = row.querySelector('.sys-to');
-                if (toEl) toEl.textContent = getI18nText('dynamic_lbl_to', ' ～ ');
-                const ageEl = row.querySelector('.sys-age');
-                if (ageEl) ageEl.textContent = getI18nText('dynamic_lbl_age', ' 歳');
-                const burnEl = row.querySelector('.sys-burn');
-                if (burnEl) burnEl.textContent = getI18nText('dynamic_lbl_burn', '支出（人生の出費）:');
-                const unitEl = row.querySelector('.sys-unit');
-                if (unitEl) unitEl.textContent = getI18nText('dynamic_lbl_unit_year', ' 万円/年');
-            });
-
-            // 臨時収入の固定ラベル同期
-            document.querySelectorAll('.income-row').forEach(row => {
-                const lbls = row.querySelectorAll('.sys-lbl');
-                if (lbls[0]) lbls[0].textContent = getI18nText('dynamic_lbl_memo', '名称');
-                if (lbls[1]) lbls[1].textContent = getI18nText('dynamic_lbl_age_occur', '発生年齢');
-                if (lbls[2]) lbls[2].textContent = getI18nText('dynamic_lbl_amt_wan', '金額(万円)');
-                if (lbls[3]) lbls[3].textContent = getI18nText('dynamic_lbl_target', '入金先');
-            });
-
-            // 臨時出費の固定ラベル同期
-            document.querySelectorAll('.expense-row').forEach(row => {
-                const lbls = row.querySelectorAll('.sys-lbl');
-                if (lbls[0]) lbls[0].textContent = getI18nText('dynamic_lbl_memo', '名称');
-                if (lbls[1]) lbls[1].textContent = getI18nText('dynamic_lbl_age_occur', '発生年齢');
-                if (lbls[2]) lbls[2].textContent = getI18nText('dynamic_lbl_amt_wan', '金額(万円)');
-            });
-
-            // 個別投資アセット一覧の固定ラベル同期
-            document.querySelectorAll('.asset-card').forEach(card => {
-                const typeEl = card.querySelector('.asset-type-field');
-                const badgeEl = card.querySelector('.sys-type-badge');
-                if (typeEl && badgeEl) {
-                    badgeEl.textContent = getI18nText('asset_type_' + typeEl.value, typeEl.value);
-                }
-                const lbls = card.querySelectorAll('.sys-lbl');
-                if (lbls[0]) lbls[0].textContent = getI18nText('dynamic_asset_lbl_init', '初期/購入額 (万円)');
-                if (lbls[1]) lbls[1].textContent = getI18nText('dynamic_asset_lbl_rate', '想定年利 (%)');
-                if (lbls[2]) lbls[2].textContent = getI18nText('dynamic_asset_lbl_payout', '利益受取');
-                if (lbls[3]) lbls[3].textContent = getI18nText('dynamic_asset_lbl_year', '年初投資 (万円/年)');
-                if (lbls[4]) lbls[4].textContent = getI18nText('dynamic_asset_lbl_month', '月々積立 (万円/月)');
-                
-                const buyEl = card.querySelector('.sys-buy');
-                if (buyEl) buyEl.textContent = getI18nText('dynamic_asset_lbl_buy_age', '購入年齢');
-                const sellEl = card.querySelector('.sys-sell');
-                if (sellEl) sellEl.textContent = getI18nText('dynamic_asset_lbl_sell_age', '売却年齢');
-
-                const selectEl = card.querySelector('.asset-payout-field');
-                if (selectEl && selectEl.options.length >= 2) {
-                    selectEl.options[0].text = getI18nText('dynamic_asset_lbl_reinvest', '再投資');
-                    selectEl.options[1].text = getI18nText('dynamic_asset_lbl_cashout', '現金受取');
-                }
-            });
         }
 
         /* ライフステージ定義の年齢連動 */
@@ -687,7 +624,7 @@
             rows.forEach((row, index) => {
                 const titleSpan = row.querySelector('.stage-title');
                 if (titleSpan) {
-                    titleSpan.innerHTML = `<i class="fa-solid fa-layer-group mr-1"></i>\${baseTitle} \${romanNumerals[index] || (index + 1)}`;
+                    titleSpan.innerHTML = `<i class="fa-solid fa-layer-group mr-1"></i>${baseTitle} ${romanNumerals[index] || (index + 1)}`;
                 }
                 
                 const startInput = row.querySelector('.stage-start');
@@ -720,17 +657,17 @@
                     <span class="stage-title text-rose-600"><i class="fa-solid fa-layer-group mr-1"></i></span>
                     <div class="flex items-center gap-1">
                         <input type="number" class="stage-start w-10 rounded bg-slate-100 border-none p-0.5 text-center text-slate-500 font-bold" readonly value="40">
-                        <span class="sys-to text-slate-400 font-bold">\${lblTo}</span>
-                        <input type="number" class="stage-end w-12 rounded border border-slate-200 p-0.5 text-center text-slate-800 font-bold" value="\${endAge}" oninput="updateStageTotal(this);">
-                        <span class="sys-age text-slate-400">\${lblAge}</span>
+                        <span class="text-slate-400 font-bold">${lblTo}</span>
+                        <input type="number" class="stage-end w-12 rounded border border-slate-200 p-0.5 text-center text-slate-800 font-bold" value="${endAge}" oninput="updateStageTotal(this);">
+                        <span class="text-slate-400">${lblAge}</span>
                         <button type="button" onclick="this.parentElement.parentElement.parentElement.remove(); updateStageAges(); runSimulation();" class="text-rose-400 hover:text-rose-600 ml-1"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 </div>
                 <div class="flex items-center justify-between gap-2 text-[10px] pt-1">
-                    <span class="sys-burn text-slate-500 font-semibold">\${lblBurn}</span>
+                    <span class="text-slate-500 font-semibold">${lblBurn}</span>
                     <div class="flex items-center gap-1">
-                        <input type="number" class="stage-amount w-24 rounded border border-rose-200 bg-white p-1 font-black text-rose-700 text-center" value="\${amount}" oninput="runSimulation();">
-                        <span class="sys-unit text-rose-700 font-bold">\${lblUnit}</span>
+                        <input type="number" class="stage-amount w-24 rounded border border-rose-200 bg-white p-1 font-black text-rose-700 text-center" value="${amount}" oninput="runSimulation();">
+                        <span class="text-rose-700 font-bold">${lblUnit}</span>
                     </div>
                 </div>
             `;
@@ -753,21 +690,21 @@
 
             div.innerHTML = `
                 <div class="col-span-3 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblName}</span>
-                    <input type="text" class="other-inc-name rounded border border-slate-200 p-1 font-semibold text-center" value="\${name === "年金" ? defaultName : name}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblName}</span>
+                    <input type="text" class="other-inc-name rounded border border-slate-200 p-1 font-semibold text-center" value="${name === "年金" ? defaultName : name}">
                 </div>
                 <div class="col-span-3 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblAmt}</span>
-                    <input type="number" class="other-inc-amount rounded border border-slate-200 p-1 font-bold text-center" value="\${amount}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
+                    <input type="number" class="other-inc-amount rounded border border-slate-200 p-1 font-bold text-center" value="${amount}">
                 </div>
                 <div class="col-span-2 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblStart}</span>
-                    <input type="number" class="other-inc-start rounded border border-slate-200 p-1 font-bold text-center" value="\${start}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblStart}</span>
+                    <input type="number" class="other-inc-start rounded border border-slate-200 p-1 font-bold text-center" value="${start}">
                 </div>
-                <span class="sys-to col-span-1 text-center text-slate-400 font-bold mt-4">\${lblTo}</span>
+                <span class="col-span-1 text-center text-slate-400 font-bold mt-4">${lblTo}</span>
                 <div class="col-span-2 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblEnd}</span>
-                    <input type="number" class="other-inc-end rounded border border-slate-200 p-1 font-bold text-center" value="\${end}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblEnd}</span>
+                    <input type="number" class="other-inc-end rounded border border-slate-200 p-1 font-bold text-center" value="${end}">
                 </div>
                 <button type="button" onclick="this.parentElement.remove(); runSimulation();" class="col-span-1 text-rose-500 hover:text-rose-700 text-xs text-center mt-4"><i class="fa-solid fa-trash-can"></i></button>
             `;
@@ -795,26 +732,26 @@
 
             div.innerHTML = `
                 <div class="col-span-3 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblMemo}</span>
-                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="\${memo === "退職金" ? defaultMemo : memo}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblMemo}</span>
+                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="${memo === "退職金" ? defaultMemo : memo}">
                 </div>
                 <div class="col-span-3 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblAge}</span>
-                    <input type="number" class="income-age rounded border border-slate-200 p-1 font-bold text-center" value="\${age}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAge}</span>
+                    <input type="number" class="income-age rounded border border-slate-200 p-1 font-bold text-center" value="${age}">
                 </div>
                 <div class="col-span-3 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblAmt}</span>
-                    <input type="number" class="income-amount rounded border border-slate-200 p-1 font-bold text-emerald-700 text-center" value="\${amount}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
+                    <input type="number" class="income-amount rounded border border-slate-200 p-1 font-bold text-emerald-700 text-center" value="${amount}">
                 </div>
                 <div class="col-span-2 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblTarget}</span>
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblTarget}</span>
                     <select class="income-target rounded border border-slate-200 p-1.5 font-bold text-slate-700 bg-white" onchange="runSimulation();">
-                        <option value="cash">\${optCash}</option>
-                        <option value="realestate">\${optRE}</option>
-                        <option value="stocks">\${optStocks}</option>
-                        <option value="trust" \${target==='trust'?'selected':''}>\${optTrust}</option>
-                        <option value="metal">\${optMetal}</option>
-                        <option value="bonds">\${optBonds}</option>
+                        <option value="cash">${optCash}</option>
+                        <option value="realestate">${optRE}</option>
+                        <option value="stocks">${optStocks}</option>
+                        <option value="trust" ${target==='trust'?'selected':''}>${optTrust}</option>
+                        <option value="metal">${optMetal}</option>
+                        <option value="bonds">${optBonds}</option>
                     </select>
                 </div>
                 <button type="button" onclick="this.parentElement.remove(); runSimulation();" class="col-span-1 text-rose-500 hover:text-rose-700 text-xs text-center mt-4"><i class="fa-solid fa-xmark"></i></button>
@@ -835,16 +772,16 @@
 
             div.innerHTML = `
                 <div class="col-span-4 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblMemo}</span>
-                    <input type="text" class="expense-memo rounded border border-slate-200 p-1 font-medium text-center" value="\${memo === "イベント出費" ? defaultMemo : memo}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblMemo}</span>
+                    <input type="text" class="expense-memo rounded border border-slate-200 p-1 font-medium text-center" value="${memo === "イベント出費" ? defaultMemo : memo}">
                 </div>
                 <div class="col-span-3 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblAge}</span>
-                    <input type="number" class="expense-age rounded border border-slate-200 p-1 font-bold text-center" value="\${age}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAge}</span>
+                    <input type="number" class="expense-age rounded border border-slate-200 p-1 font-bold text-center" value="${age}">
                 </div>
                 <div class="col-span-4 flex flex-col">
-                    <span class="sys-lbl text-slate-400 text-[9px] mb-0.5 pl-1">\${lblAmt}</span>
-                    <input type="number" class="expense-amount rounded border border-slate-200 p-1 font-bold text-rose-700 text-center" value="\${amount}">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
+                    <input type="number" class="expense-amount rounded border border-slate-200 p-1 font-bold text-rose-700 text-center" value="${amount}">
                 </div>
                 <button type="button" onclick="this.parentElement.remove(); runSimulation();" class="col-span-1 text-rose-500 hover:text-rose-700 text-xs text-center mt-4"><i class="fa-solid fa-trash-can"></i></button>
             `;
@@ -867,7 +804,7 @@
                 const sign = valInWan < 0 ? '-' : '';
 
                 if (forceWanOnly) {
-                    return `\${sign}\${config.currency_sign}\${absWan.toLocaleString()}\${lblWanOnly}`;
+                    return `${sign}${config.currency_sign}${absWan.toLocaleString()}${lblWanOnly}`;
                 }
                 
                 const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
@@ -876,17 +813,17 @@
                     const wan = absWan % 10000;
                     
                     if (isEn) {
-                        return `\${sign}\${config.currency_sign}\${absWan.toLocaleString()}\${lblWan}`;
+                        return `${sign}${config.currency_sign}${absWan.toLocaleString()}${lblWan}`;
                     } else {
-                        return wan > 0 ? `\${sign}\${config.currency_sign}\${oku}\${lblOku}\${wan}\${lblWan}` : `\${sign}\${config.currency_sign}\${oku}\${lblOku}円`;
+                        return wan > 0 ? `${sign}${config.currency_sign}${oku}${lblOku}${wan}${lblWan}` : `${sign}${config.currency_sign}${oku}${lblOku}円`;
                     }
                 }
-                return `\${sign}\${config.currency_sign}\${absWan.toLocaleString()}\${lblWanOnly}`;
+                return `${sign}${config.currency_sign}${absWan.toLocaleString()}${lblWanOnly}`;
             } else {
                 const roundedValue = Math.round(convertedValue);
                 const absValue = Math.abs(roundedValue);
                 const sign = roundedValue < 0 ? '-' : '';
-                return `\${sign}\${config.currency_sign}\${absValue.toLocaleString()}`;
+                return `${sign}${config.currency_sign}${absValue.toLocaleString()}`;
             }
         }
 
@@ -992,12 +929,12 @@
                 item.className = 'flex items-center justify-between border-b border-slate-900/40 pb-0.5';
                 item.innerHTML = `
                     <div class="flex items-center gap-1 w-[45%]">
-                        <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: \${asset.color}"></span>
-                        <span class="text-slate-400 truncate text-[10px] max-sm:text-[9px] text-left">\${asset.name}</span>
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${asset.color}"></span>
+                        <span class="text-slate-400 truncate text-[10px] max-sm:text-[9px] text-left">${asset.name}</span>
                     </div>
                     <div class="flex justify-end w-[55%] text-right gap-1 font-mono text-[10px] max-sm:text-[9px]">
-                        <span class="text-slate-100 font-bold">\${formatAssetValue(value)}</span>
-                        <span class="text-amber-400">\${pct}%</span>
+                        <span class="text-slate-100 font-bold">${formatAssetValue(value)}</span>
+                        <span class="text-amber-400">(${pct}%)</span>
                     </div>
                 `;
                 breakdownContainer.appendChild(item);
@@ -1006,14 +943,14 @@
             const diffContainer = document.getElementById('tooltip-diff');
             const diffPrefix = getI18nText('tooltip_lbl_prev_year_diff', '前年比: ');
             if (data.index === 0) {
-                diffContainer.innerHTML = `<span class="text-slate-500">\${diffPrefix}—</span>`;
+                diffContainer.innerHTML = `<span class="text-slate-500">${diffPrefix}—</span>`;
             } else if (lastSimulationData && lastSimulationData[data.index - 1]) {
                 const prevTotal = lastSimulationData[data.index - 1].total;
                 const diff = total - prevTotal;
                 const pctChange = prevTotal > 0 ? ((diff / prevTotal) * 100).toFixed(1) : '0.0';
                 const sign = diff >= 0 ? '+' : '';
                 const colorClass = diff >= 0 ? 'text-emerald-400' : 'text-rose-400';
-                diffContainer.innerHTML = `<span class="text-slate-400">\${diffPrefix}</span><span class="\${colorClass} font-mono">\${sign}\${formatAssetValue(diff)} (\text{\${sign}}\${pctChange}%)</span>`;
+                diffContainer.innerHTML = `<span class="text-slate-400">${diffPrefix}</span><span class="${colorClass} font-mono">${sign}${formatAssetValue(diff)} (${sign}${pctChange}%)</span>`;
             }
         }
 
@@ -1037,9 +974,9 @@
                 const numCalYear = cleanMeta.split('年/')[0];
                 const numAge = cleanMeta.split('⚖️')[1].replace('歳', '');
 
-                const translatedYearLabel = `\${numIdx}\${wordYearSuffix} (\${numCalYear}\${wordYearWrap}/⚖️\${numAge}\${wordAgeWrap})`;
+                const translatedYearLabel = `${numIdx}${wordYearSuffix} (${numCalYear}${wordYearWrap}/⚖️${numAge}${wordAgeWrap})`;
 
-                document.getElementById('tooltip-year').innerHTML = `<span>\${translatedYearLabel}</span><span class="text-amber-400 font-bold"></span>`;
+                document.getElementById('tooltip-year').innerHTML = `<span>${translatedYearLabel}</span><span class="text-amber-400 font-bold"></span>`;
                 drawTooltipPieChart(yearData);
             }
 
@@ -1105,48 +1042,48 @@
             div.innerHTML = `
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                     <div class="flex items-center gap-2">
-                        <span class="sys-type-badge font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-[10px]">\${typeLabelText}</span>
-                        <input type="text" class="asset-name-field font-bold text-slate-800 bg-transparent border-b border-dashed border-slate-200 focus:border-slate-500 focus:outline-none py-0.5 px-1 text-sm w-40" value="\${data.name}" oninput="runSimulation();">
-                        <input type="hidden" class="asset-type-field" value="\${data.type}">
+                        <span class="font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-[10px]">${typeLabelText}</span>
+                        <input type="text" class="asset-name-field font-bold text-slate-800 bg-transparent border-b border-dashed border-slate-200 focus:border-slate-500 focus:outline-none py-0.5 px-1 text-sm w-40" value="${data.name}" oninput="runSimulation();">
+                        <input type="hidden" class="asset-type-field" value="${data.type}">
                     </div>
-                    <button type="button" onclick="document.getElementById('\${id}').remove(); runSimulation(); showToast('資産アセットを削除しました。')" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-colors">
+                    <button type="button" onclick="document.getElementById('${id}').remove(); runSimulation(); showToast('資産アセットを削除しました。')" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-colors">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[10px]">
                     <div>
-                        <label class="sys-lbl text-slate-400 block mb-0.5">\${lblInit}</label>
-                        <input type="number" class="asset-init-field w-full rounded border border-slate-200 p-1.5 font-bold" value="\${data.initAmt}" oninput="runSimulation();">
+                        <label class="text-slate-400 block mb-0.5">${lblInit}</label>
+                        <input type="number" class="asset-init-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.initAmt}" oninput="runSimulation();">
                     </div>
                     <div>
-                        <label class="sys-lbl text-slate-400 block mb-0.5">\${lblRate}</label>
-                        <input type="number" class="asset-rate-field w-full rounded border border-slate-200 p-1.5 font-bold" value="\${data.rate}" step="0.1" oninput="runSimulation();">
+                        <label class="text-slate-400 block mb-0.5">${lblRate}</label>
+                        <input type="number" class="asset-rate-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.rate}" step="0.1" oninput="runSimulation();">
                     </div>
                     <div>
-                        <label class="sys-lbl text-slate-400 block mb-0.5">\${lblPayout}</label>
+                        <label class="text-slate-400 block mb-0.5">${lblPayout}</label>
                         <select class="asset-payout-field w-full rounded border border-slate-200 p-1 bg-white font-semibold" onchange="runSimulation();">
-                            <option value="reinvest" \${data.payout === 'reinvest' ? 'selected' : ''}>\${lblReinvest}</option>
-                            <option value="cashout" \${data.payout === 'cashout' ? 'selected' : ''}>\${lblCashout}</option>
+                            <option value="reinvest" ${data.payout === 'reinvest' ? 'selected' : ''}>${lblReinvest}</option>
+                            <option value="cashout" ${data.payout === 'cashout' ? 'selected' : ''}>${lblCashout}</option>
                         </select>
                     </div>
                     <div class="regular-invest-fields">
-                        <label class="sys-lbl text-slate-400 block mb-0.5">\${lblYear}</label>
-                        <input type="number" class="asset-year-field w-full rounded border border-slate-200 p-1.5 font-bold" value="\${data.yearAmt || 0}" oninput="runSimulation();">
+                        <label class="text-slate-400 block mb-0.5">${lblYear}</label>
+                        <input type="number" class="asset-year-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.yearAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="regular-invest-fields">
-                        <label class="sys-lbl text-slate-400 block mb-0.5">\${lblMonth}</label>
-                        <input type="number" class="asset-year-field" style="display:none;" value="\${data.yearAmt || 0}">
-                        <input type="number" class="asset-month-field w-full rounded border border-slate-200 p-1.5 font-bold" value="\${data.monthAmt || 0}" oninput="runSimulation();">
+                        <label class="text-slate-400 block mb-0.5">${lblMonth}</label>
+                        <input type="number" class="asset-year-field" style="display:none;" value="${data.yearAmt || 0}">
+                        <input type="number" class="asset-month-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.monthAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="grid grid-cols-5 items-center gap-1">
                         <div class="col-span-2">
-                            <label class="sys-buy text-slate-400 block mb-0.5 text-[9px] truncate">\${lblBuyAge}</label>
-                            <input type="number" class="asset-start-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="\${data.startAge}" oninput="runSimulation();">
+                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">${lblBuyAge}</label>
+                            <input type="number" class="asset-start-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.startAge}" oninput="runSimulation();">
                         </div>
                         <span class="col-span-1 text-center text-slate-400 mt-3 font-bold">-</span>
                         <div class="col-span-2">
-                            <label class="sys-sell text-slate-400 block mb-0.5 text-[9px] truncate">\${lblSellAge}</label>
-                            <input type="number" class="asset-end-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="\${data.endAge}" oninput="runSimulation();">
+                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">${lblSellAge}</label>
+                            <input type="number" class="asset-end-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.endAge}" oninput="runSimulation();">
                         </div>
                     </div>
                 </div>
@@ -1184,7 +1121,7 @@
                 endAge: endAge
             });
             runSimulation();
-            showToast(`\${assetNames[chosenType]}カードを戦場に展開しました。`);
+            showToast(`${assetNames[chosenType]}カードを戦場に展開しました。`);
         }
 
         function applyWorldLine(scenario) {
@@ -1231,7 +1168,7 @@
             
             const prefix = getI18nText('graph_title_prefix', '「');
             const suffix = getI18nText('graph_title_suffix', '」の生涯キャッシュフロー');
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> \${prefix}\${inputVal}\${suffix}`;
+            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> ${prefix}${inputVal}${suffix}`;
             
             document.getElementById('scenario-selector').value = 'custom';
         }
@@ -1300,11 +1237,10 @@
                     const titleEl = document.getElementById('graph-title-element');
                     const prefix = getI18nText('graph_title_prefix', '「');
                     const suffix = getI18nText('graph_title_suffix', '」の生涯キャッシュフロー');
-                    titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> \${prefix}\${state.customName}\${suffix}`;
+                    titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> ${prefix}${state.customName}${suffix}`;
                 }
                 
                 localStorage.setItem('gemkin_active_scenario', scenario);
-                translateDynamicLabels(); // 記憶データ展開後に固定ラベル群をローカライズ強制同期
                 return true;
             } catch(e) {
                 console.error("記憶データの復元に失敗しました:", e);
@@ -1397,7 +1333,7 @@
             const titleEl = document.getElementById('graph-title-element');
             const prefix = getI18nText('graph_title_prefix', '「');
             const suffix = getI18nText('graph_title_suffix', '」の生涯キャッシュフロー');
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> \${prefix}\${currentName}\${suffix}`;
+            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> ${prefix}${currentName}${suffix}`;
 
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
 
@@ -1495,7 +1431,6 @@
                 
                 addAssetElement({ name: isEn ? "Initial Saving Investment Fund" : "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 85 });
             }
-            translateDynamicLabels(); // デフォルト階層ロード時にも固定説明ラベルを同期
             runSimulation();
         }
 
@@ -1505,12 +1440,12 @@
             const endAge = parseInt(document.getElementById('years').value) || 85;
             const simulationDuration = Math.min(Math.max(endAge - startAge, 1), 90);
 
-            // 💡【修正点[1]】グラフメインタイトルの完全なる言語同期
+            // 💡【修正点[1]の反映】グラフメインタイトルの言語同期を完全に固定
             const inputVal = document.getElementById('scenario-input').value || '名無し';
             const titleEl = document.getElementById('graph-title-element');
             const prefix = getI18nText('graph_title_prefix', '「');
             const suffix = getI18nText('graph_title_suffix', '」の生涯キャッシュフロー');
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> \${prefix}\${inputVal}\${suffix}`;
+            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> ${prefix}${inputVal}${suffix}`;
 
             let labels = [];
             let dynamicAssets = [];
@@ -1593,16 +1528,15 @@
                 return dynamicAssets.filter(a => a.type === type && a.active).reduce((sum, a) => sum + a.currentVal, 0);
             };
             
-            // 💡【修正点[3]】グラフ X 軸ラベルの「年目」「歳」を現在の言語リソースから安全に結合
             const wordYearSuffix = getI18nText('tooltip_lbl_year_suffix', '年目');
             const wordYearWrap = getI18nText('tooltip_lbl_year_wrapper', '年');
             const wordAgeWrap = getI18nText('tooltip_lbl_age_wrapper', '歳');
 
-            labels.push(`0\${wordYearSuffix} (\${startYear}\${wordYearWrap}/⚖️\${startAge}\${wordAgeWrap})`);
+            labels.push(`0${wordYearSuffix} (${startYear}${wordYearWrap}/⚖️${startAge}${wordAgeWrap})`);
             let totalData = [currentCashVal + ['realestate', 'stocks', 'trust', 'metal', 'bonds'].reduce((sum, cat) => sum + sumOfCategory(cat), 0)];
 
             let simRecords = [{
-                index: 0, yearLabel: `0年目 (\${startYear}年/⚖️\${startAge}歳)`,
+                index: 0, yearLabel: `0年目 (${startYear}年/⚖️${startAge}歳)`,
                 cash: currentCashVal, realestate: sumOfCategory('realestate'), stocks: sumOfCategory('stocks'),
                 trust: sumOfCategory('trust'), metal: sumOfCategory('metal'), bonds: sumOfCategory('bonds'), total: totalData[0]
             }];
@@ -1613,7 +1547,7 @@
                 const currentYear = startYear + y;
                 const currentAge = startAge + y;
                 
-                labels.push(`\${y}\${wordYearSuffix} (\${currentYear}\${wordYearWrap}/⚖️\${currentAge}\${wordAgeWrap})`);
+                labels.push(`${y}${wordYearSuffix} (${currentYear}${wordYearWrap}/⚖️${currentAge}${wordAgeWrap})`);
                 
                 currentCashVal = currentCashVal * (1 + rateCash);
                 let payoutIncomes = 0;
@@ -1672,7 +1606,7 @@
                 totalData.push(Math.round(yearTotal));
 
                 simRecords.push({
-                    index: y, yearLabel: `\${y}年目 (\window.\${currentYear}年/⚖️\${currentAge}歳)`,
+                    index: y, yearLabel: `${y}年目 (${currentYear}年/⚖️${currentAge}歳)`,
                     cash: Math.round(currentCashVal), realestate: Math.round(sumOfCategory('realestate')),
                     stocks: Math.round(sumOfCategory('stocks')), trust: Math.round(sumOfCategory('trust')),
                     metal: Math.round(sumOfCategory('metal')), bonds: Math.round(sumOfCategory('bonds')), total: Math.round(yearTotal)
@@ -1705,7 +1639,6 @@
             const tbody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
             tbody.innerHTML = '';
             
-            // 💡【修正点[3]】明細テーブル内の「年目」「西暦年」「歳」の完全なる国際化
             const wordYearSuffix = getI18nText('tooltip_lbl_year_suffix', '年目');
             const wordYearWrap = getI18nText('tooltip_lbl_year_wrapper', '年');
             const wordAgeWrap = getI18nText('tooltip_lbl_age_wrapper', '歳');
@@ -1715,20 +1648,20 @@
                 let row = tbody.insertRow();
                 row.className = idx === simRecords.length - 1 ? 'bg-emerald-500/10 border-t-2 border-emerald-500 text-slate-900 font-bold' : 'hover:bg-slate-50 transition-colors';
                 
-                // 💡【2033年強調表示の確実な継承】
+                // 💡【2033年強調表示の実装】
                 const currentCalYear = startYear + idx;
                 if (currentCalYear === 2033) {
                     row.className = 'bg-indigo-50 font-black text-indigo-900 border-y-2 border-indigo-400/80';
                 }
 
-                row.insertCell().innerHTML = `<div class="text-center font-bold text-slate-800">\${idx}\${wordYearSuffix}</div><div class="text-center text-slate-400 font-normal text-[10px]">(\${startYear + idx}\${wordYearWrap}/⚖️\${parseInt(document.getElementById('start-age').value || 40) + idx}\${wordAgeWrap})</div>`;
-                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono \${rec.cash < 0 ? 'text-rose-600 font-bold' : 'text-slate-800'}">\${formatAssetValue(rec.cash)}</div>`;
-                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">\${formatAssetValue(rec.realestate)}</div>`;
-                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">\${formatAssetValue(rec.stocks)}</div>`;
-                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">\${formatAssetValue(rec.trust)}</div>`;
-                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">\${formatAssetValue(rec.metal)}</div>`;
-                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">\${formatAssetValue(rec.bonds)}</div>`;
-                row.insertCell().innerHTML = `<div class="p-1 font-bold text-right text-slate-900 bg-slate-100/50 font-mono">\${formatAssetValue(rec.total)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-center font-bold text-slate-800">${idx}${wordYearSuffix}</div><div class="text-center text-slate-400 font-normal text-[10px]">(${startYear + idx}${wordYearWrap}/⚖️${parseInt(document.getElementById('start-age').value || 40) + idx}${wordAgeWrap})</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono ${rec.cash < 0 ? 'text-rose-600 font-bold' : 'text-slate-800'}">${formatAssetValue(rec.cash)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.realestate)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.stocks)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.trust)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.metal)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.bonds)}</div>`;
+                row.insertCell().innerHTML = `<div class="p-1 font-bold text-right text-slate-900 bg-slate-100/50 font-mono">${formatAssetValue(rec.total)}</div>`;
             });
 
             const ctx = document.getElementById('growthChart').getContext('2d');
@@ -1778,7 +1711,7 @@
             });
         }
 
-        // 💀 DIE WITH ZERO 動的エンジン ＆ ⚠️【修正点[5][6]】警告画面の完全ローカライズ・重複⚠️の単一化
+        // 💀 DIE WITH ZERO 動的エンジン ＆ ⚠️【修正点[2]の完全撲滅】単位同期ロジック
         function transitionToDwz() {
             playDissolveSound();
             const tooltipEl = document.getElementById('chart-tooltip');
@@ -1848,10 +1781,10 @@
                     div.className = 'flex items-center justify-between pb-1 border-b border-slate-800';
                     div.innerHTML = `
                         <div class="flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full \${item.color}"></span>
-                            <span class="text-slate-400">\${item.name}</span>
+                            <span class="w-2 h-2 rounded-full ${item.color}"></span>
+                            <span class="text-slate-400">${item.name}</span>
                         </div>
-                        <span class="font-mono text-slate-100 font-bold">\${formatAssetValue(item.val)}</span>
+                        <span class="font-mono text-slate-100 font-bold">${formatAssetValue(item.val)}</span>
                     `;
                     breakdownList.appendChild(div);
                 });
@@ -1872,17 +1805,17 @@
 
                 if (cashShortageAge !== null) {
                     const baseWarningByMst = getI18nText('dwz_advice_cash_warning', '⚠️ 警告: 預貯金（キャッシュ）が {age} 歳の時点で完全に底を突き、日々の防衛資金が途絶します。他の資産を売却して補填する軍略を至急ご検討ください。').replace('{age}', cashShortageAge);
-                    const iconText = getI18nText('dwz_alert_icon_text', '⚠️ 警告: ');
 
                     advicePrefixHtml = `
                         <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
-                            <span>\${iconText}</span>
-                            <span>\${baseWarningByMst}</span>
+                            <span>⚠️</span>
+                            <span>${baseWarningByMst}</span>
                         </div>
                     `;
                     dwzDisclaimer = getI18nText('dwz_advice_cash_disclaimer', '※本シミュレータは、不動産や株式などの総資産が残っていても、現金を使い切った時点でキャッシュアウト警告を発動する仕様となっております。');
                 }
 
+                // 💡【修正点[2]の確信】結合が外れていた「 / 年」や「 / 月」の国際化リソース単位をここで安全にロード
                 const lblUnitYear = getI18nText('dwz_msg_unit_year', ' / 年');
                 const lblUnitMonth = getI18nText('dwz_msg_unit_month', ' / 月');
 
@@ -1905,14 +1838,14 @@
                     const txtTail = getI18nText('dwz_msg_shortage_tail', 'が【不足】する計算となります。<br><br>この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された');
                     const txtFinal = getI18nText('dwz_msg_shortage_final', '年間、年間支出を');
                     const txtCalcHint = getI18nText('dwz_msg_shortage_calc_hint', '（すなわち、月々約');
-                    const txtCalcHintTail = getI18nText('dwz_msg_shortage_calc_tail', '）【減らさなければ】ありません。');
+                    const txtCalcHintTail = getI18nText('dwz_msg_shortage_calc_tail', '）【減らさなければ】なりません。');
 
                     msgBox.innerHTML = `
-                        \${advicePrefixHtml}
-                        <div class="text-xs text-slate-400 mb-2">\${dwzDisclaimer}</div>
-                        \${txtPrefix} <span class="text-rose-400 font-black text-lg">\${bankruptAge}</span> \${txtMiddle}<span class="text-amber-400 font-black">\${endAge}</span>\${txtSuffix} <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">\${formatAssetValue(deficitAmt)}</span> \${txtTail} <span class="text-amber-400 font-extrabold">\${yearsRemaining}</span> \${txtFinal}<br>
-                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">\${formatAssetValue(reduceSpendPerYear, true)}</span>\${lblUnitYear} 
-                        \${txtCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">\${formatAssetValue(reduceSpendPerMonth, true)}</span>\${lblUnitMonth}\${txtCalcHintTail}
+                        ${advicePrefixHtml}
+                        <div class="text-xs text-slate-400 mb-2">${dwzDisclaimer}</div>
+                        ${txtPrefix} <span class="text-rose-400 font-black text-lg">${bankruptAge}</span> ${txtMiddle}<span class="text-amber-400 font-black">${endAge}</span>${txtSuffix} <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(deficitAmt)}</span> ${txtTail} <span class="text-amber-400 font-extrabold">${yearsRemaining}</span> ${txtFinal}<br>
+                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(reduceSpendPerYear, true)}</span>${lblUnitYear} 
+                        ${txtCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth, true)}</span>${lblUnitMonth}${txtCalcHintTail}
                     `;
 
                     if (adviceBox) {
@@ -1930,12 +1863,12 @@
                     const txtSurplusCalcTail = getI18nText('dwz_msg_surplus_calc_tail', '）【増やし】、人生の体験価値へ投資することが推奨されます。');
 
                     msgBox.innerHTML = `
-                        \${advicePrefixHtml}
-                        <div class="text-xs text-slate-400 mb-2">\${dwzDisclaimer}</div>
-                        \${txtSurplusPrefix} <span class="text-amber-400 font-black">\${endAge}</span> \${txtSurplusMiddle}
-                        <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">\${formatAssetValue(totalRemainingYen)}</span> \${txtSurplusSuffix} <span class="text-amber-400 font-extrabold">\${yearsRemaining}</span> \${txtSurplusTail}<br>
-                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">\${formatAssetValue(additionalSpendPerYear, true)}</span>\${lblUnitYear} 
-                        \${txtSurplusCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">\${formatAssetValue(additionalSpendPerMonth, true)}</span>\${lblUnitMonth}\${txtSurplusCalcTail}
+                        ${advicePrefixHtml}
+                        <div class="text-xs text-slate-400 mb-2">${dwzDisclaimer}</div>
+                        ${txtSurplusPrefix} <span class="text-amber-400 font-black">${endAge}</span> ${txtSurplusMiddle}
+                        <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(totalRemainingYen)}</span> ${txtSurplusSuffix} <span class="text-amber-400 font-extrabold">${yearsRemaining}</span> ${txtSurplusTail}<br>
+                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(additionalSpendPerYear, true)}</span>${lblUnitYear} 
+                        ${txtSurplusCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(additionalSpendPerMonth, true)}</span>${lblUnitMonth}${txtSurplusCalcTail}
                     `;
 
                     if (adviceBox) {
@@ -1943,6 +1876,7 @@
                     }
                 }
 
+                // 💡【最終陣 UI一斉掃射】DWZビュー内の固定文字ラベルもロード中の言語辞書で強制同期
                 document.getElementById('dwz-assets-portfolio-lbl').textContent = getI18nText('dwz_assets_portfolio_title', '逝去時の資産ポートフォリオ');
                 document.getElementById('dwz-advisor-advice-lbl').textContent = getI18nText('dwz_advisor_advice_title', '人生の軍師からのアドバイス');
 
@@ -2004,7 +1938,7 @@
         function downloadCSV() {
             if (!lastSimulationData) return;
             let csvContent = "\uFEFF経過年(西暦/年齢),現金(円),不動産(円),株式(円),投資信託(円),貴金属(円),債券(円),総資産(円)\n";
-            lastSimulationData.forEach(rec => { csvContent += `"\${rec.yearLabel.replace(' ','')}",\${rec.cash},\${rec.realestate},\${rec.stocks},\${rec.trust},\${rec.metal},\${rec.bonds},\${rec.total}\n`; });
+            lastSimulationData.forEach(rec => { csvContent += `"${rec.yearLabel.replace(' ','')}",${rec.cash},${rec.realestate},${rec.stocks},${rec.trust},${rec.metal},${rec.bonds},${rec.total}\n`; });
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.setAttribute("href", URL.createObjectURL(blob));
@@ -2037,8 +1971,7 @@
                 switcher.addEventListener('change', function(e) {
                     if (typeof loadLanguage === 'function') {
                         loadLanguage(e.target.value).then(() => {
-                            // UIテキストの切り替え完了直後に、動的生成済みのシステム固定説明ラベルも一斉ローカライズ強制同期！
-                            translateDynamicLabels();
+                            // UIテキストの切り替えが完了した直後に、JavaScript内の動的表現（DWZ等）も含めて一斉に再計算・描画！
                             runSimulation();
                         });
                     }
