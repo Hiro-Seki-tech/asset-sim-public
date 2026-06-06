@@ -563,7 +563,7 @@
                 this.vx = (Math.random() - 0.4) * 2.5; 
                 this.vy = Math.random() * 3 + 1.5; // 下方向に落ちる
                 this.alpha = 1.0;
-                // 個体差をつけて霧散の美しさを際端たせる
+                // 個体差をつけて霧散の美しさを際立たせる
                 this.decay = Math.random() * 0.012 + 0.006;
                 // 黄金・アンバー色のカラーレンジ
                 const r = Math.floor(Math.random() * 45 + 210); // 210~255
@@ -787,7 +787,6 @@
             runSimulation();
         }
 
-        // 💡PC版ツールチップ円グラフの破壊・再描画バグを完全に鎮圧する統合修復処理（ステップ1-D）
         function drawTooltipPieChart(data) {
             const canvas = document.getElementById('tooltipPieChart');
             if (!canvas) return;
@@ -798,14 +797,12 @@
             const totalCenterText = document.getElementById('tooltip-total-text').parentElement;
             const chartContainer = canvas.parentElement;
             
-            // 💡ゾンビインスタンスを完全に破壊し尽くす防衛線
             if (tooltipPieChartInstance) { 
                 tooltipPieChartInstance.destroy(); 
                 tooltipPieChartInstance = null;
             }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 💡現在の言語に合わせて、アセット表示名を辞書からリアルタイムに引き当て
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const assetLabelsObj = isEn ? currentTranslations : {
                 tooltip_asset_cash: '現 金', tooltip_asset_realestate: '不動産', tooltip_asset_stocks: '株 式',
@@ -914,7 +911,6 @@
             }
         }
 
-        // 💡ポップアップ浮遊時の表示ラベル文字列をJSON辞書から完璧に置換する処理（ステップ1-D）
         function customTooltipHandler(context) {
             const tooltipEl = document.getElementById('chart-tooltip');
             if (context.tooltip.opacity === 0) { tooltipEl.style.opacity = 0; return; }
@@ -925,13 +921,12 @@
             if (lastSimulationData && lastSimulationData[dataIndex]) {
                 const yearData = lastSimulationData[dataIndex];
                 
-                // 💡「0年目 (2026年/⚖️40歳)」という文字列を、現在の言語指定のフォーマットに解体・再翻訳
                 const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
                 const wordYearSuffix = isEn ? (currentTranslations['tooltip_lbl_year_suffix'] || ' Year') : '年目';
                 const wordYearWrap = isEn ? (currentTranslations['tooltip_lbl_year_wrapper'] || ' ') : '年';
                 const wordAgeWrap = isEn ? (currentTranslations['tooltip_lbl_age_wrapper'] || 'yo') : '歳';
 
-                const rawLabel = yearData.yearLabel; // 例："1年目 (2027年/⚖️41歳)"
+                const rawLabel = yearData.yearLabel; 
                 const numIdx = rawLabel.split('年目')[0];
                 const cleanMeta = rawLabel.split('(')[1].replace(')', '');
                 const numCalYear = cleanMeta.split('年/')[0];
@@ -1003,7 +998,7 @@
             const lblYear = isEn ? (currentTranslations['dynamic_asset_lbl_year'] || "Annual Invest") : (currentTranslations['dynamic_asset_lbl_year'] || "年初投資 (万円/年)");
             const lblMonth = isEn ? (currentTranslations['dynamic_asset_lbl_month'] || "Monthly Invest") : (currentTranslations['dynamic_asset_lbl_month'] || "月々積立 (万円/月)");
             const lblBuyAge = isEn ? (currentTranslations['dynamic_asset_lbl_buy_age'] || "Buy Age") : (currentTranslations['dynamic_asset_lbl_buy_age'] || "購入年齢");
-            const lblSellAge = isEn ? (currentTranslations['dynamic_asset_lbl_sell_age'] || "Sell Age") : (currentTranslations['dynamic_asset_lbl_sell_age'] || "売却年齢");
+            const lblSellAge = isEn ? (currentTranslations['dynamic_asset_lbl_sell_age'] || "Sale Age") : (currentTranslations['dynamic_asset_lbl_sell_age'] || "売却年齢");
 
             div.innerHTML = `
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -1588,7 +1583,13 @@
                 return dynamicAssets.filter(a => a.type === type && a.active).reduce((sum, a) => sum + a.currentVal, 0);
             };
             
-            labels.push(`0年目 (${startYear}年/⚖️${startAge}歳)`);
+            // 💡【ステップ 1-E】横軸の経過年次用生データを、現在の翻訳環境に合わせて動的に再翻訳マッピングする下処理
+            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+            const wordYearSuffix = isEn ? (currentTranslations['tooltip_lbl_year_suffix'] || ' Year') : '年目';
+            const wordYearWrap = isEn ? (currentTranslations['tooltip_lbl_year_wrapper'] || ' ') : '年';
+            const wordAgeWrap = isEn ? (currentTranslations['tooltip_lbl_age_wrapper'] || '歳') : '歳';
+
+            labels.push(`0${wordYearSuffix} (${startYear}${wordYearWrap}/⚖️${startAge}${wordAgeWrap})`);
             let totalData = [currentCashVal + ['realestate', 'stocks', 'trust', 'metal', 'bonds'].reduce((sum, cat) => sum + sumOfCategory(cat), 0)];
 
             let simRecords = [{
@@ -1602,7 +1603,9 @@
             for (let y = 1; y <= simulationDuration; y++) {
                 const currentYear = startYear + y;
                 const currentAge = startAge + y;
-                labels.push(`${y}年目 (${currentYear}年/⚖️${currentAge}歳)`);
+                
+                // 💡言語切り替え時にグラフのx軸自体も連動して裏返るように設計
+                labels.push(`${y}${wordYearSuffix} (${currentYear}${wordYearWrap}/⚖️${currentAge}${wordAgeWrap})`);
                 
                 currentCashVal = currentCashVal * (1 + rateCash);
                 let payoutIncomes = 0;
@@ -1670,13 +1673,21 @@
 
             document.getElementById('cash-warning-badge').className = cashCheckDeficit ? 'px-2.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold text-[10px] animate-pulse' : 'hidden';
 
+            // 💡【ステップ 1-E】折れ線グラフ凡例（Legend）の名前を翻訳配列から動的マッピング
+            const lblCash = isEn ? (currentTranslations['th_cash'] || 'Cash') : '現金';
+            const lblRE = isEn ? (currentTranslations['th_realestate'] || 'Property') : '不動産';
+            const lblStocks = isEn ? (currentTranslations['th_stocks'] || 'Stocks') : '株式';
+            const lblTrust = isEn ? (currentTranslations['th_trust'] || 'Funds') : '投資信託';
+            const lblMetal = isEn ? (currentTranslations['th_metal'] || 'Metals') : '貴金属';
+            const lblBonds = isEn ? (currentTranslations['th_bonds'] || 'Bonds') : '債券';
+
             let aggregatedTemplates = {
-                cash: { name: '現金', data: simRecords.map(r => r.cash) },
-                realestate: { name: '不動産', data: simRecords.map(r => r.realestate) },
-                stocks: { name: '株式', data: simRecords.map(r => r.stocks) },
-                trust: { name: '投資信託', data: simRecords.map(r => r.trust) },
-                metal: { name: '貴金属', data: simRecords.map(r => r.metal) },
-                bonds: { name: '債券', data: simRecords.map(r => r.bonds) }
+                cash: { name: lblCash, data: simRecords.map(r => r.cash) },
+                realestate: { name: lblRE, data: simRecords.map(r => r.realestate) },
+                stocks: { name: lblStocks, data: simRecords.map(r => r.stocks) },
+                trust: { name: lblTrust, data: simRecords.map(r => r.trust) },
+                metal: { name: lblMetal, data: simRecords.map(r => r.metal) },
+                bonds: { name: lblBonds, data: simRecords.map(r => r.bonds) }
             };
 
             renderTableAndChart(labels, aggregatedTemplates, totalData, simRecords);
@@ -1704,7 +1715,18 @@
             const ctx = document.getElementById('growthChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
-            const assetsList = [{id:'cash',name:'現金'},{id:'realestate',name:'不動産'},{id:'stocks',name:'株式'},{id:'trust',name:'投資信託'},{id:'metal',name:'貴金属'},{id:'bonds',name:'債券'}];
+            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+            const lblTotalNetLine = isEn ? (currentTranslations['th_total_assets'] || 'Total Net') : '総資産';
+
+            const assetsList = [
+                { id: 'cash', name: datasetTemplates.cash.name },
+                { id: 'realestate', name: datasetTemplates.realestate.name },
+                { id: 'stocks', name: datasetTemplates.stocks.name },
+                { id: 'trust', name: datasetTemplates.trust.name },
+                { id: 'metal', name: datasetTemplates.metal.name },
+                { id: 'bonds', name: datasetTemplates.bonds.name }
+            ];
+            
             let datasets = assetsList.map(a => {
                 return {
                     label: a.name, data: datasetTemplates[a.id].data, borderColor: assetColors[a.id], backgroundColor: assetColors[a.id] + '11',
@@ -1712,15 +1734,24 @@
                 };
             });
 
-            datasets.push({ label: '総資産', data: totalData, borderColor: '#0f172a', backgroundColor: '#0f172a', borderWidth: 4, fill: false, tension: 0.15, pointRadius: labels.length > 30 ? 1 : 3 });
+            datasets.push({ label: lblTotalNetLine, data: totalData, borderColor: '#0f172a', backgroundColor: '#0f172a', borderWidth: 4, fill: false, tension: 0.15, pointRadius: labels.length > 30 ? 1 : 3 });
+
+            // 💡【ステップ 1-E】縦軸（y軸）の単位表示ラベルを和欧（万／10k）で完全動的切り替え
+            const wordAxisUnit = isEn ? (currentTranslations['graph_lbl_axis_unit'] || '10k') : '万';
 
             chartInstance = new Chart(ctx, {
                 type: 'line', data: { labels: labels, datasets: datasets },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } },
-                    scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: value => (value / 10000).toLocaleString() + '万' } } }
+                    plugins: { 
+                        legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, 
+                        tooltip: { enabled: false, external: customTooltipHandler } 
+                    },
+                    scales: { 
+                        x: { grid: { display: false } }, 
+                        y: { beginAtZero: true, ticks: { callback: value => (value / 10000).toLocaleString() + wordAxisUnit } } 
+                    }
                 }
             });
         }
@@ -1952,7 +1983,7 @@
                 if (typeof captureCurrentStateToObj === 'function' && typeof reHydrateStateFromObj === 'function') {
                     const currentData = captureCurrentStateToObj();
                     reHydrateStateFromObj(currentData);
-                    showToast(currentData.th_cash === 'Cash' ? '🇺🇸 Tooltip and Charts fully synchronized!' : '🇯🇵 浮遊ポップアップ内のすべての多言語化を完了しました！');
+                    showToast(currentData.th_cash === 'Cash' ? '🇺🇸 Chart elements successfully updated!' : '🇯🇵 グラフ本体の表示言語を完全に同期しました！');
                 }
             }, 150);
         });
