@@ -134,5 +134,6 @@
   "tooltip_asset_stocks": "Stocks",
   "tooltip_asset_trust": "Funds",
   "tooltip_asset_metal": "Metals",
-  "tooltip_asset_bonds": "Bonds"
+  "tooltip_asset_bonds": "Bonds",
+  "graph_lbl_axis_unit": "10k"
 }

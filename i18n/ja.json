@@ -134,5 +134,6 @@
   "tooltip_asset_stocks": "株 式",
   "tooltip_asset_trust": "投資信託",
   "tooltip_asset_metal": "貴金属",
-  "tooltip_asset_bonds": "債 券"
+  "tooltip_asset_bonds": "債 券",
+  "graph_lbl_axis_unit": "万"
 }
