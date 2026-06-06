@@ -779,28 +779,48 @@
             runSimulation();
         }
 
-        // 💡二重マイナス符号バグ（--）を完全に駆逐調律した絶対値制御型フォーマッタ
-        function formatAssetValue(valInYen) {
-            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
-            const lblOku = isEn ? (currentTranslations['format_lbl_oku'] || "0M ") : "億";
-            const lblWan = isEn ? (currentTranslations['format_lbl_wan'] || " ¥10k") : "万円";
-            const lblWanOnly = isEn ? (currentTranslations['format_lbl_wan_only'] || " ¥10k") : "万円";
-
-            const valInWan = Math.round(valInYen / 10000);
-            const absWan = Math.abs(valInWan);
-            const sign = valInWan < 0 ? '-' : '';
+        // 💡【第二陣 2-Aの主砲】経済圏対応型 通貨換算フォーマッタ
+        function formatAssetValue(valInYen, forceWanOnly = false) {
+            // 現在ロードされている多言語辞書から経済圏のパラメータ構造を抽出
+            const config = (typeof currentTranslations !== 'undefined' && currentTranslations["currency_config"]) || { "currency_sign": "¥", "exchange_rate": 1, "format_type": "4-digit-jp" };
             
-            if (absWan >= 10000) {
-                const oku = Math.floor(absWan / 10000);
-                const wan = absWan % 10000;
-                
-                if (isEn) {
-                    return `${sign}${absWan.toLocaleString()}${lblWan}`;
-                } else {
-                    return wan > 0 ? `${sign}${oku}${lblOku}${wan}${lblWan}` : `${sign}${oku}${lblOku}円`;
+            // 1. 換算レートの動的適用（内部の「円」を生数字のまま現在の設定国通貨にコンバート）
+            const convertedValue = valInYen * config.exchange_rate;
+
+            // 2. 経済圏別フォーマット分岐
+            if (config.format_type === "4-digit-jp") {
+                // 伝統の4桁区切り（万・億表現・絶対値制御型）の完全維持
+                const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+                const lblOku = isEn ? (currentTranslations['format_lbl_oku'] || "0M ") : "億";
+                const lblWan = isEn ? (currentTranslations['format_lbl_wan'] || " ¥10k") : "万円";
+                const lblWanOnly = isEn ? (currentTranslations['format_lbl_wan_only'] || " ¥10k") : "万円";
+
+                const valInWan = Math.round(convertedValue / 10000);
+                const absWan = Math.abs(valInWan);
+                const sign = valInWan < 0 ? '-' : '';
+
+                if (forceWanOnly) {
+                    return `${sign}${config.currency_sign}${absWan.toLocaleString()}${lblWanOnly}`;
                 }
+                
+                if (absWan >= 10000) {
+                    const oku = Math.floor(absWan / 10000);
+                    const wan = absWan % 10000;
+                    
+                    if (isEn) {
+                        return `${sign}${config.currency_sign}${absWan.toLocaleString()}${lblWan}`;
+                    } else {
+                        return wan > 0 ? `${sign}${config.currency_sign}${oku}${lblOku}${wan}${lblWan}` : `${sign}${config.currency_sign}${oku}${lblOku}円`;
+                    }
+                }
+                return `${sign}${config.currency_sign}${absWan.toLocaleString()}${lblWanOnly}`;
+            } else {
+                // 世界標準の3桁区切り（米ドル等の標準カンマ表現・絶対値制御型）
+                const roundedValue = Math.round(convertedValue);
+                const absValue = Math.abs(roundedValue);
+                const sign = roundedValue < 0 ? '-' : '';
+                return `${sign}${config.currency_sign}${absValue.toLocaleString()}`;
             }
-            return `${sign}${absWan.toLocaleString()}${lblWanOnly}`;
         }
 
         function drawTooltipPieChart(data) {
@@ -1446,7 +1466,7 @@
                 addExpenseRow(isEn ? "Mortgage Lump-sum Repayment" : "住宅ローン一括繰上返済", 50, 1500);
                 addExpenseRow(isEn ? "Premium Senior Home Deposit" : "ケア付き有料シニアホーム保証前払金", 78, 2000);
                 
-                addAssetElement({ name: isEn ? "Company Stock Ownership Plan" : "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
+                addAssetElement({ name: isEn ? "Company Stock Ownership Plan" : "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, textAge: 65, startAge: 40, endAge: 65 });
                 addAssetElement({ name: isEn ? "Global Index Fund" : "優良インデックス投信", type: "trust", initAmt: 3500, rate: 4.0, yearAmt: 120, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 85 });
 
             } else if (scenario === 'upper_mass') {
@@ -1682,7 +1702,7 @@
             renderTableAndChart(labels, aggregatedTemplates, totalData, simRecords);
         }
 
-        // 💡【最終補修】明細テーブル最左列の「年目」「年」「歳」の接続言語も最新辞書から完全に動的展開マッピング
+        // 💡明細テーブル最左列の「年目」「年」「歳」の接続言語も動的展開マッピング
         function renderTableAndChart(labels, datasetTemplates, totalData, simRecords) {
             lastSimulationData = simRecords;
             const tbody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
@@ -1731,8 +1751,6 @@
 
             datasets.push({ label: lblTotalNetLine, data: totalData, borderColor: '#0f172a', backgroundColor: '#0f172a', borderWidth: 4, fill: false, tension: 0.15, pointRadius: labels.length > 30 ? 1 : 3 });
 
-            const wordAxisUnit = isEn ? (currentTranslations['graph_lbl_axis_unit'] || '10k') : '万';
-
             chartInstance = new Chart(ctx, {
                 type: 'line', data: { labels: labels, datasets: datasets },
                 options: {
@@ -1742,9 +1760,25 @@
                         legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, 
                         tooltip: { enabled: false, external: customTooltipHandler } 
                     },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { 
+                            legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, 
+                            tooltip: { enabled: false, external: customTooltipHandler } 
+                        },
+                    },
                     scales: { 
                         x: { grid: { display: false } }, 
-                        y: { beginAtZero: true, ticks: { callback: value => (value / 10000).toLocaleString() + wordAxisUnit } } 
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { 
+                                callback: function(value) {
+                                    // 💡グラフの縦軸の目盛り表現もハードコードな「万」を排除し、完全動的フォーマッタに全面委託！
+                                    return formatAssetValue(value);
+                                }
+                            } 
+                        } 
                     }
                 }
             });
@@ -1874,13 +1908,13 @@
                     const txtTail = isEn ? (currentTranslations['dwz_msg_shortage_tail'] || ".<br><br>To prevent this shortage and successfully complete your final lifecycle sprint with net wealth zero (Die With Zero), you must reduce your spending for the remaining ") : "が【不足】する計算となります。<br><br>この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された";
                     const txtFinal = isEn ? (currentTranslations['dwz_msg_shortage_final'] || " years by: ") : "年間、年間支出を";
                     const txtCalcHint = isEn ? (currentTranslations['dwz_msg_shortage_calc_hint'] || " (approx. ") : "（すなわち、月々約";
-                    const txtCalcTail = isEn ? (currentTranslations['dwz_msg_shortage_calc_tail'] || " ) from your planned life cost budget.") : "）【減らさなければ】なりません。";
+                    const txtCalcHintTail = isEn ? (currentTranslations['dwz_msg_shortage_calc_tail'] || " ) from your planned life cost budget.") : "）【減らさなければ】なりません。";
 
                     msgBox.innerHTML = `
                         ${advicePrefixHtml}
                         ${dwzDisclaimer}${txtPrefix} <span class="text-rose-400 font-black text-lg">${bankruptAge}</span> ${txtMiddle}<span class="text-amber-400 font-black">${endAge}</span>${txtSuffix} <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(deficitAmt)}</span> ${txtTail} <span class="text-amber-400 font-extrabold">${yearsRemaining}</span> ${txtFinal}<br>
-                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(reduceSpendPerYear)}${lblUnitYear}</span> 
-                        ${txtCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth)}${lblUnitMonth}</span>${txtCalcTail}
+                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(reduceSpendPerYear, true)}</span> 
+                        ${txtCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth, true)}</span>${txtCalcHintTail}
                     `;
 
                     if (adviceBox) {
@@ -1896,15 +1930,15 @@
                     const txtSurplusMiddle = isEn ? (currentTranslations['dwz_msg_surplus_middle'] || " yo), you will leave a total remainder of ") : "歳）に、";
                     const txtSurplusSuffix = isEn ? (currentTranslations['dwz_msg_surplus_suffix'] || " untouched.<br><br>To entirely eliminate the economic 'waste' of dying with massive wealth and perfectly execute a Die With Zero strategy, you must increase your spending for the remaining ") : "を遺すことになります。<br><br>富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class=\"text-amber-400 font-black\">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、残された";
                     const txtSurplusTail = isEn ? (currentTranslations['dwz_msg_surplus_tail'] || " years by: ") : "年間、今よりも、";
-                    const txtSurplusCalcHint = isEn ? (currentTranslations['dwz_msg_surplus_calc_hint'] || " (approx. ") : "（すなわち";
+                    const txtSurplusCalcHint = isEn ? (currentTranslations['dwz_msg_surplus_calc_hint'] || "（すなわち") : "（すなわち";
                     const txtSurplusCalcTail = isEn ? (currentTranslations['dwz_msg_surplus_calc_tail'] || " ) to maximize your life fulfillment values.") : "）【多く】使わなければなりません。";
 
                     msgBox.innerHTML = `
                         ${advicePrefixHtml}
                         ${dwzDisclaimer}${txtSurplusPrefix} <span class="text-amber-400 font-black">${endAge}</span> ${txtSurplusMiddle}
                         <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(totalRemainingYen)}</span> ${txtSurplusSuffix} <span class="text-amber-400 font-extrabold">${yearsRemaining}</span> ${txtSurplusTail}<br>
-                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(additionalSpendPerYear)}${lblUnitYear}</span> 
-                        ${txtSurplusCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(additionalSpendPerMonth)}${lblUnitMonth}</span>${txtSurplusCalcTail}
+                        <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(additionalSpendPerYear, true)}</span> 
+                        ${txtSurplusCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(additionalSpendPerMonth, true)}</span>${txtSurplusCalcTail}
                     `;
 
                     if (adviceBox) {
