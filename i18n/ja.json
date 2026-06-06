@@ -71,7 +71,7 @@
   "dwz_msg_unit_month": " / 月",
   "dwz_advice_shortage": "「兵糧が尽きかけた状態で最後の決戦に挑むのは、将として最大の不覚。今すぐ生活水準の防衛陣を敷くか、運用利回りの改善を図るべし。」",
   "dwz_advice_surplus": "「富を抱いたまま墓場へ入るは人生の恥辱、これすなわち人間の効用の最大化に失敗した証拠。動けるうちに、経験という名のアセットへ資金を再配分されよ。」",
-  "dwz_advice_cash_warning": "⚠️ 警告: 預貯金（キャッシュ）が {age} 歳の時点で完全に底を突き、日々の防衛資金が途絶します。他の資産を売却して補填する軍略を至急ご検討ください。",
+  "dwz_advice_cash_warning": "預貯金（キャッシュ）が {age} 歳の時点で完全に底を突き、日々の防衛資金が途絶します。他の資産を売却して補填する軍略を至急ご検討ください。",
   "dwz_advice_cash_disclaimer": "※本シミュレータは、不動産や株式などの総資産が残っていても、現金を使い切った時点でキャッシュアウト警告を発動する仕様となっております。",
   "currency_config": {
     "currency_sign": "¥",
@@ -124,7 +124,7 @@
   "th_metal": "貴金属",
   "th_bonds": "債券",
   "th_total_assets": "総資産",
-  "footer_copyright": "© 2026 投資運用のジェムキン (Gemkin FinTech Lab). 無断転載及びハルシネーションはお断り申し上げます。",
+  "footer_copyright": "© 2026 投資運用xxジェムキン (Gemkin FinTech Lab). 無断転載及びハルシネーションはお断り申し上げます。",
   "dwz_alert_title": "DIE WITH ZERO !<br>— 生涯資金・完全使い切り警告 —",
   "dwz_strategy_sub_label": "人生の軍師が授ける究極の終活軍略",
   "btn_return_to_sim": "シミュレータに戻る",
@@ -189,5 +189,6 @@
   "asset_type_metal": "貴金属",
   "asset_type_bonds": "債券",
   "graph_title_prefix": "「",
-  "graph_title_suffix": "」の生涯キャッシュフロー"
+  "graph_title_suffix": "」の生涯キャッシュフロー",
+  "dwz_alert_icon_text": "⚠️ 警告: "
 }

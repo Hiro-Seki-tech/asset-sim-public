@@ -71,7 +71,7 @@
   "dwz_msg_unit_month": " / Month",
   "dwz_advice_shortage": "'Running out of supplies before the final battle is a critical error for a general. Immediately deploy defensive formations by scaling back lifestyle cost tiers or optimizing yields.'",
   "dwz_advice_surplus": "'Dying with a mountain of wealth is a missed opportunity for human utility. Shift your allocation toward investments in experiences during your active years to maximize lifetime fulfillment.'",
-  "dwz_advice_cash_warning": "⚠️ Warning: Cash reserves will deplete entirely at age {age}, disrupting daily operations. Please consider liquidating other assets to address this deficit before it occurs.",
+  "dwz_advice_cash_warning": "Cash reserves will deplete entirely at age {age}, disrupting daily operations. Please consider liquidating other assets to address this deficit before it occurs.",
   "dwz_advice_cash_disclaimer": "*Note: Even if other illiquid assets remain, this simulator triggers a critical cash-out warning the exact moment liquid cash hits zero.",
   "currency_config": {
     "currency_sign": "$",
@@ -189,5 +189,6 @@
   "asset_type_metal": "Metals",
   "asset_type_bonds": "Bonds",
   "graph_title_prefix": "Lifetime Cash Flow of \"",
-  "graph_title_suffix": "\""
+  "graph_title_suffix": "\"",
+  "dwz_alert_icon_text": "⚠️ Warning: "
 }
