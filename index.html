@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -159,7 +159,7 @@
                                 <span data-i18n="tooltip_macro_normal_item1">• 株式: <span class="font-bold text-white">5.0%</span> | 投資信託: <span class="font-bold text-white">4.0%</span></span><br>
                                 <span data-i18n="tooltip_macro_normal_item2">• 貴金属 / 債券: <span class="font-bold text-white">4.0%</span></span><br>
                                 <span data-i18n="tooltip_macro_normal_item3">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
-                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
+                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-amber-500"></span>
                             </div>
                         </div>
 
@@ -325,7 +325,7 @@
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                         <div>
                             <h2 id="graph-title-element" class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-line text-blue-500"></i> <span data-i18n="title_graph">「準富裕層」の生涯キャッシュフロー</span>
+                                <i class="fa-solid fa-chart-line text-blue-500"></i> <span data-i18n="title_graph">生涯キャッシュフロー</span>
                             </h2>
                             <p class="text-slate-400 text-xs mt-0.5 flex flex-wrap items-center gap-2">
                                 <span data-i18n="desc_graph_tooltip_hint">各プロット点にホバーすると資産割合(%)と額面（万円）が浮遊ポップアップします</span>
@@ -658,6 +658,10 @@
                     </div>
                 </div>
             `;
+            div.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (typeof currentTranslations !== 'undefined' && currentTranslations[key]) el.innerHTML = currentTranslations[key];
+            });
             container.appendChild(div);
             updateStageAges();
             runSimulation();
@@ -781,15 +785,10 @@
 
         // 💡【第二陣 2-Aの主砲】経済圏対応型 通貨換算フォーマッタ
         function formatAssetValue(valInYen, forceWanOnly = false) {
-            // 現在ロードされている多言語辞書から経済圏のパラメータ構造を抽出
             const config = (typeof currentTranslations !== 'undefined' && currentTranslations["currency_config"]) || { "currency_sign": "¥", "exchange_rate": 1, "format_type": "4-digit-jp" };
-            
-            // 1. 換算レートの動的適用（内部の「円」を生数字のまま現在の設定国通貨にコンバート）
             const convertedValue = valInYen * config.exchange_rate;
 
-            // 2. 経済圏別フォーマット分岐
             if (config.format_type === "4-digit-jp") {
-                // 伝統の4桁区切り（万・億表現・絶対値制御型）の完全維持
                 const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
                 const lblOku = isEn ? (currentTranslations['format_lbl_oku'] || "0M ") : "億";
                 const lblWan = isEn ? (currentTranslations['format_lbl_wan'] || " ¥10k") : "万円";
@@ -815,7 +814,6 @@
                 }
                 return `${sign}${config.currency_sign}${absWan.toLocaleString()}${lblWanOnly}`;
             } else {
-                // 世界標準の3桁区切り（米ドル等の標準カンマ表現・絶対値制御型）
                 const roundedValue = Math.round(convertedValue);
                 const absValue = Math.abs(roundedValue);
                 const sign = roundedValue < 0 ? '-' : '';
@@ -1702,7 +1700,6 @@
             renderTableAndChart(labels, aggregatedTemplates, totalData, simRecords);
         }
 
-        // 💡明細テーブル最左列の「年目」「年」「歳」の接続言語も動的展開マッピング
         function renderTableAndChart(labels, datasetTemplates, totalData, simRecords) {
             lastSimulationData = simRecords;
             const tbody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
@@ -1766,7 +1763,6 @@
                             beginAtZero: true, 
                             ticks: { 
                                 callback: function(value) {
-                                    // 💡グラフの縦軸の目盛り表現も完全動的フォーマッタに全面委託！
                                     return formatAssetValue(value);
                                 }
                             } 
@@ -1774,6 +1770,102 @@
                     }
                 }
             });
+        }
+
+        function analyzeDieWithZero(data) {
+            const container = document.getElementById('dwz-result-container');
+            const warningsContainer = document.getElementById('dwz-warnings-container');
+            if (!container || !warningsContainer) return;
+            
+            container.innerHTML = "";
+            warningsContainer.innerHTML = "";
+
+            const finalRecord = data[data.length - 1];
+            const ageCurrent = data[0].age;
+            const ageFinal = finalRecord.age;
+            const remainingYears = ageFinal - ageCurrent;
+
+            let cashOutAge = null;
+            for (let r of data) {
+                if (r.cash < 0) {
+                    cashOutAge = r.age;
+                    break;
+                }
+            }
+
+            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+
+            if (finalRecord.total < 0) {
+                const shortageAmt = Math.abs(finalRecord.total);
+                const annualAdjustment = shortageAmt / (remainingYears || 1);
+                const monthlyAdjustment = annualAdjustment / 12;
+
+                const txtPrefix = isEn ? (currentTranslations["dwz_msg_shortage_prefix"] || "According to current ledger projections, your wealth will completely hit [0] at age ") : "現在の算盤では、あなたの資産は逝去される前の";
+                const txtMiddle = isEn ? (currentTranslations["dwz_msg_shortage_middle"] || ", threatening capital exhaustion before your final hour.<br><br>By the time you reach your expected age of passing (") : "歳の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>最終的に逝去する年齢（";
+                const txtSuffix = isEn ? (currentTranslations["dwz_msg_shortage_suffix"] || " yo), you will face a total cumulative 【shortage】 of ") : "歳）では、合計で";
+                const txtTail = isEn ? (currentTranslations["dwz_msg_shortage_tail"] || ".<br><br>To fortify your defenses and perfectly cross the finish line with net zero capital (Die With Zero), you must downscale your annual spending for the remaining ") : "が【不足】する計算となります。<br><br>この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された";
+                const txtFinal = isEn ? (currentTranslations["dwz_msg_shortage_final"] || " years by: ") : "年間、年間支出を";
+                const txtCalcHint = isEn ? (currentTranslations["dwz_msg_shortage_calc_hint"] || " (approx. ") : "（すなわち、月々約";
+                const txtCalcTail = isEn ? (currentTranslations["dwz_msg_shortage_calc_tail"] || " / Month) to restore defensive equilibrium.") : "）【減らさなければ】なりません。";
+
+                let totalOutAge = ageFinal;
+                for (let r of data) {
+                    if (r.total < 0) { totalOutAge = r.age; break; }
+                }
+
+                container.innerHTML = `
+                    <p class="text-red-400 font-bold bg-red-950/30 p-3 rounded-xl border border-red-900/30 mb-3">
+                        ${txtPrefix}<span class="text-2xl font-black mx-1 underline">${totalOutAge}</span>${txtMiddle}${ageFinal}${txtSuffix}<span class="text-xl font-black text-white mx-1">${formatAssetValue(shortageAmt)}</span>${txtTail}<span class="font-bold text-white">${remainingYears}</span>${txtFinal}<span class="text-amber-400 font-black text-lg mx-1">${formatAssetValue(annualAdjustment, true)}</span>${isEn ? " / Year" : "／年"}${txtCalcHint}<span class="text-amber-400 font-black">${formatAssetValue(monthlyAdjustment, true)}</span>${isEn ? " / Month" : "／月"}${txtCalcTail}
+                    </p>
+                `;
+
+                warningsContainer.innerHTML += `
+                    <div class="p-4 rounded-xl bg-gray-900 border-l-4 border-red-500 text-xs text-gray-400 italic font-medium leading-relaxed">
+                        ${typeof currentTranslations !== 'undefined' ? (currentTranslations["dwz_advice_shortage"] || '') : ''}
+                    </div>
+                `;
+            } else {
+                const surplusAmt = finalRecord.total;
+                const annualAddition = surplusAmt / (remainingYears || 1);
+                const monthlyAddition = annualAddition / 12;
+
+                const txtPrefix = isEn ? (currentTranslations["dwz_msg_surplus_prefix"] || "Based on current estimations, when you reach your final age of passing (") : "現在の推定では、あなたが亡くなるとき（＝最終的に逝去する年齢";
+                const txtMiddle = isEn ? (currentTranslations["dwz_msg_surplus_middle"] || " yo), you will leave a total remainder of ") : "歳）に、";
+                const txtSuffix = isEn ? (currentTranslations["dwz_msg_surplus_suffix"] || " untouched.<br><br>To entirely eliminate the economic 'waste' of dying with massive wealth and perfectly execute a Die With Zero strategy, you must increase your spending for the remaining ") : "を遺すことになります。<br><br>富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class=\"text-amber-400 font-black\">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、残された";
+                const txtTail = isEn ? (currentTranslations["dwz_msg_surplus_tail"] || " years by: ") : "年間、今よりも、";
+                const txtCalcHint = isEn ? (currentTranslations["dwz_msg_surplus_calc_hint"] || " (approx. ") : "（すなわち";
+                const txtCalcTail = isEn ? (currentTranslations["dwz_msg_surplus_calc_tail"] || " ) to maximize your life fulfillment values.") : "）【多く】使わなければなりません。";
+
+                container.innerHTML = `
+                    <p class="text-emerald-400 font-bold bg-emerald-950/20 p-3 rounded-xl border border-emerald-900/20 mb-3">
+                        ${txtPrefix}<span class="text-white font-black mx-1">${ageFinal}</span>${txtMiddle}<span class="text-2xl font-black text-white mx-1">${formatAssetValue(surplusAmt)}</span>${txtSuffix}<span class="font-bold text-white">${remainingYears}</span>${txtTail}<span class="text-amber-400 font-black text-lg mx-1">${formatAssetValue(annualAddition, true)}</span>${isEn ? " / Year" : "／年"}${txtCalcHint}<span class="text-amber-400 font-black">${formatAssetValue(monthlyAddition, true)}</span>${isEn ? " / Month" : "／月"}${txtCalcTail}
+                    </p>
+                `;
+
+                if (surplusAmt < 1000000 && !isEn) { 
+                    triggerDissolveAnimation(); 
+                }
+
+                warningsContainer.innerHTML += `
+                    <div class="p-4 rounded-xl bg-gray-900 border-l-4 border-amber-500 text-xs text-gray-400 italic font-medium leading-relaxed">
+                        ${typeof currentTranslations !== 'undefined' ? (currentTranslations["dwz_advice_surplus"] || '') : ''}
+                    </div>
+                `;
+            }
+
+            if (cashOutAge !== null) {
+                const rawWarning = (typeof currentTranslations !== 'undefined' && currentTranslations["dwz_advice_cash_warning"]) || "⚠️ 警告: 預貯金（キャッシュ）が {age} 歳の時点で完全に底を突き、日々の防衛資金が途絶します。";
+                const replacedWarning = rawWarning.replace("{age}", cashOutAge);
+                
+                warningsContainer.innerHTML = `
+                    <div class="p-3.5 rounded-xl bg-red-950/40 border border-red-500/30 text-xs font-bold text-red-300 leading-relaxed shadow-lg">
+                        ${replacedWarning}
+                        <span class="block text-[10px] text-gray-500 font-normal mt-1.5">
+                            ${typeof currentTranslations !== 'undefined' ? (currentTranslations["dwz_advice_cash_disclaimer"] || '') : ''}
+                        </span>
+                    </div>
+                ` + warningsContainer.innerHTML;
+            }
         }
 
         function transitionToDwz() {
@@ -1940,6 +2032,10 @@
                     }
                 }
 
+                // 💡【最終陣 UI一斉掃射】DWZビュー内の固定文字ラベルもロード中の言語辞書で強制同期
+                document.getElementById('dwz-assets-portfolio-lbl').textContent = assetLabelsObj['dwz_assets_portfolio_title'] || '逝去時の資産ポートフォリオ';
+                document.getElementById('dwz-advisor-advice-lbl').textContent = assetLabelsObj['dwz_advisor_advice_title'] || '人生の軍師からのアドバイス';
+
                 document.getElementById('simulator-view').classList.add('hidden');
                 document.getElementById('dwz-view').classList.remove('hidden');
                 document.getElementById('dwz-view').classList.add('flex');
@@ -2006,22 +2102,36 @@
             link.click();
         }
 
-        // 💡【消失バグの特効薬】主の languageSwitcher 要素と、外部 js/i18n.js の連携イベントリスナーをここに完全再接続！
+        function triggerDissolveAnimation() {
+            const canvas = document.getElementById('dissolve-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push(new GoldGrain(canvas.width, canvas.height));
+            }
+            if (dissolveAnimId) cancelAnimationFrame(dissolveAnimId);
+            animateDissolve(canvas, ctx);
+            setTimeout(() => { if (dissolveAnimId) cancelAnimationFrame(dissolveAnimId); ctx.clearRect(0,0,canvas.width,canvas.height); }, 3000);
+        }
+
+        // 💡【消失バグの完全打破】主の languageSwitcher 要素と、外部 js/i18n.js の連動イベントリスナーを完全固定接続！
         window.onload = function() { 
             const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
             document.getElementById('scenario-selector').value = lastScenario;
             
-            // セレクトボックスの変更イベントをリッスンし、外部の多言語エンジンと再計算を確実に誘発
             const switcher = document.getElementById('languageSwitcher');
             if (switcher) {
                 switcher.addEventListener('change', function(e) {
                     if (typeof loadLanguage === 'function') {
                         loadLanguage(e.target.value).then(() => {
+                            // UIテキストの切り替えが完了した直後に、JavaScript内の動的表現（DWZ等）も含めて一斉に再計算・描画！
                             runSimulation();
                         });
                     }
                 });
-                // 初期ロード時の選択状態を同期
                 if (typeof currentLang !== 'undefined') {
                     switcher.value = currentLang;
                 }
