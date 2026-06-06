@@ -62,7 +62,7 @@
   "dwz_msg_shortage_calc_tail": "）【減らさなければ】なりません。",
   "dwz_msg_surplus_prefix": "現在の推定では、あなたが亡くなるとき（＝最終的に逝去する年齢",
   "dwz_msg_surplus_middle": "歳）に、総資産が約",
-  "dwz_msg_surplus_suffix": "【残る】見込みです。<br><br>人生の最後に巨万の富を残して死ぬという経済的「無駄」を完全に削ぎ落とし、完璧なる<span class=\"text-amber-400 font-black\">Die With Zero（資産ゼロでの大劇終）</span>を達成するためには、残された",
+  "dwz_msg_surplus_suffix": "【残る】見込みです。<br><br>人生の最後に巨万の富を残して死ぬという economic な「無駄」を完全に削ぎ落とし、完璧なる<span class=\"text-amber-400 font-black\">Die With Zero（資産ゼロでの大劇終）</span>を達成するためには、残された",
   "dwz_msg_surplus_tail": "年間で、年間支出をあと",
   "dwz_msg_surplus_calc_hint": "（月々にして約",
   "dwz_msg_surplus_calc_tail": "）【増やし】、人生の体験価値へ投資することが推奨されます。",
@@ -187,5 +187,7 @@
   "asset_type_trust": "投資信託",
   "asset_type_realestate": "不動産",
   "asset_type_metal": "貴金属",
-  "asset_type_bonds": "債券"
+  "asset_type_bonds": "債券",
+  "graph_title_prefix": "「",
+  "graph_title_suffix": "」の生涯キャッシュフロー"
 }

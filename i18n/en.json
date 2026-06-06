@@ -187,5 +187,7 @@
   "asset_type_trust": "Funds",
   "asset_type_realestate": "Property",
   "asset_type_metal": "Metals",
-  "asset_type_bonds": "Bonds"
+  "asset_type_bonds": "Bonds",
+  "graph_title_prefix": "Lifetime Cash Flow of \"",
+  "graph_title_suffix": "\""
 }
