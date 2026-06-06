@@ -68,7 +68,7 @@
         <div class="relative w-full h-32 flex items-center justify-center">
             <canvas id="tooltipPieChart" class="w-full h-full"></canvas>
             <div class="absolute flex flex-col items-center justify-center text-center">
-                <span class="text-[10px] text-slate-400 uppercase tracking-widest leading-none">Total</span>
+                <span id="tooltip-total-center-lbl" class="text-[10px] text-slate-400 uppercase tracking-widest leading-none" data-i18n="tooltip_lbl_total_center">総資産</span>
                 <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">0万円</span>
             </div>
         </div>
@@ -146,7 +146,7 @@
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
                                 <span class="font-bold text-cyan-400" data-i18n="tooltip_macro_mild_bull_title">📈 安定上昇（緩やかな成長・マイルドインフレ）</span><br>
                                 <span data-i18n="tooltip_macro_mild_bull_item1">• 株式: <span class="font-bold text-white">10.0%</span> | 投資信託: <span class="font-bold text-white">8.0%</span></span><br>
-                                <span data-i18n="tooltip_macro_mild_bull_item2">• 貴金属 / 債券: <span class=\"font-bold text-white\">5.0%</span></span><br>
+                                <span data-i18n="tooltip_macro_mild_bull_item2">• 貴金属 / 債券: <span class="font-bold text-white">5.0%</span></span><br>
                                 <span data-i18n="tooltip_macro_mild_bull_item3">• 現金（普通預金等）: <span class="font-bold text-white">0.1%</span></span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
@@ -387,7 +387,7 @@
         </main>
 
         <footer class="bg-slate-900 text-slate-500 text-xs py-6 px-4 text-center border-t border-slate-800 mt-auto">
-            <p data-i18n="footer_copyright">© 2026 投資運用 のジェムキン (Gemkin FinTech Lab). 無断転載及びハルシネーションはお断り申し上げます。</p>
+            <p data-i18n="footer_copyright">© 2026 投資運用のジェムキン (Gemkin FinTech Lab). 無断転載及びハルシネーションはお断り申し上げます。</p>
         </footer>
     </div>
 
@@ -517,7 +517,7 @@
                 noiseGain.gain.setValueAtTime(0.04, ctx.currentTime); // 小さめの穏やかな音
                 noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
-                // 2. 黄金のきらめき、砂時計の硝子を連想させる高周波チャイン音
+                // 2. 黄金のきらめき、砂時計の硝子を連想させる高周波チャイム音
                 const chime1 = ctx.createOscillator();
                 const chime2 = ctx.createOscillator();
                 chime1.type = 'sine';
@@ -543,8 +543,8 @@
                 chime2.start(ctx.currentTime);
 
                 noiseNode.stop(ctx.currentTime + duration);
-                chime1.start(ctx.currentTime + duration);
-                chime2.start(ctx.currentTime + duration);
+                chime1.stop(ctx.currentTime + duration);
+                chime2.stop(ctx.currentTime + duration);
             } catch (e) {
                 console.warn("Web Audio APIによる砂時計サウンド再生に失敗しました:", e);
             }
@@ -563,7 +563,7 @@
                 this.vx = (Math.random() - 0.4) * 2.5; 
                 this.vy = Math.random() * 3 + 1.5; // 下方向に落ちる
                 this.alpha = 1.0;
-                // 個体差をつけて霧散の美しさを際立たせる
+                // 個体差をつけて霧散の美しさを際端たせる
                 this.decay = Math.random() * 0.012 + 0.006;
                 // 黄金・アンバー色のカラーレンジ
                 const r = Math.floor(Math.random() * 45 + 210); // 210~255
@@ -787,16 +787,31 @@
             runSimulation();
         }
 
+        // 💡PC版ツールチップ円グラフの破壊・再描画バグを完全に鎮圧する統合修復処理（ステップ1-D）
         function drawTooltipPieChart(data) {
-            const ctx = document.getElementById('tooltipPieChart').getContext('2d');
+            const canvas = document.getElementById('tooltipPieChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
             const total = data.cash + data.realestate + data.stocks + data.trust + data.metal + data.bonds;
             
             const isMobile = window.innerWidth < 1024;
             const totalCenterText = document.getElementById('tooltip-total-text').parentElement;
-            const chartContainer = document.getElementById('tooltipPieChart').parentElement;
+            const chartContainer = canvas.parentElement;
             
-            if (tooltipPieChartInstance) { tooltipPieChartInstance.destroy(); }
+            // 💡ゾンビインスタンスを完全に破壊し尽くす防衛線
+            if (tooltipPieChartInstance) { 
+                tooltipPieChartInstance.destroy(); 
+                tooltipPieChartInstance = null;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
+            // 💡現在の言語に合わせて、アセット表示名を辞書からリアルタイムに引き当て
+            const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+            const assetLabelsObj = isEn ? currentTranslations : {
+                tooltip_asset_cash: '現 金', tooltip_asset_realestate: '不動産', tooltip_asset_stocks: '株 式',
+                tooltip_asset_trust: '投資信託', tooltip_asset_metal: '貴金属', tooltip_asset_bonds: '債 券'
+            };
+
             if (isMobile) {
                 chartContainer.className = "relative w-full h-12 flex items-center justify-between gap-2 border-b border-slate-800 pb-1.5";
                 totalCenterText.className = "flex flex-col items-end justify-center text-right shrink-0";
@@ -804,59 +819,52 @@
                 totalCenterText.style.transform = 'none';
                 totalCenterText.style.display = 'flex';
                 
-                ctx.canvas.style.maxWidth = '50%';
-                ctx.canvas.style.height = '16px';
+                canvas.style.maxWidth = '50%';
+                canvas.style.height = '16px';
                 
                 tooltipPieChartInstance = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: ['資産比率'],
                         datasets: [
-                            { label: '現金', data: [data.cash], backgroundColor: assetColors.cash, categoryPercentage: 1.0, barPercentage: 1.0 },
-                            { label: '不動産', data: [data.realestate], backgroundColor: assetColors.realestate, categoryPercentage: 1.0, barPercentage: 1.0 },
-                            { label: '株式', data: [data.stocks], backgroundColor: assetColors.stocks, categoryPercentage: 1.0, barPercentage: 1.0 },
-                            { label: '投資信託', data: [data.trust], backgroundColor: assetColors.trust, categoryPercentage: 1.0, barPercentage: 1.0 },
-                            { label: '貴金属', data: [data.metal], backgroundColor: assetColors.metal, categoryPercentage: 1.0, barPercentage: 1.0 },
-                            { label: '債券', data: [data.bonds], backgroundColor: assetColors.bonds, categoryPercentage: 1.0, barPercentage: 1.0 }
+                            { label: assetLabelsObj.tooltip_asset_cash || '現金', data: [data.cash], backgroundColor: assetColors.cash, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: assetLabelsObj.tooltip_asset_realestate || '不動産', data: [data.realestate], backgroundColor: assetColors.realestate, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: assetLabelsObj.tooltip_asset_stocks || '株式', data: [data.stocks], backgroundColor: assetColors.stocks, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: assetLabelsObj.tooltip_asset_trust || '投資信託', data: [data.trust], backgroundColor: assetColors.trust, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: assetLabelsObj.tooltip_asset_metal || '貴金属', data: [data.metal], backgroundColor: assetColors.metal, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: assetLabelsObj.tooltip_asset_bonds || '債券', data: [data.bonds], backgroundColor: assetColors.bonds, categoryPercentage: 1.0, barPercentage: 1.0 }
                         ]
                     },
                     options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
                         plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                        scales: {
-                            x: { stacked: true, display: false, grid: { display: false } },
-                            y: { stacked: true, display: false, grid: { display: false } }
-                        }
+                        scales: { x: { stacked: true, display: false }, y: { stacked: true, display: false } }
                     }
                 });
             } else {
                 chartContainer.className = "relative w-full h-32 flex items-center justify-center";
                 totalCenterText.className = "absolute flex flex-col items-center justify-center text-center";
-                totalCenterText.style.position = '';
-                totalCenterText.style.transform = '';
-                totalCenterText.style.display = 'flex';
+                totalCenterText.style.position = ''; totalCenterText.style.transform = ''; totalCenterText.style.display = 'flex';
                 
-                ctx.canvas.style.maxWidth = '';
-                ctx.canvas.style.height = '';
+                canvas.style.maxWidth = ''; canvas.style.height = '';
                 
                 tooltipPieChartInstance = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['現金', '不動産', '株式', '投資信託', '貴金属', '債券'],
+                        labels: [
+                            assetLabelsObj.tooltip_asset_cash || '現金', assetLabelsObj.tooltip_asset_realestate || '不動産',
+                            assetLabelsObj.tooltip_asset_stocks || '株式', assetLabelsObj.tooltip_asset_trust || '投資信託',
+                            assetLabelsObj.tooltip_asset_metal || '貴金属', assetLabelsObj.tooltip_asset_bonds || '債券'
+                        ],
                         datasets: [{
                             data: [data.cash, data.realestate, data.stocks, data.trust, data.metal, data.bonds],
                             backgroundColor: [assetColors.cash, assetColors.realestate, assetColors.stocks, assetColors.trust, assetColors.metal, assetColors.bonds],
-                            borderColor: 'rgba(15, 23, 42, 0.95)',
-                            borderWidth: 1.5
+                            borderColor: 'rgba(15, 23, 42, 0.95)', borderWidth: 1.5
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '72%',
-                        plugins: { legend: { position: 'top' }, tooltip: { enabled: false } }
+                        responsive: true, maintainAspectRatio: false, cutout: '72%',
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } }
                     }
                 });
             }
@@ -866,12 +874,12 @@
             breakdownContainer.innerHTML = '';
             
             const assetLabels = [
-                { name: '現 金', key: 'cash', color: assetColors.cash },
-                { name: '不動産', key: 'realestate', color: assetColors.realestate },
-                { name: '株 式', key: 'stocks', color: assetColors.stocks },
-                { name: '投資信託', key: 'trust', color: assetColors.trust },
-                { name: '貴金属', key: 'metal', color: assetColors.metal },
-                { name: '債 券', key: 'bonds', color: assetColors.bonds }
+                { name: assetLabelsObj.tooltip_asset_cash || '現 金', key: 'cash', color: assetColors.cash },
+                { name: assetLabelsObj.tooltip_asset_realestate || '不動産', key: 'realestate', color: assetColors.realestate },
+                { name: assetLabelsObj.tooltip_asset_stocks || '株 式', key: 'stocks', color: assetColors.stocks },
+                { name: assetLabelsObj.tooltip_asset_trust || '投資信託', key: 'trust', color: assetColors.trust },
+                { name: assetLabelsObj.tooltip_asset_metal || '貴金属', key: 'metal', color: assetColors.metal },
+                { name: assetLabelsObj.tooltip_asset_bonds || '債 券', key: 'bonds', color: assetColors.bonds }
             ];
 
             assetLabels.forEach(asset => {
@@ -893,18 +901,20 @@
             });
 
             const diffContainer = document.getElementById('tooltip-diff');
+            const diffPrefix = isEn ? (currentTranslations['tooltip_lbl_prev_year_diff'] || 'YoY Diff: ') : '前年比: ';
             if (data.index === 0) {
-                diffContainer.innerHTML = '<span class="text-slate-500">前年比: —</span>';
+                diffContainer.innerHTML = `<span class="text-slate-500">${diffPrefix}—</span>`;
             } else if (lastSimulationData && lastSimulationData[data.index - 1]) {
                 const prevTotal = lastSimulationData[data.index - 1].total;
                 const diff = total - prevTotal;
                 const pctChange = prevTotal > 0 ? ((diff / prevTotal) * 100).toFixed(1) : '0.0';
                 const sign = diff >= 0 ? '+' : '';
                 const colorClass = diff >= 0 ? 'text-emerald-400' : 'text-rose-400';
-                diffContainer.innerHTML = `<span class="text-slate-400">前年比: </span><span class="${colorClass} font-mono">${sign}${formatAssetValue(diff)} (${sign}${pctChange}%)</span>`;
+                diffContainer.innerHTML = `<span class="text-slate-400">${diffPrefix}</span><span class="${colorClass} font-mono">${sign}${formatAssetValue(diff)} (${sign}${pctChange}%)</span>`;
             }
         }
 
+        // 💡ポップアップ浮遊時の表示ラベル文字列をJSON辞書から完璧に置換する処理（ステップ1-D）
         function customTooltipHandler(context) {
             const tooltipEl = document.getElementById('chart-tooltip');
             if (context.tooltip.opacity === 0) { tooltipEl.style.opacity = 0; return; }
@@ -914,8 +924,22 @@
             
             if (lastSimulationData && lastSimulationData[dataIndex]) {
                 const yearData = lastSimulationData[dataIndex];
-                const parts = yearData.yearLabel.split(' ');
-                document.getElementById('tooltip-year').innerHTML = `<span>${parts[0]}</span><span class="text-amber-400 font-bold">${parts[1] || ''} ${parts[2] || ''}</span>`;
+                
+                // 💡「0年目 (2026年/⚖️40歳)」という文字列を、現在の言語指定のフォーマットに解体・再翻訳
+                const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
+                const wordYearSuffix = isEn ? (currentTranslations['tooltip_lbl_year_suffix'] || ' Year') : '年目';
+                const wordYearWrap = isEn ? (currentTranslations['tooltip_lbl_year_wrapper'] || ' ') : '年';
+                const wordAgeWrap = isEn ? (currentTranslations['tooltip_lbl_age_wrapper'] || 'yo') : '歳';
+
+                const rawLabel = yearData.yearLabel; // 例："1年目 (2027年/⚖️41歳)"
+                const numIdx = rawLabel.split('年目')[0];
+                const cleanMeta = rawLabel.split('(')[1].replace(')', '');
+                const numCalYear = cleanMeta.split('年/')[0];
+                const numAge = cleanMeta.split('⚖️')[1].replace('歳', '');
+
+                const translatedYearLabel = `${numIdx}${wordYearSuffix} (${numCalYear}${wordYearWrap}/⚖️${numAge}${wordAgeWrap})`;
+
+                document.getElementById('tooltip-year').innerHTML = `<span>${translatedYearLabel}</span><span class="text-amber-400 font-bold"></span>`;
                 drawTooltipPieChart(yearData);
             }
 
@@ -1126,7 +1150,6 @@
             applyScenario(scenario);
         }
 
-        // 💡多言語退避・完全再描画エンジン（ステップ1-C完全覚醒処理）
         function loadFromLocalStorage(scenario) {
             try {
                 const saved = localStorage.getItem('gemkin_unrivaled_config_' + scenario);
@@ -1141,7 +1164,6 @@
                 document.getElementById('init-cash').value = state.initCash;
                 document.getElementById('rate-cash').value = state.rateCash;
                 
-                // 既存のHTMLを消去し、データ配列を退避させてから新しい言語で組み立て直す！
                 document.getElementById('other-income-container').innerHTML = '';
                 if (state.otherIncomesList && Array.isArray(state.otherIncomesList)) {
                     state.otherIncomesList.forEach(item => addOtherIncomeRow(item.name, item.amount, item.start, item.end));
@@ -1197,7 +1219,6 @@
             }
         }
 
-        // 💡現在の画面数値をオブジェクト配列として丸ごと退避保存する仕組み（ステップ1-C）
         function saveToLocalStorage() {
             try {
                 const currentScenario = document.getElementById('scenario-selector').value;
@@ -1253,7 +1274,6 @@
             } catch(e) { showToast("保存に失敗しました。", "error"); }
         }
 
-        // 💡画面に入力されている状態を言語切替用に一時的にオブジェクトへ抽出する裏関数
         function captureCurrentStateToObj() {
             return {
                 startYear: document.getElementById('start-year').value,
@@ -1298,7 +1318,6 @@
             };
         }
 
-        // 💡退避したオブジェクトデータを最新の翻訳環境のコンテナへ綺麗に再配置する裏関数
         function reHydrateStateFromObj(state) {
             document.getElementById('start-year').value = state.startYear;
             document.getElementById('start-age').value = state.startAge;
@@ -1923,15 +1942,17 @@
         }
     </script>
 
-    <!-- 💡言語切り替え時に画面内の動的生成項目も100%リアルタイムに完全再描画するトリガーをjs/i18n.jsの背後に連結（ステップ1-C完全終結） -->
     <script>
         document.getElementById('languageSwitcher').addEventListener('change', () => {
-            // 翻訳ファイルの非同期fetchが完了するのをわずかに待ってから、画面全体のオブジェクトデータを一度退避して再展開する
             setTimeout(() => {
+                if (typeof tooltipPieChartInstance !== 'undefined' && tooltipPieChartInstance) {
+                    tooltipPieChartInstance.destroy();
+                    tooltipPieChartInstance = null;
+                }
                 if (typeof captureCurrentStateToObj === 'function' && typeof reHydrateStateFromObj === 'function') {
                     const currentData = captureCurrentStateToObj();
                     reHydrateStateFromObj(currentData);
-                    showToast(currentData.th_cash === 'Cash' ? '🇺🇸 Dynamic UI Language Synchronized!' : '🇯🇵 動的UIの表示言語を完全に同期しました！');
+                    showToast(currentData.th_cash === 'Cash' ? '🇺🇸 Tooltip and Charts fully synchronized!' : '🇯🇵 浮遊ポップアップ内のすべての多言語化を完了しました！');
                 }
             }, 150);
         });
