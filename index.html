@@ -223,7 +223,7 @@
                             </div>
                             <div>
                                 <label class="text-slate-400 text-[10px] block mb-1" data-i18n="lbl_salary_limit">受給期限 (年齢まで)</label>
-                                <input type="number" id="salary-limit" value="65" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
+                                <input type="number" id="salary-amount" class="hidden"><input type="number" id="salary-limit" value="65" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
                             </div>
                         </div>
                     </div>
@@ -1341,6 +1341,7 @@
             runSimulation();
         }
 
+        // 💡【ステップ1-E補修】二重マイナス符号バグ（--）を完全に駆逐調律した無欠の金額フォーマッタ
         function formatAssetValue(valInYen) {
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const lblOku = isEn ? (currentTranslations['format_lbl_oku'] || "0M ") : "億";
@@ -1356,12 +1357,13 @@
                 const wan = absWan % 10000;
                 
                 if (isEn) {
-                    return `${sign}${valInWan.toLocaleString()}${lblWan}`;
+                    // 💡カンマ区切り文字列に絶対値を適用することで符号の二重干渉を根絶
+                    return `${sign}${absWan.toLocaleString()}${lblWan}`;
                 } else {
                     return wan > 0 ? `${sign}${oku}${lblOku}${wan}${lblWan}` : `${sign}${oku}${lblOku}円`;
                 }
             }
-            return `${sign}${valInWan.toLocaleString()}${lblWanOnly}`;
+            return `${sign}${absWan.toLocaleString()}${lblWanOnly}`;
         }
 
         function runSimulation() {
@@ -1620,7 +1622,7 @@
             });
         }
 
-        // 💡【ステップ 1-F】💀警告判定のテキスト組み立てロジックを完全辞書テンプレート連動に換装
+        // 💡【ステップ 1-F最終形】中国語駆逐、二重マイナス駆逐、主のアドバイス要件を完全集約したDWZリロードエンジン
         function transitionToDwz() {
             playDissolveSound();
             const tooltipEl = document.getElementById('chart-tooltip');
@@ -1667,7 +1669,6 @@
                 const breakdownList = document.getElementById('dwz-breakdown-list');
                 breakdownList.innerHTML = '';
                 
-                // 💡言語に合わせて、アセット表示名をヘッダーと共通化
                 const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
                 const assetLabelsObj = isEn ? currentTranslations : {
                     tooltip_asset_cash: '現金', tooltip_asset_realestate: '不動産', tooltip_asset_stocks: '株式',
@@ -1708,16 +1709,16 @@
                 let advicePrefixHtml = '';
                 let dwzDisclaimer = '';
 
-                // 💡現金不足警告テキストの完全多言語辞書バインド化
+                // 💡絵文字重複を完全に駆逐し、一言アドバイスを追加調律した警告パーツ
                 if (cashShortageAge !== null) {
-                    const baseWarningTxt = isEn 
+                    const baseWarningByMst = isEn 
                         ? (currentTranslations['dwz_advice_cash_warning'] || "⚠️ Warning: Cash reserves will deplete entirely at age {age}...").replace('{age}', cashShortageAge)
                         : (currentTranslations['dwz_advice_cash_warning'] || "⚠️ このままでは、{age}歳で現金が不足して生活が成り立ちません。…").replace('{age}', cashShortageAge);
 
                     advicePrefixHtml = `
                         <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
-                            <span>⚠️</span>
-                            <span>${baseWarningTxt}</span>
+                            <span></span>
+                            <span>${baseWarningByMst}</span>
                         </div>
                     `;
                     dwzDisclaimer = isEn 
@@ -1741,10 +1742,9 @@
                     const reduceSpendPerYear = Math.round(deficitAmt / yearsRemaining);
                     const reduceSpendPerMonth = Math.round(reduceSpendPerYear / 12);
 
-                    // 💡不足時の日本語直書きを完全撤去、JSONからテンプレート変数を動的に結合
                     const txtPrefix = isEn ? (currentTranslations['dwz_msg_shortage_prefix'] || "Based on current calculations, your wealth will hit 【0】 and deplete at age ") : "現在の算盤では、あなたの資産は逝去される前の";
-                    const txtMiddle = isEn ? (currentTranslations['dwz_msg_shortage_middle'] || ", risking financial exhaustion before your sunset years.<br><br>By the time you reach your target simulation end age (") : "歳の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>最終的にシミュレーション終了年齢（";
-                    const txtSuffix = isEn ? (currentTranslations['dwz_msg_shortage_suffix'] || " yo), you will face a total deficit of around ") : "歳）に達した時点では、合計で";
+                    const txtMiddle = isEn ? (currentTranslations['dwz_msg_shortage_middle'] || ", risking financial exhaustion before your sunset years.<br><br>At your final age of passing (") : "歳の時点で【0円】となり、枯渇（破綻）する恐れがございます。<br><br>最終的に逝去する年齢（";
+                    const txtSuffix = isEn ? (currentTranslations['dwz_msg_shortage_suffix'] || " yo), you will face a total deficit of around ") : "歳）では、合計で";
                     const txtTail = isEn ? (currentTranslations['dwz_msg_shortage_tail'] || ".<br><br>To prevent this shortage and successfully complete your final lifecycle sprint with net wealth zero (Die With Zero), you must reduce your spending for the remaining ") : "が【不足】する計算となります。<br><br>この枯渇を防ぎ、人生の最後を資金ゼロで完走する（Die With Zero）ためには、残された";
                     const txtFinal = isEn ? (currentTranslations['dwz_msg_shortage_final'] || " years by: ") : "年間、年間支出を";
                     const txtCalcHint = isEn ? (currentTranslations['dwz_msg_shortage_calc_hint'] || " (approx. ") : "（すなわち、月々約";
@@ -1752,7 +1752,7 @@
 
                     msgBox.innerHTML = `
                         ${advicePrefixHtml}
-                        ${dwzDisclaimer}${txtPrefix} <span class="text-rose-400 font-black text-lg">${bankruptAge}</span> ${txtMiddle}<span class="text-amber-400 font-black">${endAge}</span>${txtSuffix} <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">约${formatAssetValue(deficitAmt)}</span> ${txtTail} <span class="text-amber-400 font-extrabold">${yearsRemaining}</span> ${txtFinal}<br>
+                        ${dwzDisclaimer}${txtPrefix} <span class="text-rose-400 font-black text-lg">${bankruptAge}</span> ${txtMiddle}<span class="text-amber-400 font-black">${endAge}</span>${txtSuffix} <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(deficitAmt)}</span> ${txtTail} <span class="text-amber-400 font-extrabold">${yearsRemaining}</span> ${txtFinal}<br>
                         <span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(reduceSpendPerYear)}${lblUnitYear}</span> 
                         ${txtCalcHint} <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth)}${lblUnitMonth}</span>${txtCalcTail}
                     `;
@@ -1766,9 +1766,8 @@
                     const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
                     const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
 
-                    // 💡余剰時の日本語直書きを完全撤去、JSONからテンプレート変数を動的に結合
-                    const txtSurplusPrefix = isEn ? (currentTranslations['dwz_msg_surplus_prefix'] || "Based on current estimations, when your lifetime simulation reaches its conclusion at age ") : "現在の推定では、あなたが亡くなるとき（＝シミュレーション終了年齢";
-                    const txtSurplusMiddle = isEn ? (currentTranslations['dwz_msg_surplus_middle'] || " yo, you will pass away leaving a total remainder of ") : "歳）に、";
+                    const txtSurplusPrefix = isEn ? (currentTranslations['dwz_msg_surplus_prefix'] || "Based on current estimations, when you reach your final age of passing (") : "現在の推定では、あなたが亡くなるとき（＝最終的に逝去する年齢";
+                    const txtSurplusMiddle = isEn ? (currentTranslations['dwz_msg_surplus_middle'] || " yo), you will leave a total remainder of ") : "歳）に、";
                     const txtSurplusSuffix = isEn ? (currentTranslations['dwz_msg_surplus_suffix'] || " untouched.<br><br>To entirely eliminate the economic 'waste' of dying with massive wealth and perfectly execute a Die With Zero strategy, you must increase your spending for the remaining ") : "を遺すことになります。<br><br>富を抱えたまま人生の最期を迎える「無駄」を完全に排除し、<span class=\"text-amber-400 font-black\">ダイ・ウィズ・ゼロ（Die With Zero）</span>を果たすためには、残された";
                     const txtSurplusTail = isEn ? (currentTranslations['dwz_msg_surplus_tail'] || " years by: ") : "年間、今よりも、";
                     const txtSurplusCalcHint = isEn ? (currentTranslations['dwz_msg_surplus_calc_hint'] || " (approx. ") : "（すなわち";
@@ -1800,8 +1799,7 @@
                     overlay.classList.add('pointer-events-none');
                     cancelAnimationFrame(dissolveAnimId);
                     
-                    // 💡トースト通知文言も日英完全連動
-                    showToast(isEn ? "💀 Die With Zero computation matrices expanded." : "💀 ダイ・ウィズ・ゼロ 判定を展開しました。");
+                    showToast(isEn ? "💀 Die With Zero computation matrices expanded." : "💀 判定を展開しました。");
                 }, 400);
 
             }, 1200);
