@@ -1,1 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="A simple yet ultra-high-performance asset simulator compliant with the wealthy pyramid. Instantly visualize your future cash flow.">
+    <meta property="og:title" content="💡Asset & Life Simulator (💀DIE WITH ZERO Evaluation Available!) | Life Cash Flow Strategy Board">
+    <meta property="og:description" content="Instantly calculate your future asset trajectory from default values by net financial asset tier.">
+    <meta property="og:type" content="website">
 
+    <title>💡Asset & Life Simulator (💀DIE WITH ZERO Evaluation Available!)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        
+        /* 💡マークをカッコよく明滅させるアニメーション */
+        @keyframes pulse-light {
+            0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.2)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.8)); text-shadow: 0 0 8px rgba(251, 191, 36, 0.6); }
+        }
+        .blinking-light { animation: pulse-light 2s infinite ease-in-out; color: #fbbf24; }
+
+        /* ダイウィズゼロボタンの脈動アニメーション */
+        @keyframes pulse-gold {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            50% { transform: scale(1.06); box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+        }
+        .pulse-dwz { animation: pulse-gold 2s infinite ease-in-out; }
+
+        /* フェードインアニメーション */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased transition-all duration-300">
+
+    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-20px] opacity-0 pointer-events-none transition-all duration-300 ease-out bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3">
+        <span id="toast-icon" class="text-emerald-400 text-lg"><i class="fa-solid fa-circle-check"></i></span>
+        <span id="toast-text" class="text-sm font-medium">Notification Message</span>
+    </div>
+
+    <div id="transition-overlay" class="fixed inset-0 z-[100] pointer-events-none opacity-0 transition-opacity duration-500 bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
+        <canvas id="dissolve-canvas" class="absolute inset-0 w-full h-full"></canvas>
+        <div id="dissolve-status-text" class="absolute z-10 text-amber-400 font-mono text-xs sm:text-sm tracking-[0.2em] font-light uppercase text-center animate-pulse opacity-80">
+            <span>DISSOLVING ASSETS INTO EXPERIENCE...</span>
+            <span class="block text-[9px] text-slate-500 mt-2 tracking-widest">Until the final grain of the hourglass, without regret.</span>
+        </div>
+    </div>
+
+    <div id="chart-tooltip" class="absolute bg-slate-950/95 text-white p-4 max-sm:p-3 rounded-2xl shadow-2xl border border-slate-800 pointer-events-none opacity-0 transition-opacity duration-200 z-50 w-80 lg:w-80 flex flex-col gap-3 max-sm:gap-2 max-sm:w-70 max-sm:left-1/2 max-sm:-translate-x-1/2">
+        <div id="tooltip-year" class="text-xs font-bold tracking-wider text-slate-400 border-b border-slate-800 pb-1.5 flex justify-between">
+            <span>Elapsed Year</span>
+            <span class="text-amber-400">Asset Portfolio</span>
+        </div>
+        <div class="relative w-full h-32 flex items-center justify-center">
+            <canvas id="tooltipPieChart" class="w-full h-full"></canvas>
+            <div class="absolute flex flex-col items-center justify-center text-center">
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest leading-none">Total</span>
+                <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">$0</span>
+            </div>
+        </div>
+        <div id="tooltip-breakdown" class="text-[11px] max-sm:text-[10px] grid grid-cols-1 gap-y-1 max-sm:gap-y-0.5 text-slate-300 border-t border-slate-800 pt-2"></div>
+        <div id="tooltip-diff" class="text-[11px] text-center border-t border-slate-800 pt-2 font-bold"></div>
+    </div>
+
+    <div id="simulator-view" class="flex flex-col min-h-screen">
+        <header class="bg-slate-900 text-white py-6 px-4 sm:px-8 border-b border-b-slate-800 shadow-md lg:sticky lg:top-0 lg:z-40">
+            <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="relative flex items-center">
+                        <div onclick="runSimulation(); showToast('💎 Future recalculated successfully!')" class="relative bg-amber-500 text-slate-950 p-3 rounded-xl text-2xl shadow-inner font-black animate-pulse cursor-pointer hover:bg-amber-400 transition-colors flex items-center justify-center select-none" title="Click to run simulation">
+                            💎
+                            <div class="hidden sm:flex absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
+                                <span class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-amber-500"></span>
+                                <span>Simulate!</span>
+                            </div>
+                            <div class="sm:hidden absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
+                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-amber-500"></span>
+                                <span>Simulate!</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ml-16 sm:ml-0">
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-wrap gap-2">
+                                <span class="blinking-light">💡</span><span>Asset & Life Simulator</span><span class="text-xs sm:text-sm text-amber-400 font-extrabold bg-amber-400/10 px-2.5 py-1 rounded border border-amber-500/20">(💀DIE WITH ZERO Evaluation Available!)</span>
+                            </h1>
+                            <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 px-1 py-0.5 shadow-sm">
+                                <i class="fa-solid fa-money-bill-transfer text-slate-400 text-xs ml-1 mr-1"></i>
+                                <select id="languageSwitcher" onchange="navigateCurrency(this.value)" class="bg-transparent text-slate-200 text-xs font-bold focus:outline-none cursor-pointer pr-1 py-0.5">
+                                    <option value="dollar" selected>USD ($)</option>
+                                    <option value="ja">JPN (¥)</option>
+                                    <option value="yuan">CNY (元)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-xs sm:text-sm mt-0.5 font-light">
+                            Life Strategy Board — Your own personalized life blueprint linking annual income and lifetime expenses with real-time cash flow.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60 text-xs">
+                    <div class="flex items-center gap-1.5 relative">
+                        <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-user-tie text-amber-400 mr-1"></i><span>Persona Selection:</span></span>
+                        <div class="flex items-center bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
+                            <input type="text" id="scenario-input" value="Mass Affluent" oninput="handleUserTypeInput()" class="bg-transparent text-slate-100 px-3 py-1.5 font-bold focus:outline-none text-xs w-36">
+                            <select id="scenario-selector" onchange="handleScenarioSelect(this.value)" class="bg-slate-800 text-slate-400 border-l border-slate-700 focus:outline-none cursor-pointer py-1.5 text-xs px-1">
+                                <option value="custom">— Custom —</option>
+                                <option value="ultra_rich">Ultra HNW ($5M+)</option>
+                                <option value="rich">High Net Worth ($1M-$5M)</option>
+                                <option value="sub_rich" selected>Mass Affluent ($100k-$1M)</option>
+                                <option value="upper_mass">Emerging Affluent ($50k-$100k)</option>
+                                <option value="mass">Mass Class (<$50k)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 border-t sm:border-t-0 sm:border-l border-slate-700 pt-2.5 sm:pt-0 sm:pl-3">
+                        <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-earth-asia text-blue-400 mr-1"></i><span>Macroeconomic Worldline:</span></span>
+                        
+                        <div class="relative group" tabindex="0">
+                            <button onclick="applyWorldLine('bright')" class="px-2.5 py-1.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition-colors border border-emerald-500/30 font-bold focus:outline-none">🚀 High Growth</button>
+                            <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
+                                <span class="font-bold text-emerald-400">🚀 High Growth (Hyperinflation / Bull Market)</span><br>
+                                <span>• Tactics: Asset Value Maximization Array</span>
+                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
+                            </div>
+                        </div>
+
+                        <div class="relative group" tabindex="0">
+                            <button onclick="applyWorldLine('mild_bull')" class="px-2.5 py-1.5 rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-colors border border-cyan-500/30 font-bold focus:outline-none">📈 Steady Rise</button>
+                            <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
+                                <span class="font-bold text-cyan-400">📈 Steady Rise (Moderate Growth / Mild Inflation)</span><br>
+                                <span>• Tactics: Standard Compound Accumulation Array</span>
+                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
+                            </div>
+                        </div>
+
+                        <div class="relative group" tabindex="0">
+                            <button onclick="applyWorldLine('normal')" class="px-2.5 py-1.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors border border-blue-500/30 font-bold focus:outline-none">🌱 Standard Speed</button>
+                            <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
+                                <span class="font-bold text-blue-400">🌱 Standard Speed (Normal Times / Stable Growth)</span><br>
+                                <span>• Tactics: Baseline Asset Preservation Array</span>
+                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
+                            </div>
+                        </div>
+
+                        <div class="relative group" tabindex="0">
+                            <button onclick="applyWorldLine('dark')" class="px-2.5 py-1.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors border border-rose-500/30 font-bold focus:outline-none">⛈️ Stagnant Decline</button>
+                            <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
+                                <span class="font-bold text-rose-400">⛈️ Stagnant Decline (Stagflation / Asset Deflation)</span><br>
+                                <span>• Tactics: Capital Protection Hedging Array</span>
+                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 pb-32">
+            <section class="lg:col-span-5 flex flex-col gap-6 w-full min-w-0">
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-5">
+                    <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-amber-500"></i> <span>Basic Settings</span>
+                    </h2>
+                    
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label for="start-year" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Start Year</label>
+                            <div class="relative">
+                                <span class="absolute left-2.5 top-2.5 text-slate-400 text-xs"><i class="fa-solid fa-calendar-days"></i></span>
+                                <input type="number" id="start-year" value="2026" oninput="runSimulation();" class="pl-7 w-full rounded-xl border border-slate-200 p-2 text-slate-800 font-bold focus:ring-2 focus:ring-slate-900 focus:outline-none text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="start-age" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Current Age</label>
+                            <div class="relative">
+                                <span class="absolute left-2.5 top-2.5 text-slate-400 text-xs"><i class="fa-solid fa-user-clock"></i></span>
+                                <input type="number" id="start-age" value="40" oninput="updateStageAges(); runSimulation();" class="pl-7 w-full rounded-xl border border-slate-200 p-2 text-slate-800 font-bold focus:ring-2 focus:ring-slate-900 focus:outline-none text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="years" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">End Age</label>
+                            <div class="relative">
+                                <span class="absolute left-2.5 top-2.5 text-slate-400 text-xs"><i class="fa-solid fa-hourglass-half"></i></span>
+                                <input type="number" id="years" value="85" min="1" max="120" oninput="runSimulation();" class="pl-7 w-full rounded-xl border border-slate-200 p-2 text-slate-800 font-bold focus:ring-2 focus:ring-slate-900 focus:outline-none text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-briefcase text-emerald-500"></i> <span>Employment Income</span>
+                            </span>
+                            <span class="text-[10px] text-slate-400">Added to cash account annually</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-slate-400 text-[10px] block mb-1">Income Amt ($/yr)</label>
+                                <input type="number" id="salary-amount" value="800" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
+                            </div>
+                            <div>
+                                <label class="text-slate-400 text-[10px] block mb-1">Duration (Until Age)</label>
+                                <input type="number" id="salary-limit" value="65" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-purple-500 text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-gift text-purple-500"></i> <span>Other Income</span>
+                            </span>
+                            <button type="button" onclick="addOtherIncomeRow()" class="neo-button px-2 py-0.5 bg-purple-50 text-purple-600 border border-purple-200 text-[10px] font-bold rounded hover:bg-purple-100 transition-colors">
+                                ＋ Add Income
+                            </button>
+                        </div>
+                        <div id="other-income-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto custom-scrollbar pr-1"></div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-rose-700 text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-minus text-rose-500"></i> <span>💸 Annual Living Expenses</span>
+                            </span>
+                            <button type="button" onclick="addStageRow()" class="neo-button px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded hover:bg-rose-100 transition-colors">
+                                ＋ Add Stage
+                            </button>
+                        </div>
+                        <div id="stage-container" class="flex flex-col gap-3 max-h-72 overflow-y-auto custom-scrollbar pr-1"></div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-emerald-800 text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-check text-emerald-500"></i> <span>💰 One-time Inflow Plan</span>
+                            </span>
+                            <button type="button" onclick="addIncomeRow()" class="neo-button px-2 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-bold rounded hover:bg-emerald-100 transition-colors">
+                                ＋ Add Inflow
+                            </button>
+                        </div>
+                        <div id="income-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto custom-scrollbar pr-1"></div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-rose-800 text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-minus text-rose-500"></i> <span>💸 One-time Outflow Plan</span>
+                            </span>
+                            <button type="button" onclick="addExpenseRow()" class="neo-button px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded hover:bg-rose-100 transition-colors">
+                                ＋ Add Outflow
+                            </button>
+                        </div>
+                        <div id="expense-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto custom-scrollbar pr-1"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-4">
+                    <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-emerald-500"></i> <span>Asset Allocation</span>
+                        </span>
+                        <span class="text-xs font-normal text-slate-400">Cash Flow Linked</span>
+                    </h2>
+
+                    <div class="border-l-4 border-slate-500 bg-slate-50 p-4 rounded-xl flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-800 text-sm flex items-center gap-2">💵 Cash Account (Savings)</span>
+                            <span class="text-xs text-slate-500 font-medium">Hub Account for Income Inflow</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <label class="text-slate-400 block mb-1">Initial Cash ($)</label>
+                                <input type="number" id="init-cash" value="2500" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 bg-white p-2 font-bold text-slate-800 focus:outline-slate-500">
+                            </div>
+                            <div>
+                                <label class="text-slate-400 block mb-1">Return Rate (%)</label>
+                                <input type="number" id="rate-cash" value="0.1" step="0.1" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 bg-white p-2 font-bold text-slate-800 focus:outline-slate-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4 flex flex-col gap-3">
+                        <span class="font-bold text-slate-700 text-xs">📈 Investment Asset Portfolio</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                            <button type="button" onclick="addDirectAsset('stocks')" class="px-2 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-bold rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-1">📈 Add Stocks</button>
+                            <button type="button" onclick="addDirectAsset('trust')" class="px-2 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-bold rounded-lg hover:bg-emerald-100 transition-colors flex items-center justify-center gap-1">💼 Add Funds</button>
+                            <button type="button" onclick="addDirectAsset('realestate')" class="px-2 py-1.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded-lg hover:bg-rose-100 transition-colors flex items-center justify-center gap-1">🏢 Add Property</button>
+                            <button type="button" onclick="addDirectAsset('metal')" class="px-2 py-1.5 bg-amber-50 text-amber-600 border border-amber-200 text-[10px] font-bold rounded-lg hover:bg-amber-100 transition-colors flex items-center justify-center gap-1">👑 Add Metals</button>
+                            <button type="button" onclick="addDirectAsset('bonds')" class="px-2 py-1.5 bg-purple-50 text-purple-600 border border-purple-200 text-[10px] font-bold rounded-lg hover:bg-purple-100 transition-colors flex items-center justify-center gap-1">📜 Add Bonds</button>
+                        </div>
+                        <div id="dynamic-assets-container" class="flex flex-col gap-4 mt-2"></div>
+                    </div>
+                </div>
+
+                <button onclick="runSimulation()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-calculator text-amber-400"></i> <span>Execute Strategy Simulation</span>
+                </button>
+            </section>
+
+            <section class="lg:col-span-7 flex flex-col gap-6 w-full min-w-0">
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <h2 id="graph-title-element" class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-blue-500"></i> <span>Lifetime Cash Flow Projection</span>
+                            </h2>
+                            <p class="text-slate-400 text-xs mt-0.5 flex flex-wrap items-center gap-2">
+                                <span>Hover over data points to visualize asset ratios (%) and total balances ($).</span>
+                                <span id="cash-warning-badge" class="hidden px-2.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold text-[10px] animate-pulse">
+                                    ⚠️ Cash Shortage Period Detected
+                                </span>
+                            </p>
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-2 self-stretch sm:self-auto w-full sm:w-auto">
+                            <button id="save-local-btn" onclick="saveToLocalStorage()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
+                                <i class="fa-solid fa-floppy-disk"></i> <span>💾 Save Settings</span>
+                            </button>
+                            <button id="clear-local-btn" onclick="clearLocalStorage()" class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
+                                <i class="fa-solid fa-trash-can"></i> <span>🧹 Reset</span>
+                            </button>
+                            <label for="csv-import-file" class="cursor-pointer px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
+                                <i class="fa-solid fa-file-import"></i> <span>Import CSV</span>
+                            </label>
+                            <input type="file" id="csv-import-file" accept=".csv" class="hidden" onchange="importCSV(event)">
+                            <button onclick="downloadCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
+                                <i class="fa-solid fa-file-csv"></i> <span>Export CSV</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="relative w-full h-[380px] bg-slate-50/50 rounded-xl p-2 border border-slate-100">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-table text-violet-500"></i> <span>Annual Ledger Details</span>
+                        </h2>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium max-sm:hidden">Incomes flow into cash; investments are deducted from cash at year-end.</span>
+                    </div>
+
+                    <div class="table-container custom-scrollbar overflow-x-auto rounded-xl border border-slate-100 max-h-[480px]">
+                        <table id="resultTable" class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900/90 text-white text-xs tracking-wider">
+                                    <th class="p-4 text-center font-bold sticky top-0 bg-slate-900 z-10 w-24">Year</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Cash</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Property</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Stocks</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Funds</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Metals</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Bonds</th>
+                                    <th class="p-4 text-right font-bold bg-slate-950 sticky top-0 z-20 shadow-[-4px_0_10px_rgba(0,0,0,0.1)] w-36">Total Net Assets</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-xs font-medium"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-slate-900 text-slate-500 text-xs py-6 px-4 text-center border-t border-slate-800 mt-auto">
+            <p>© 2026 Gemkin FinTech Lab. All military and financial strategies reserved.</p>
+        </footer>
+    </div>
+
+    <div id="dwz-view" class="hidden min-h-screen bg-slate-950 text-slate-100 flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08)_0%,transparent_60%)] pointer-events-none"></div>
+        
+        <div class="max-w-3xl w-full bg-slate-900/90 border-2 border-amber-500/30 rounded-3xl p-6 sm:p-10 shadow-[0_0_50px_rgba(245,158,11,0.15)] flex flex-col gap-6 relative z-10 animate-fade-in">
+            <div class="flex items-center justify-between border-b border-amber-500/20 pb-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">💀</span>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-amber-400">
+                            DIE WITH ZERO !<br>— Lifetime Asset Depletion Warning —
+                        </h2>
+                        <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5">The Army Counselor's Ultimate Strategy</p>
+                    </div>
+                </div>
+                <button onclick="backToSimulator()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Back to Simulator</span>
+                </button>
+            </div>
+
+            <div class="bg-slate-950/60 rounded-2xl p-6 border border-amber-500/10 flex flex-col gap-5">
+                <p id="dwz-message-box" class="text-sm sm:text-base leading-relaxed text-slate-200">
+                    </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800">
+                    <span class="text-[10px] uppercase text-slate-500 font-bold block mb-2">Asset Portfolio at Demise</span>
+                    <div id="dwz-breakdown-list" class="flex flex-col gap-2 text-xs">
+                        </div>
+                </div>
+                <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
+                    <span class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Strategic Advice from the Counselor</span>
+                    <p id="dwz-advice-text" class="text-xs text-amber-300 italic max-w-xs mt-1 leading-relaxed">
+                        </p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-center pt-4">
+                <button onclick="backToSimulator()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-sm rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Return to Simulator & Adjust Strategy</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed top-1/2 -translate-y-1/2 right-4 z-[60]" style="transform: translate3d(0,-50%,0); will-change: transform;">
+        <button onclick="transitionToDwz()" class="pulse-dwz bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 font-black px-4 py-3 sm:px-5 sm:py-4 rounded-2xl shadow-[0_10px_30px_rgba(245,158,11,0.4)] flex items-center gap-2 transition-all group focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs sm:text-sm">
+            <span class="text-base sm:text-lg">💀</span>
+            <span class="text-[10px] sm:text-xs uppercase tracking-widest font-black">DIE WITH ZERO !</span>
+            <i class="fa-solid fa-chevron-right text-[10px] sm:text-xs group-hover:translate-x-1 transition-transform"></i>
+        </button>
+    </div>
+
+    <script src="./js/i18n.js"></script>
+
+    <script>
+        let chartInstance = null;
+        let tooltipPieChartInstance = null;
+        let lastSimulationData = null;
+
+        const assetColors = {
+            cash: '#64748b',
+            realestate: '#f43f5e',
+            stocks: '#3b82f6',
+            trust: '#10b981',
+            metal: '#f59e0b',
+            bonds: '#8b5cf6'
+        };
+
+        const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+
+        // トランジションキャンバス用アニメーション制御変数
+        let dissolveAnimId = null;
+        let particles = [];
+
+        /* 💡第６手：切り替えスイッチ押下時の動的リダイレクト処理 */
+        function navigateCurrency(target) {
+            const baseUrl = "https://hiro-seki-tech.github.io/asset-sim-public/";
+            if (target === "dollar") {
+                // すでに米ドル環境にいるため遷移不要
+                return;
+            } else if (target === "ja") {
+                window.location.href = baseUrl;
+            } else if (target === "yuan") {
+                window.location.href = baseUrl + "yuan/";
+            } else if (target === "EUR") {
+                window.location.href = baseUrl + "EUR/";
+            }
+        }
+
+        /* トースト表示処理 */
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            const toastIcon = document.getElementById('toast-icon');
+            toastText.textContent = message;
+            if (type === 'success') {
+                toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                toastIcon.className = 'text-emerald-400 text-lg';
+            } else if (type === 'error') {
+                toastIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                toastIcon.className = 'text-rose-400 text-lg';
+            }
+            toast.classList.remove('opacity-0', 'translate-y-[-20px]', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-[-20px]', 'pointer-events-none');
+            }, 3000);
+        }
+
+        /* ⚠️ 選択肢B「黄金の砂時計・完全使い切りの霧散（ディゾルブ）」専用のサラサラと崩れ去る神秘的な音 */
+        function playDissolveSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const duration = 1.6;
+                const sampleRate = ctx.sampleRate;
+                const bufferSize = sampleRate * duration;
+                const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
+                const noiseNode = ctx.createBufferSource();
+                noiseNode.buffer = buffer;
+
+                const noiseFilter = ctx.createBiquadFilter();
+                noiseFilter.type = 'bandpass';
+                noiseFilter.frequency.setValueAtTime(800, ctx.currentTime);
+                noiseFilter.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + duration);
+                noiseFilter.Q.setValueAtTime(1.5, ctx.currentTime);
+
+                const noiseGain = ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.04, ctx.currentTime);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+                const chime1 = ctx.createOscillator();
+                const chime2 = ctx.createOscillator();
+                chime1.type = 'sine';
+                chime2.type = 'sine';
+                chime1.frequency.setValueAtTime(2200, ctx.currentTime);
+                chime2.frequency.setValueAtTime(2850, ctx.currentTime);
+
+                const chimeGain = ctx.createGain();
+                chimeGain.gain.setValueAtTime(0.02, ctx.currentTime);
+                chimeGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration - 0.2);
+
+                noiseNode.connect(noiseFilter);
+                noiseFilter.connect(noiseGain);
+                noiseGain.connect(ctx.destination);
+                chime1.connect(chimeGain);
+                chime2.connect(chimeGain);
+                chimeGain.connect(ctx.destination);
+
+                noiseNode.start(ctx.currentTime);
+                chime1.start(ctx.currentTime);
+                chime2.start(ctx.currentTime);
+                noiseNode.stop(ctx.currentTime + duration);
+                chime1.stop(ctx.currentTime + duration);
+                chime2.stop(ctx.currentTime + duration);
+            } catch (e) {
+                console.warn("Web Audio APIによる砂時計サウンド再生に失敗しました:", e);
+            }
+        }
+
+        /* 黄金の砂粒子クラス定義 */
+        class GoldGrain {
+            constructor(w, h) {
+                this.canvasWidth = w;
+                this.canvasHeight = h;
+                this.x = Math.random() * w;
+                this.y = Math.random() * h * 0.4 + h * 0.1;
+                this.size = Math.random() * 2.2 + 0.8;
+                this.vx = (Math.random() - 0.4) * 2.5; 
+                this.vy = Math.random() * 3 + 1.5;
+                this.alpha = 1.0;
+                this.decay = Math.random() * 0.012 + 0.006;
+                const r = Math.floor(Math.random() * 45 + 210);
+                const g = Math.floor(Math.random() * 60 + 140);
+                this.color = `rgba(${r}, ${g}, 11,`;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+            draw(ctx) {
+                ctx.fillStyle = this.color + this.alpha + ')';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        /* 黄金パーティクルアニメーションループ */
+        function animateDissolve(canvas, ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (particles.length < 250) {
+                for (let i = 0; i < 6; i++) { particles.push(new GoldGrain(canvas.width, canvas.height)); }
+            }
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw(ctx);
+                if (p.alpha <= 0 || p.y > canvas.height) { particles.splice(i, 1); }
+            }
+            dissolveAnimId = requestAnimationFrame(() => animateDissolve(canvas, ctx));
+        }
+
+        /* ライフステージ定義の年齢連動 */
+        function updateStageAges() {
+            const startAge = parseInt(document.getElementById('start-age').value) || 40;
+            const rows = document.querySelectorAll('.stage-row');
+            let currentStart = startAge;
+
+            rows.forEach((row, index) => {
+                const titleSpan = row.querySelector('.stage-title');
+                if (titleSpan) {
+                    titleSpan.innerHTML = `<i class="fa-solid fa-layer-group mr-1"></i>Life Stage ${romanNumerals[index] || (index + 1)}`;
+                }
+                
+                const startInput = row.querySelector('.stage-start');
+                if (startInput) startInput.value = currentStart;
+
+                const endInput = row.querySelector('.stage-end');
+                const currentEnd = parseInt(endInput.value) || (currentStart + 10);
+                
+                currentStart = currentEnd + 1;
+            });
+        }
+
+        function updateStageTotal(inputEl) {
+            updateStageAges();
+            runSimulation();
+        }
+
+        function addStageRow(amount=450, endAge=75) {
+            const container = document.getElementById('stage-container');
+            const div = document.createElement('div');
+            div.className = 'stage-row bg-rose-50/10 p-3 rounded-xl border border-rose-100/40 flex flex-col gap-2 text-[11px]';
+            
+            const lblTo = ' to ';
+            const lblAge = ' yrs';
+            const lblBurn = 'Expenses (Life Cost):';
+            const lblUnit = ' $/Year';
+
+            div.innerHTML = `
+                <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
+                    <span class="stage-title text-rose-600"><i class="fa-solid fa-layer-group mr-1"></i></span>
+                    <div class="flex items-center gap-1">
+                        <input type="number" class="stage-start w-10 rounded bg-slate-100 border-none p-0.5 text-center text-slate-500 font-bold" readonly value="40">
+                        <span class="text-slate-400 font-bold">${lblTo}</span>
+                        <input type="number" class="stage-end w-12 rounded border border-slate-200 p-0.5 text-center text-slate-800 font-bold" value="${endAge}" oninput="updateStageTotal(this);">
+                        <span class="text-slate-400">${lblAge}</span>
+                        <button type="button" onclick="this.parentElement.parentElement.parentElement.remove(); updateStageAges(); runSimulation();" class="text-rose-400 hover:text-rose-600 ml-1"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between gap-2 text-[10px] pt-1">
+                    <span class="text-slate-500 font-semibold">${lblBurn}</span>
+                    <div class="flex items-center gap-1">
+                        <input type="number" class="stage-amount w-24 rounded border border-rose-200 bg-white p-1 font-black text-rose-700 text-center" value="${amount}" oninput="runSimulation();">
+                        <span class="text-rose-700 font-bold">${lblUnit}</span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            updateStageAges();
+            runSimulation();
+        }
+
+        function addOtherIncomeRow(name="Pension", amount=180, start=65, end=110) {
+            const container = document.getElementById('other-income-container');
+            const div = document.createElement('div');
+            div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
+            
+            const lblName = "Income Name";
+            const lblAmt = "Amt ($/yr)";
+            const lblStart = "Start Age";
+            const lblEnd = "End Age";
+            const lblTo = "to";
+
+            div.innerHTML = `
+                <div class="col-span-3 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblName}</span>
+                    <input type="text" class="other-inc-name rounded border border-slate-200 p-1 font-semibold text-center" value="${name}">
+                </div>
+                <div class="col-span-3 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
+                    <input type="number" class="other-inc-amount rounded border border-slate-200 p-1 font-bold text-center" value="${amount}">
+                </div>
+                <div class="col-span-2 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblStart}</span>
+                    <input type="number" class="other-inc-start rounded border border-slate-200 p-1 font-bold text-center" value="${start}">
+                </div>
+                <span class="col-span-1 text-center text-slate-400 font-bold mt-4">${lblTo}</span>
+                <div class="col-span-2 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblEnd}</span>
+                    <input type="number" class="other-inc-end rounded border border-slate-200 p-1 font-bold text-center" value="${end}">
+                </div>
+                <button type="button" onclick="this.parentElement.remove(); runSimulation();" class="col-span-1 text-rose-500 hover:text-rose-700 text-xs text-center mt-4"><i class="fa-solid fa-trash-can"></i></button>
+            `;
+            container.appendChild(div);
+            runSimulation();
+        }
+
+        function addIncomeRow(name="Retirement Bonus", age=65, amount=2000, target="trust") {
+            const container = document.getElementById('income-container');
+            const div = document.createElement('div');
+            div.className = 'income-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
+            
+            const lblMemo = "Description";
+            const lblAge = "Age";
+            const lblAmt = "Amt ($)";
+            const lblTarget = "Destination";
+            
+            const optCash = "Cash";
+            const optRE = "Property";
+            const optStocks = "Stocks";
+            const optTrust = "Funds";
+            const optMetal = "Metals";
+            const optBonds = "Bonds";
+
+            div.innerHTML = `
+                <div class="col-span-3 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblMemo}</span>
+                    <input type="text" class="income-memo rounded border border-slate-200 p-1 font-medium text-center" value="${name}" placeholder="">
+                </div>
+                <div class="col-span-3 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAge}</span>
+                    <input type="number" class="income-age rounded border border-slate-200 p-1 font-bold text-center" value="${age}">
+                </div>
+                <div class="col-span-3 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
+                    <input type="number" class="income-amount rounded border border-slate-200 p-1 font-bold text-emerald-700 text-center" value="${amount}">
+                </div>
+                <div class="col-span-2 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblTarget}</span>
+                    <select class="income-target rounded border border-slate-200 p-1.5 font-bold text-slate-700 bg-white" onchange="runSimulation();">
+                        <option value="cash">${optCash}</option>
+                        <option value="realestate">${optRE}</option>
+                        <option value="stocks">${optStocks}</option>
+                        <option value="trust" ${target==='trust'?'selected':''}>${optTrust}</option>
+                        <option value="metal">${optMetal}</option>
+                        <option value="bonds">${optBonds}</option>
+                    </select>
+                </div>
+                <button type="button" onclick="this.parentElement.remove(); runSimulation();" class="col-span-1 text-rose-500 hover:text-rose-700 text-xs text-center mt-4"><i class="fa-solid fa-xmark"></i></button>
+            `;
+            container.appendChild(div);
+            runSimulation();
+        }
+
+        function addExpenseRow(name="Special Event", age=45, amount=300) {
+            const container = document.getElementById('expense-container');
+            const div = document.createElement('div');
+            div.className = 'expense-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
+            
+            const lblMemo = "Description";
+            const lblAge = "Age";
+            const lblAmt = "Amt ($)";
+
+            div.innerHTML = `
+                <div class="col-span-4 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblMemo}</span>
+                    <input type="text" class="expense-memo rounded border border-slate-200 p-1 font-medium text-center" value="${name}">
+                </div>
+                <div class="col-span-3 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAge}</span>
+                    <input type="number" class="expense-age rounded border border-slate-200 p-1 font-bold text-center" value="${age}">
+                </div>
+                <div class="col-span-4 flex flex-col">
+                    <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
+                    <input type="number" class="expense-amount rounded border border-slate-200 p-1 font-bold text-rose-700 text-center" value="${amount}">
+                </div>
+                <button type="button" onclick="this.parentElement.remove(); runSimulation();" class="col-span-1 text-rose-500 hover:text-rose-700 text-xs text-center mt-4"><i class="fa-solid fa-trash-can"></i></button>
+            `;
+            container.appendChild(div);
+            runSimulation();
+        }
+
+        function drawTooltipPieChart(data) {
+            const ctx = document.getElementById('tooltipPieChart').getContext('2d');
+            const total = data.cash + data.realestate + data.stocks + data.trust + data.metal + data.bonds;
+            
+            const isMobile = window.innerWidth < 1024;
+            const totalCenterText = document.getElementById('tooltip-total-text').parentElement;
+            const chartContainer = document.getElementById('tooltipPieChart').parentElement;
+            
+            if (tooltipPieChartInstance) { tooltipPieChartInstance.destroy(); }
+            
+            if (isMobile) {
+                chartContainer.className = "relative w-full h-12 flex items-center justify-between gap-2 border-b border-slate-800 pb-1.5";
+                totalCenterText.className = "flex flex-col items-end justify-center text-right shrink-0";
+                totalCenterText.style.position = 'static';
+                totalCenterText.style.transform = 'none';
+                totalCenterText.style.display = 'flex';
+                ctx.canvas.style.maxWidth = '50%';
+                ctx.canvas.style.height = '16px';
+                
+                tooltipPieChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Asset Allocation'],
+                        datasets: [
+                            { label: 'Cash', data: [data.cash], backgroundColor: assetColors.cash, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: 'Property', data: [data.realestate], backgroundColor: assetColors.realestate, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: 'Stocks', data: [data.stocks], backgroundColor: assetColors.stocks, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: 'Funds', data: [data.trust], backgroundColor: assetColors.trust, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: 'Metals', data: [data.metal], backgroundColor: assetColors.metal, categoryPercentage: 1.0, barPercentage: 1.0 },
+                            { label: 'Bonds', data: [data.bonds], backgroundColor: assetColors.bonds, categoryPercentage: 1.0, barPercentage: 1.0 }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                        scales: { x: { stacked: true, display: false }, y: { stacked: true, display: false } }
+                    }
+                });
+            } else {
+                chartContainer.className = "relative w-full h-32 flex items-center justify-center";
+                totalCenterText.className = "absolute flex flex-col items-center justify-center text-center";
+                ctx.canvas.style.maxWidth = ''; ctx.canvas.style.height = '';
+                
+                tooltipPieChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Cash', 'Property', 'Stocks', 'Funds', 'Metals', 'Bonds'],
+                        datasets: [{
+                            data: [data.cash, data.realestate, data.stocks, data.trust, data.metal, data.bonds],
+                            backgroundColor: [assetColors.cash, assetColors.realestate, assetColors.stocks, assetColors.trust, assetColors.metal, assetColors.bonds],
+                            borderColor: 'rgba(15, 23, 42, 0.95)', borderWidth: 1.5
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+                });
+            }
+
+            document.getElementById('tooltip-total-text').textContent = formatAssetValue(total);
+            const breakdownContainer = document.getElementById('tooltip-breakdown');
+            breakdownContainer.innerHTML = '';
+            
+            const assetLabels = [
+                { name: 'Cash', key: 'cash', color: assetColors.cash },
+                { name: 'Property', key: 'realestate', color: assetColors.realestate },
+                { name: 'Stocks', key: 'stocks', color: assetColors.stocks },
+                { name: 'Funds', key: 'trust', color: assetColors.trust },
+                { name: 'Metals', key: 'metal', color: assetColors.metal },
+                { name: 'Bonds', key: 'bonds', color: assetColors.bonds }
+            ];
+
+            assetLabels.forEach(asset => {
+                const value = data[asset.key];
+                const pct = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between border-b border-slate-900/40 pb-0.5';
+                item.innerHTML = `
+                    <div class="flex items-center gap-1 w-[45%]">
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${asset.color}"></span>
+                        <span class="text-slate-400 truncate text-[10px] text-left">${asset.name}</span>
+                    </div>
+                    <div class="flex justify-end w-[55%] text-right gap-1 font-mono text-[10px]">
+                        <span class="text-slate-100 font-bold">${formatAssetValue(value)}</span>
+                        <span class="text-amber-400">(${pct}%)</span>
+                    </div>
+                `;
+                breakdownContainer.appendChild(item);
+            });
+
+            const diffContainer = document.getElementById('tooltip-diff');
+            if (data.index === 0) {
+                diffContainer.innerHTML = '<span class="text-slate-500">YoY Change: —</span>';
+            } else if (lastSimulationData && lastSimulationData[data.index - 1]) {
+                const prevTotal = lastSimulationData[data.index - 1].total;
+                const diff = total - prevTotal;
+                const pctChange = prevTotal > 0 ? ((diff / prevTotal) * 100).toFixed(1) : '0.0';
+                const sign = diff >= 0 ? '+' : '';
+                const colorClass = diff >= 0 ? 'text-emerald-400' : 'text-rose-400';
+                diffContainer.innerHTML = `<span class="text-slate-400">YoY Change: </span><span class="${colorClass} font-mono">${sign}${formatAssetValue(diff)} (${sign}${pctChange}%)</span>`;
+            }
+        }
+
+        function customTooltipHandler(context) {
+            const tooltipEl = document.getElementById('chart-tooltip');
+            if (context.tooltip.opacity === 0) { tooltipEl.style.opacity = 0; return; }
+            const dataPoints = context.tooltip.dataPoints;
+            if (!dataPoints || dataPoints.length === 0) return;
+            const dataIndex = dataPoints[0].dataIndex;
+            
+            if (lastSimulationData && lastSimulationData[dataIndex]) {
+                const yearData = lastSimulationData[dataIndex];
+                const parts = yearData.yearLabel.split(' ');
+                document.getElementById('tooltip-year').innerHTML = `<span>${parts[0]}</span><span class="text-amber-400 font-bold">${parts[1] || ''} ${parts[2] || ''}</span>`;
+                drawTooltipPieChart(yearData);
+            }
+
+            const { offsetLeft: positionX, offsetTop: positionY } = context.chart.canvas;
+            tooltipEl.style.opacity = 1;
+
+            if (window.innerWidth < 1024) {
+                tooltipEl.style.position = 'fixed'; tooltipEl.style.left = '50%'; tooltipEl.style.transform = 'translateX(-50%)';
+                tooltipEl.style.bottom = '8px'; tooltipEl.style.top = 'auto'; tooltipEl.style.width = '260px';
+            } else {
+                tooltipEl.style.position = 'absolute'; tooltipEl.style.transform = ''; tooltipEl.style.width = '20rem';
+                let targetLeft = positionX + context.tooltip.caretX + 20;
+                let targetTop = positionY + context.tooltip.caretY - 80;
+                if (targetLeft + 320 > window.innerWidth) { targetLeft = positionX + context.tooltip.caretX - 340; }
+                if (targetLeft < 10) targetLeft = 10;
+                if (targetTop < 10) { targetTop = positionY + context.tooltip.caretY + 20; }
+                tooltipEl.style.left = targetLeft + 'px'; tooltipEl.style.top = targetTop + 'px';
+            }
+        }
+
+        function addAssetElement(data) {
+            const container = document.getElementById('dynamic-assets-container');
+            const id = data.id || 'asset-' + Date.now() + Math.random().toString(36).substr(2, 5);
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'asset-card border-l-4 bg-white shadow-sm border-slate-300 p-4 rounded-xl flex flex-col gap-3 text-xs relative group animate-fade-in transition-all';
+            
+            const applyBorder = (type) => {
+                div.className = div.className.replace(/border-([a-z]+)-\d+/g, '');
+                if (type === 'realestate') div.classList.add('border-rose-500');
+                if (type === 'stocks') div.classList.add('border-blue-500');
+                if (type === 'trust') div.classList.add('border-emerald-500');
+                if (type === 'metal') div.classList.add('border-amber-500');
+                if (type === 'bonds') div.classList.add('border-purple-500');
+            };
+
+            const typeLabelText = { realestate: '🏢 Property', stocks: '📈 Stocks', trust: '💼 Funds', metal: '👑 Metals', bonds: '📜 Bonds' }[data.type];
+
+            div.innerHTML = `
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-[10px]">${typeLabelText}</span>
+                        <input type="text" class="asset-name-field font-bold text-slate-800 bg-transparent border-b border-dashed border-slate-200 focus:border-slate-500 focus:outline-none py-0.5 px-1 text-sm w-40" value="${data.name}" oninput="runSimulation();">
+                        <input type="hidden" class="asset-type-field" value="${data.type}">
+                    </div>
+                    <button type="button" onclick="document.getElementById('${id}').remove(); runSimulation(); showToast('Asset removed.')" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-colors">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[10px]">
+                    <div>
+                        <label class="text-slate-400 block mb-0.5">Initial Amt ($)</label>
+                        <input type="number" class="asset-init-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.initAmt}" oninput="runSimulation();">
+                    </div>
+                    <div>
+                        <label class="text-slate-400 block mb-0.5">Return Rate (%)</label>
+                        <input type="number" class="asset-rate-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.rate}" step="0.1" oninput="runSimulation();">
+                    </div>
+                    <div>
+                        <label class="text-slate-400 block mb-0.5">Profit Payout</label>
+                        <select class="asset-payout-field w-full rounded border border-slate-200 p-1 bg-white font-semibold" onchange="runSimulation();">
+                            <option value="reinvest">Reinvest</option>
+                            <option value="cashout">Cash Payout</option>
+                        </select>
+                    </div>
+                    <div class="regular-invest-fields">
+                        <label class="text-slate-400 block mb-0.5">Annual Inv ($/yr)</label>
+                        <input type="number" class="asset-year-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.yearAmt || 0}" oninput="runSimulation();">
+                    </div>
+                    <div class="regular-invest-fields">
+                        <label class="text-slate-400 block mb-0.5">Monthly Inv ($/mo)</label>
+                        <input type="number" class="asset-month-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.monthAmt || 0}" oninput="runSimulation();">
+                    </div>
+                    <div class="grid grid-cols-5 items-center gap-1">
+                        <div class="col-span-2">
+                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">Start Age</label>
+                            <input type="number" class="asset-start-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.startAge}" oninput="runSimulation();">
+                        </div>
+                        <span class="col-span-1 text-center text-slate-400 mt-3 font-bold">-</span>
+                        <div class="col-span-2">
+                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">End Age</label>
+                            <input type="number" class="asset-end-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.endAge}" oninput="runSimulation();">
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            applyBorder(data.type);
+
+            const toggleRealestateFields = () => {
+                const regularInvestFields = div.querySelectorAll('.regular-invest-fields');
+                const payoutField = div.querySelector('.asset-payout-field');
+                if (data.type === 'realestate') {
+                    regularInvestFields.forEach(el => el.style.opacity = '0.3');
+                    regularInvestFields.forEach(el => el.querySelector('input').disabled = true);
+                    payoutField.disabled = true; payoutField.style.opacity = '0.3';
+                }
+            };
+            toggleRealestateFields();
+        }
+
+        function addDirectAsset(chosenType) {
+            const startAge = parseInt(document.getElementById('start-age').value) || 30;
+            const endAge = parseInt(document.getElementById('years').value) || 85;
+            const assetNames = { stocks: 'Emerging Growth Stocks', trust: 'Index Mutual Fund', realestate: 'Rental Property B', metal: 'Gold Bullion', bonds: 'Government Bonds' };
+            addAssetElement({ name: assetNames[chosenType], type: chosenType, initAmt: 100, rate: 4.0, yearAmt: 0, monthAmt: 0, payout: chosenType === 'bonds' ? 'cashout' : 'reinvest', startAge: startAge, endAge: endAge });
+            runSimulation(); showToast(`${assetNames[chosenType]} card deployed onto strategy board.`);
+        }
+
+        function applyWorldLine(scenario) {
+            if (scenario === 'bright' || scenario === 'mild_bull' || scenario === 'normal') document.getElementById('rate-cash').value = "0.1";
+            else if (scenario === 'dark') document.getElementById('rate-cash').value = "0.0";
+            
+            const cards = document.querySelectorAll('.asset-card');
+            cards.forEach(card => {
+                const type = card.querySelector('.asset-type-field')?.value;
+                const rateEl = card.querySelector('.asset-rate-field');
+                if (!type || !rateEl) return;
+                if (scenario === 'bright') {
+                    if (type === 'stocks' || type === 'trust') rateEl.value = "15.0";
+                    if (type === 'metal' || type === 'bonds') rateEl.value = "5.0";
+                } else if (scenario === 'mild_bull') {
+                    if (type === 'stocks') rateEl.value = "10.0"; if (type === 'trust') rateEl.value = "8.0";
+                    if (type === 'metal' || type === 'bonds') rateEl.value = "5.0";
+                } else if (scenario === 'normal') {
+                    if (type === 'stocks') rateEl.value = "5.0"; if (type === 'trust') rateEl.value = "4.0";
+                    if (type === 'metal' || type === 'bonds') rateEl.value = "4.0";
+                } else if (scenario === 'dark') {
+                    if (type === 'stocks') rateEl.value = "4.0"; if (type === 'trust') rateEl.value = "1.0";
+                    if (type === 'metal') rateEl.value = "3.0"; if (type === 'bonds') rateEl.value = "4.0";
+                }
+                if (type === 'realestate') rateEl.value = "0.0";
+            });
+            runSimulation();
+        }
+
+        function handleUserTypeInput() {
+            const inputVal = document.getElementById('scenario-input').value || 'Unnamed';
+            document.getElementById('graph-title-element').innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow for "${inputVal}"`;
+            document.getElementById('scenario-selector').value = 'custom';
+        }
+
+        function handleScenarioSelect(scenario) {
+            if (scenario === 'custom') return;
+            const selectEl = document.getElementById('scenario-selector');
+            document.getElementById('scenario-input').value = selectEl.options[selectEl.selectedIndex].text;
+            localStorage.setItem('gemkin_active_scenario', scenario);
+            applyScenario(scenario);
+        }
+
+        function loadFromLocalStorage(scenario) {
+            try {
+                const saved = localStorage.getItem('gemkin_unrivaled_config_' + scenario);
+                if (!saved) return false;
+                const state = JSON.parse(saved);
+                document.getElementById('start-year').value = state.startYear;
+                document.getElementById('start-age').value = state.startAge;
+                document.getElementById('years').value = state.years;
+                document.getElementById('salary-amount').value = state.salaryAmount;
+                document.getElementById('salary-limit').value = state.salaryLimit;
+                document.getElementById('init-cash').value = state.initCash;
+                document.getElementById('rate-cash').value = state.rateCash;
+                document.getElementById('other-income-container').innerHTML = state.otherIncomeHTML || '';
+                document.getElementById('stage-container').innerHTML = state.stageHTML || '';
+                document.getElementById('income-container').innerHTML = state.incomeHTML || '';
+                document.getElementById('expense-container').innerHTML = state.expenseHTML || '';
+                
+                const container = document.getElementById('dynamic-assets-container'); container.innerHTML = '';
+                if (state.assets) { state.assets.forEach(asset => addAssetElement(asset)); }
+                if (state.customName) {
+                    document.getElementById('scenario-input').value = state.customName;
+                    document.getElementById('graph-title-element').innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow for "${state.customName}"`;
+                }
+                localStorage.setItem('gemkin_active_scenario', scenario); return true;
+            } catch(e) { return false; }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                const currentScenario = document.getElementById('scenario-selector').value;
+                const customName = document.getElementById('scenario-input').value;
+                ['other-income-container', 'stage-container', 'income-container', 'expense-container'].forEach(id => {
+                    const cont = document.getElementById(id);
+                    if (cont) {
+                        cont.querySelectorAll('input, select').forEach(el => {
+                            if (el.tagName === 'SELECT') {
+                                Array.from(el.options).forEach(opt => { if (opt.value === el.value) opt.setAttribute('selected', 'selected'); else opt.removeAttribute('selected'); });
+                            } else el.setAttribute('value', el.value);
+                        });
+                    }
+                });
+                const state = {
+                    customName, startYear: document.getElementById('start-year').value, startAge: document.getElementById('start-age').value, years: document.getElementById('years').value,
+                    salaryAmount: document.getElementById('salary-amount').value, salaryLimit: document.getElementById('salary-limit').value, initCash: document.getElementById('init-cash').value, rateCash: document.getElementById('rate-cash').value,
+                    otherIncomeHTML: document.getElementById('other-income-container').innerHTML, stageHTML: document.getElementById('stage-container').innerHTML, incomeHTML: document.getElementById('income-container').innerHTML, expenseHTML: document.getElementById('expense-container').innerHTML,
+                    assets: Array.from(document.querySelectorAll('.asset-card')).map(card => ({
+                        name: card.querySelector('.asset-name-field').value, type: card.querySelector('.asset-type-field').value, initAmt: card.querySelector('.asset-init-field').value, rate: card.querySelector('.asset-rate-field').value, payout: card.querySelector('.asset-payout-field').value, yearAmt: card.querySelector('.asset-year-field')?.value || 0, monthAmt: card.querySelector('.asset-month-field')?.value || 0, startAge: card.querySelector('.asset-start-field').value, endAge: card.querySelector('.asset-end-field').value
+                    }))
+                };
+                localStorage.setItem('gemkin_unrivaled_config_' + currentScenario, JSON.stringify(state));
+                localStorage.setItem('gemkin_active_scenario', currentScenario); showToast("💾 Configuration securely saved to browser LocalStorage!");
+            } catch(e) { showToast("Failed to save configuration.", "error"); }
+        }
+
+        function clearLocalStorage() {
+            const currentScenario = document.getElementById('scenario-selector').value;
+            localStorage.removeItem('gemkin_unrivaled_config_' + currentScenario); showToast("🧹 Configuration wiped clean. Reverting to system defaults.");
+            if(currentScenario === 'custom') { document.getElementById('scenario-selector').value = 'sub_rich'; handleScenarioSelect('sub_rich'); } else applyScenario(currentScenario);
+        }
+
+        function applyScenario(scenario) {
+            document.getElementById('other-income-container').innerHTML = ''; document.getElementById('stage-container').innerHTML = '';
+            document.getElementById('income-container').innerHTML = ''; document.getElementById('expense-container').innerHTML = ''; document.getElementById('dynamic-assets-container').innerHTML = '';
+            const currentName = document.getElementById('scenario-input').value || 'Custom Tier';
+            document.getElementById('graph-title-element').innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow for "${currentName}"`;
+
+            if (loadFromLocalStorage(scenario)) { runSimulation(); return; }
+
+            if (scenario === 'ultra_rich') {
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 45; document.getElementById('years').value = 90; document.getElementById('salary-amount').value = 500000; document.getElementById('salary-limit').value = 55; document.getElementById('init-cash').value = 2000000; document.getElementById('rate-cash').value = 0.2;
+                addOtherIncomeRow("Private Equity Distributions", 150000, 45, 90); addStageRow(350000, 70); addStageRow(200000, 90); addIncomeRow("Tech Startup IPO / Exit", 50, 8000000, "cash"); addExpenseRow("Venture Capital Angel Investment", 48, 500000); addExpenseRow("Luxury Senior Community Entry Fee", 75, 1000000);
+                addAssetElement({ name: "US Tech Growth Stocks", type: "stocks", initAmt: 2000000, rate: 9.0, yearAmt: 50000, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 70 }); addAssetElement({ name: "Global Diversified ETF", type: "trust", initAmt: 1000000, rate: 6.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 90 });
+            } else if (scenario === 'rich') {
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 40; document.getElementById('years').value = 85; document.getElementById('salary-amount').value = 250000; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 500000; document.getElementById('rate-cash').value = 0.1;
+                addOtherIncomeRow("401(k) / Social Security", 45000, 62, 85); addStageRow(140000, 62); addStageRow(90000, 85); addIncomeRow("Corporate Executive Bonus / 401k", 60, 1000000, "trust"); addExpenseRow("Vacation Home in Florida", 50, 400000); addExpenseRow("Ivy League Tuition for Kids", 48, 300000);
+                addAssetElement({ name: "Roth IRA / S&P 500 Index", type: "trust", initAmt: 700000, rate: 7.0, yearAmt: 24000, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 85 }); addAssetElement({ name: "US Treasury Bonds", type: "bonds", initAmt: 300000, rate: 4.0, yearAmt: 0, monthAmt: 0, payout: "cashout", startAge: 40, endAge: 85 });
+            } else if (scenario === 'sub_rich') {
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 35; document.getElementById('years').value = 85; document.getElementById('salary-amount').value = 120000; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 100000; document.getElementById('rate-cash').value = 0.1;
+                addOtherIncomeRow("401(k) / Social Security", 30000, 67, 85); addStageRow(75000, 65); addStageRow(50000, 85); addIncomeRow("Inheritance / Spot Inflow", 50, 200000, "trust"); addExpenseRow("Home Down Payment / Mortgage Payoff", 40, 150000); addExpenseRow("Medical & Healthcare Out-of-Pocket Cost", 70, 100000);
+                addAssetElement({ name: "Roth IRA / S&P 500 Index", type: "trust", initAmt: 120000, rate: 6.5, yearAmt: 7000, monthAmt: 0, payout: "reinvest", startAge: 35, endAge: 85 }); addAssetElement({ name: "ESPP (Employee Stock Purchase Plan)", type: "stocks", initAmt: 80000, rate: 5.5, yearAmt: 5000, monthAmt: 0, payout: "reinvest", startAge: 35, endAge: 65 });
+            } else if (scenario === 'upper_mass') {
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 30; document.getElementById('years').value = 85; document.getElementById('salary-amount').value = 85000; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 30000; document.getElementById('rate-cash').value = 0.1;
+                addOtherIncomeRow("401(k) / Social Security", 24000, 67, 85); addStageRow(55000, 65); addStageRow(40000, 85); addIncomeRow("401k Lump-sum Payout", 65, 300000, "cash"); addExpenseRow("Wedding & Honeymoon", 32, 35000); addExpenseRow("College Fund for Child", 45, 80000);
+                addAssetElement({ name: "Traditional 401(k) Index Fund", type: "trust", initAmt: 40000, rate: 6.0, yearAmt: 0, monthAmt: 500, startAge: 30, endAge: 85 });
+            } else {
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 25; document.getElementById('years').value = 85; document.getElementById('salary-amount').value = 50000; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 10000; document.getElementById('rate-cash').value = 0.05;
+                addOtherIncomeRow("401(k) / Social Security", 18000, 67, 85); addStageRow(38000, 65); addStageRow(28000, 85); addIncomeRow("Small Spot Bonus", 40, 10000, "cash"); addExpenseRow("Used Car Purchase", 28, 15000); addExpenseRow("Home Renovation", 55, 30000);
+                addAssetElement({ name: "Emergency Fund / High-Yield Savings", type: "trust", initAmt: 5000, rate: 4.0, yearAmt: 0, monthAmt: 200, startAge: 25, endAge: 85 });
+            }
+            runSimulation();
+        }
+
+        function formatAssetValue(valInDollar) { return (valInDollar < 0 ? '-' : '') + '$' + Math.abs(Math.round(valInDollar)).toLocaleString(); }
+
+        function runSimulation() {
+            const startYear = parseInt(document.getElementById('start-year').value) || 2026;
+            const startAge = parseInt(document.getElementById('start-age').value) || 30;
+            const endAge = parseInt(document.getElementById('years').value) || 85;
+            const simulationDuration = Math.min(Math.max(endAge - startAge, 1), 90);
+
+            let labels = []; let dynamicAssets = [];
+            document.querySelectorAll('.asset-card').forEach(card => {
+                const type = card.querySelector('.asset-type-field').value;
+                dynamicAssets.push({
+                    name: card.querySelector('.asset-name-field').value || 'Undefined Asset', type,
+                    initAmt: parseFloat(card.querySelector('.asset-init-field').value) || 0,
+                    rate: (parseFloat(card.querySelector('.asset-rate-field').value) || 0) / 100,
+                    payout: card.querySelector('.asset-payout-field').value,
+                    yearAmt: type === 'realestate' ? 0 : (parseFloat(card.querySelector('.asset-year-field').value) || 0),
+                    monthAmt: type === 'realestate' ? 0 : (parseFloat(card.querySelector('.asset-month-field').value) || 0),
+                    startAge: parseInt(card.querySelector('.asset-start-field').value) || startAge,
+                    endAge: parseInt(card.querySelector('.asset-end-field').value) || endAge,
+                    currentVal: 0, active: false, purchased: false, sold: false
+                });
+            });
+
+            let currentCashVal = parseFloat(document.getElementById('init-cash').value) || 0;
+            const rateCash = (parseFloat(document.getElementById('rate-cash').value) || 0) / 100;
+            dynamicAssets.forEach(a => { if (a.startAge <= startAge) { a.currentVal = a.initAmt; a.active = true; a.purchased = true; } });
+
+            const salaryAmount = parseFloat(document.getElementById('salary-amount').value) || 0;
+            const salaryLimitAge = parseInt(document.getElementById('salary-limit').value) || 65;
+
+            let otherIncomes = [];
+            document.querySelectorAll('.other-income-row').forEach(row => {
+                otherIncomes.push({ amount: parseFloat(row.querySelector('.other-inc-amount').value) || 0, start: parseInt(row.querySelector('.other-inc-start').value) || 0, end: parseInt(row.querySelector('.other-inc-end').value) || 0 });
+            });
+
+            let stageExp = [];
+            document.querySelectorAll('.stage-row').forEach(row => {
+                stageExp.push({ amount: parseFloat(row.querySelector('.stage-amount').value) || 0, startAge: parseInt(row.querySelector('.stage-start').value) || startAge, endAge: parseInt(row.querySelector('.stage-end').value) || 120 });
+            });
+
+            let extraIncomes = [];
+            document.querySelectorAll('.income-row').forEach(row => {
+                extraIncomes.push({ age: parseInt(row.querySelector('.income-age').value) || 0, amount: parseFloat(row.querySelector('.income-amount').value) || 0, target: row.querySelector('.income-target').value || 'cash' });
+            });
+
+            let extraExpenses = [];
+            document.querySelectorAll('.expense-row').forEach(row => { extraExpenses.push({ age: parseInt(row.querySelector('.expense-age').value) || 0, amount: parseFloat(row.querySelector('.expense-amount').value) || 0 }); });
+
+            const sumOfCategory = (type) => dynamicAssets.filter(a => a.type === type && a.active).reduce((sum, a) => sum + a.currentVal, 0);
+            
+            labels.push(`Year 0 (${startYear}/Age ${startAge})`);
+            let totalData = [currentCashVal + ['realestate', 'stocks', 'trust', 'metal', 'bonds'].reduce((sum, cat) => sum + sumOfCategory(cat), 0)];
+            let simRecords = [{ index: 0, yearLabel: `Year 0 (${startYear}/Age ${startAge})`, cash: currentCashVal, realestate: sumOfCategory('realestate'), stocks: sumOfCategory('stocks'), trust: sumOfCategory('trust'), metal: sumOfCategory('metal'), bonds: sumOfCategory('bonds'), total: totalData[0] }];
+
+            let cashCheckDeficit = false;
+
+            for (let y = 1; y <= simulationDuration; y++) {
+                const currentYear = startYear + y; const currentAge = startAge + y;
+                labels.push(`Year ${y} (${currentYear}/Age ${currentAge})`);
+                currentCashVal = currentCashVal * (1 + rateCash);
+                let payoutIncomes = 0;
+
+                dynamicAssets.forEach(a => {
+                    if (currentAge === a.startAge && !a.purchased && a.startAge > startAge) { currentCashVal -= a.initAmt; a.currentVal = a.initAmt; a.active = true; a.purchased = true; }
+                    if (a.active && currentAge >= a.startAge && currentAge <= a.endAge) {
+                        const profit = a.currentVal * a.rate;
+                        if (a.payout === 'cashout') payoutIncomes += profit; else a.currentVal += profit;
+                        const regularSavings = a.yearAmt + (a.monthAmt * 12); currentCashVal -= regularSavings; a.currentVal += regularSavings;
+                    }
+                });
+
+                let collectedIncomes = payoutIncomes;
+                if (currentAge <= salaryLimitAge) collectedIncomes += salaryAmount;
+                otherIncomes.forEach(ot => { if (currentAge >= ot.start && currentAge <= ot.end) collectedIncomes += ot.amount; });
+                currentCashVal += collectedIncomes;
+
+                const matchedStage = stageExp.find(st => currentAge >= st.startAge && currentAge <= st.endAge);
+                if (matchedStage) currentCashVal -= matchedStage.amount;
+
+                extraIncomes.filter(item => item.age === currentAge).forEach(item => {
+                    if (item.target === 'cash') currentCashVal += item.amount;
+                    else { const targetAsset = dynamicAssets.find(a => a.type === item.target && a.active); if (targetAsset) targetAsset.currentVal += item.amount; else currentCashVal += item.amount; }
+                });
+
+                currentCashVal -= extraExpenses.filter(item => item.age === currentAge).reduce((sum, item) => sum + item.amount, 0);
+
+                dynamicAssets.forEach(a => { if (a.active && currentAge === a.endAge && !a.sold) { currentCashVal += a.currentVal; a.currentVal = 0; a.active = false; a.sold = true; } });
+
+                if (currentCashVal < 0) cashCheckDeficit = true;
+                let yearTotal = currentCashVal + ['realestate', 'stocks', 'trust', 'metal', 'bonds'].reduce((sum, cat) => sum + sumOfCategory(cat), 0);
+                totalData.push(Math.round(yearTotal));
+
+                simRecords.push({ index: y, yearLabel: `Year ${y} (${currentYear}/Age ${currentAge})`, cash: Math.round(currentCashVal), realestate: Math.round(sumOfCategory('realestate')), stocks: Math.round(sumOfCategory('stocks')), trust: Math.round(sumOfCategory('trust')), metal: Math.round(sumOfCategory('metal')), bonds: Math.round(sumOfCategory('bonds')), total: Math.round(yearTotal) });
+            }
+
+            document.getElementById('cash-warning-badge').className = cashCheckDeficit ? 'px-2.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold text-[10px] animate-pulse' : 'hidden';
+            renderTableAndChart(labels, { cash: { data: simRecords.map(r => r.cash) }, realestate: { data: simRecords.map(r => r.realestate) }, stocks: { data: simRecords.map(r => r.stocks) }, trust: { data: simRecords.map(r => r.trust) }, metal: { data: simRecords.map(r => r.metal) }, bonds: { data: simRecords.map(r => r.bonds) } }, totalData, simRecords);
+        }
+
+        function renderTableAndChart(labels, datasetTemplates, totalData, simRecords) {
+            lastSimulationData = simRecords; const tbody = document.getElementById('resultTable').getElementsByTagName('tbody')[0]; tbody.innerHTML = '';
+            simRecords.forEach((rec, idx) => {
+                let row = tbody.insertRow(); row.className = idx === simRecords.length - 1 ? 'bg-emerald-500/10 border-t-2 border-emerald-500 text-slate-900 font-bold' : 'hover:bg-slate-50 transition-colors';
+                const parts = rec.yearLabel.split(' ');
+                row.insertCell().innerHTML = `<div class="text-center font-bold text-slate-800">${parts[0]}</div><div class="text-center text-slate-400 font-normal text-[10px]">${parts[1] || ''} ${parts[2] || ''}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono ${rec.cash < 0 ? 'text-rose-600 font-bold' : 'text-slate-800'}">${formatAssetValue(rec.cash)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.realestate)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.stocks)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.trust)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.metal)}</div>`;
+                row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.bonds)}</div>`;
+                row.insertCell().innerHTML = `<div class="p-1 font-bold text-right text-slate-900 bg-slate-100/50 font-mono">${formatAssetValue(rec.total)}</div>`;
+            });
+
+            const ctx = document.getElementById('growthChart').getContext('2d'); if (chartInstance) chartInstance.destroy();
+            const assetsList = [{id:'cash',name:'Cash'},{id:'realestate',name:'Property'},{id:'stocks',name:'Stocks'},{id:'trust',name:'Funds'},{id:'metal',name:'Metals'},{id:'bonds',name:'Bonds'}];
+            chartInstance = new Chart(ctx, {
+                type: 'line', data: { labels, datasets: [...assetsList.map(a => ({ label: a.name, data: datasetTemplates[a.id].data, borderColor: assetColors[a.id], backgroundColor: assetColors[a.id] + '11', fill: false, tension: 0.15, borderWidth: 2, pointRadius: labels.length > 30 ? 0.5 : 2.5 })), { label: 'Total Assets', data: totalData, borderColor: '#0f172a', backgroundColor: '#0f172a', borderWidth: 4, fill: false, tension: 0.15, pointRadius: labels.length > 30 ? 1 : 3 }] },
+                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() } } } }
+            });
+        }
+
+        function transitionToDwz() {
+            playDissolveSound(); const tooltipEl = document.getElementById('chart-tooltip'); if (tooltipEl) { tooltipEl.style.opacity = '0'; }
+            const overlay = document.getElementById('transition-overlay'); const canvas = document.getElementById('dissolve-canvas'); const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight; particles = [];
+            for (let i = 0; i < 150; i++) { particles.push(new GoldGrain(canvas.width, canvas.height)); }
+            if (dissolveAnimId) cancelAnimationFrame(dissolveAnimId); animateDissolve(canvas, ctx);
+            overlay.classList.remove('pointer-events-none'); overlay.style.opacity = '1';
+
+            setTimeout(() => {
+                runSimulation(); if (!lastSimulationData || lastSimulationData.length === 0) return;
+                const currentAge = parseInt(document.getElementById('start-age').value) || 40; const endAge = parseInt(document.getElementById('years').value) || 85; const yearsRemaining = Math.max(endAge - currentAge, 1);
+                const finalRecord = lastSimulationData[lastSimulationData.length - 1]; const totalRemainingYen = finalRecord.total;
+                const breakdownList = document.getElementById('dwz-breakdown-list'); breakdownList.innerHTML = '';
+                
+                [{ name: 'Cash', val: finalRecord.cash, color: 'bg-slate-500' }, { name: 'Property', val: finalRecord.realestate, color: 'bg-rose-500' }, { name: 'Stocks', val: finalRecord.stocks, color: 'bg-blue-500' }, { name: 'Funds', val: finalRecord.trust, color: 'bg-emerald-500' }, { name: 'Metals', val: finalRecord.metal, color: 'bg-amber-500' }, { name: 'Bonds', val: finalRecord.bonds, color: 'bg-purple-500' }].forEach(item => {
+                    const div = document.createElement('div'); div.className = 'flex items-center justify-between pb-1 border-b border-slate-800';
+                    div.innerHTML = `<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full ${item.color}"></span><span class="text-slate-400">${item.name}</span></div><span class="font-mono text-slate-100 font-bold">${formatAssetValue(item.val)}</span>`;
+                    breakdownList.appendChild(div);
+                });
+
+                let cashShortageAge = null;
+                for (let i = 0; i < lastSimulationData.length; i++) { if (lastSimulationData[i].cash < 0) { const m = lastSimulationData[i].yearLabel.match(/Age\s*(\d+)/i); cashShortageAge = m ? parseInt(m[1]) : currentAge + lastSimulationData[i].index; break; } }
+                let prefix = cashShortageAge !== null ? `<div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs">⚠️ At this rate, cash reserves will be depleted by age ${cashShortageAge}, halting baseline operations. Strategic liquidations are advised prior to this terminal window.</div>` : '';
+
+                if (totalRemainingYen < 0) {
+                    let bankruptAge = endAge;
+                    for (let i = 0; i < lastSimulationData.length; i++) { if (lastSimulationData[i].total < 0) { const m = lastSimulationData[i].yearLabel.match(/Age\s*(\d+)/i); bankruptAge = m ? parseInt(m[1]) : currentAge + lastSimulationData[i].index; break; } }
+                    const deficit = Math.abs(totalRemainingYen);
+                    document.getElementById('dwz-message-box').innerHTML = `${prefix}Under the current configuration, your absolute net wealth breaks below the zero floor at <span class="text-rose-400 font-black text-lg">Age ${bankruptAge}</span>.<br><br>By your terminal projection limit (<span class="text-amber-400 font-black">Age ${endAge}</span>), you run an aggregate budget deficit of <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(deficit)}</span>.<br><br>To achieve stability without early bankruptcy across the remaining <span class="text-amber-400 font-extrabold">${yearsRemaining} years</span>, you must downsize living expenditures by:<br><span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(Math.round(deficit / yearsRemaining))}／yr</span> (approx. <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(Math.round(deficit / yearsRemaining / 12))}／mo</span>).`;
+                    document.getElementById('dwz-advice-text').innerHTML = `"Running entirely out of provisions before reaching the journey's end is a critical tactical failure. You must downsize expenditures within your life stages, optimize yield acceleration arrays, or reinforce your capital preservation defense parameters immediately."`;
+                } else {
+                    document.getElementById('dwz-message-box').innerHTML = `${prefix}Current metrics indicate that upon reaching your planned terminal age (<span class="text-amber-400 font-black">Age ${endAge}</span>), you will leave behind a surplus balance of <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(totalRemainingYen)}</span>.<br><br>To completely wipe out this unutilized surplus capital and achieve an optimal <span class="text-amber-400 font-bold">Die With Zero</span> run, you have the tactical capacity to deploy an additional:<br><span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(Math.round(totalRemainingYen / yearsRemaining))}／yr</span> (approx. <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(Math.round(totalRemainingYen / yearsRemaining / 12))}／mo</span>) over the remaining <span class="text-amber-400 font-extrabold">${yearsRemaining} years</span>.`;
+                    document.getElementById('dwz-advice-text').innerHTML = `"Entering the grave with unspent capital is a profound misallocation of human utility. Pivot your surplus capital toward experience-driven investments during your active years to maximize the aggregate lifecycle return of your life."`;
+                }
+
+                document.getElementById('simulator-view').classList.add('hidden'); document.getElementById('dwz-view').classList.remove('hidden'); document.getElementById('dwz-view').classList.add('flex');
+                window.scrollTo({ top: 0, behavior: 'smooth' }); overlay.style.opacity = '0'; overlay.classList.add('pointer-events-none');
+            }, 1200);
+        }
+
+        function backToSimulator() { document.getElementById('dwz-view').classList.remove('flex'); document.getElementById('dwz-view').classList.add('hidden'); document.getElementById('simulator-view').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        function importCSV(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader(); reader.onload = function(e) {
+                try {
+                    const lines = e.target.result.split('\n'); let imported = [];
+                    for(let i=1; i<lines.length; i++) {
+                        if (!lines[i].trim()) continue;
+                        const cols = lines[i].trim().split(/,(?=(?:[^"]*"){2})*[^"]*$/).map(c => c.replace(/^"|"$/g, '')); if(cols.length < 8) continue;
+                        imported.push({ yearLabel: cols[0], cash: parseInt(cols[1])||0, realestate: parseInt(cols[2])||0, stocks: parseInt(cols[3])||0, trust: parseInt(cols[4])||0, metal: parseInt(cols[5])||0, bonds: parseInt(cols[6])||0, total: parseInt(cols[7])||0 });
+                    }
+                    if (imported.length === 0) return;
+                    let labels = [], totalData = [], templates = { cash:{data:[]}, realestate:{data:[]}, stocks:{data:[]}, trust:{data:[]}, metal:{data:[]}, bonds:{data:[]} };
+                    imported.forEach(rec => { labels.push(rec.yearLabel); totalData.push(rec.total); templates.cash.data.push(rec.cash); templates.realestate.data.push(rec.realestate); templates.stocks.data.push(rec.stocks); templates.trust.data.push(rec.trust); templates.metal.data.push(rec.metal); templates.bonds.data.push(rec.bonds); });
+                    renderTableAndChart(labels, templates, totalData, imported); showToast("📊 CSV ledger dataset imported successfully!");
+                } catch(err) { showToast("Failed to parse imported CSV.", "error"); }
+            }; reader.readAsText(file, 'UTF-8');
+        }
+
+        function downloadCSV() {
+            if (!lastSimulationData) return;
+            let csvContent = "\uFEFF経過年(西暦/年齢),現金($),不動産($),株式($),投資信託($),貴金属($),債券($),総資産($)\n";
+            lastSimulationData.forEach(rec => { csvContent += `"${rec.yearLabel.replace(' ','')}",${rec.cash},${rec.realestate},${rec.stocks},${rec.trust},${rec.metal},${rec.bonds},${rec.total}\n`; });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(blob)); link.setAttribute("download", "investment_simulation.csv"); link.click();
+        }
+
+        window.onload = function() {
+            const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
+            document.getElementById('scenario-selector').value = lastScenario; applyScenario(lastScenario);
+            window.addEventListener('resize', () => { const canvas = document.getElementById('dissolve-canvas'); if (canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; } });
+        }
+    </script>
+</body>
+</html>
