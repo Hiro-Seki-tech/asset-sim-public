@@ -69,7 +69,7 @@
             <canvas id="tooltipPieChart" class="w-full h-full"></canvas>
             <div class="absolute flex flex-col items-center justify-center text-center">
                 <span class="text-[10px] text-slate-400 uppercase tracking-widest leading-none">Total</span>
-                <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">$0</span>
+                <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">€0</span>
             </div>
         </div>
         <div id="tooltip-breakdown" class="text-[11px] max-sm:text-[10px] grid grid-cols-1 gap-y-1 max-sm:gap-y-0.5 text-slate-300 border-t border-slate-800 pt-2"></div>
@@ -80,28 +80,23 @@
         <header class="bg-slate-900 text-white py-6 px-4 sm:px-8 border-b border-b-slate-800 shadow-md lg:sticky lg:top-0 lg:z-40">
             <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-
-
-<div class="relative flex items-center">
+                    <div class="relative flex items-center">
                         <div onclick="runSimulation(); showToast('⚡️ Future matrix recalculated via Rainbow Core!')" class="relative cursor-pointer group select-none flex items-center justify-center transition-transform duration-200 hover:scale-105 active:scale-95" title="Click to run simulation">
-                            
                             <div class="relative w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.05)] group-hover:shadow-[0_0_25px_rgba(236,72,153,0.45)] transition-shadow duration-300">
-                                
                                 <style>
                                     @keyframes headerRainbowGlow {
-                                        0% { stop-color: #ff007f; }    /* ネオンピンク */
-                                        14% { stop-color: #ff0000; }   /* レッド */
-                                        28% { stop-color: #ff7f00; }   /* オレンジ */
-                                        42% { stop-color: #ffff00; }   /* イエロー */
-                                        56% { stop-color: #00ff00; }   /* ネオングリーン */
-                                        70% { stop-color: #00ffff; }   /* ターコイズシアン */
-                                        84% { stop-color: #0000ff; }   /* オーシャンブルー */
-                                        100% { stop-color: #ff007f; }  /* ループ */
+                                        0% { stop-color: #ff007f; }
+                                        14% { stop-color: #ff0000; }
+                                        28% { stop-color: #ff7f00; }
+                                        42% { stop-color: #ffff00; }
+                                        56% { stop-color: #00ff00; }
+                                        70% { stop-color: #00ffff; }
+                                        84% { stop-color: #0000ff; }
+                                        100% { stop-color: #ff007f; }
                                     }
                                     .header-rb-1 { animation: headerRainbowGlow 7s linear infinite; }
                                     .header-rb-2 { animation: headerRainbowGlow 7s linear infinite; animation-delay: -3.5s; }
                                 </style>
-
                                 <svg class="w-9 h-9 z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <defs>
                                         <linearGradient id="headerRainbowGrad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -109,29 +104,21 @@
                                             <stop offset="100%" class="header-rb-2" />
                                         </linearGradient>
                                     </defs>
-                                    
                                     <path d="M50 15C33.4 15 20 28.4 20 45C20 55.3 25.2 64.3 33 69.7V80C33 81.7 34.3 83 36 83H64C65.7 83 67 81.7 67 80V69.7C74.8 64.3 80 55.3 80 45C80 28.4 66.6 15 50 15ZM44 78V73H56V78H44ZM42 68V63H58V68H42ZM50 23C59.4 23 67 30.6 67 40C67 41.1 66.1 42 65 42C63.9 42 63 41.1 63 40C63 32.8 57.2 27 50 27C48.9 27 48 26.1 48 25C48 23.9 48.9 23 50 23Z" fill="url(#headerRainbowGrad)" style="filter: drop-shadow(0 0 5px url(#headerRainbowGrad));" />
-                                    
                                     <path d="M68 15L46 45H60L38 82L48 51H34L68 15Z" fill="#ffeb3b" style="filter: drop-shadow(0 0 8px #ffeb3b);" class="animate-pulse" />
                                 </svg>
-                                
                                 <div class="absolute inset-0 bg-white/[0.02] group-hover:bg-white/[0.07] transition-colors duration-300"></div>
                             </div>
-
                             <div class="hidden sm:flex absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-[0_4px_12px_rgba(219,39,119,0.3)] items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
                                 <span>Simulate!</span>
                                 <span class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-purple-600"></span>
                             </div>
-
                             <div class="sm:hidden absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-[0_4px_12px_rgba(219,39,119,0.3)] flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-purple-600"></span>
                                 <span>Simulate!</span>
                             </div>
                         </div>
                     </div>
-
-
-
                     <div class="ml-16 sm:ml-0">
                         <div class="flex items-center gap-3 flex-wrap">
                             <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-wrap gap-2">
@@ -143,7 +130,7 @@
                                     <option value="dollar" >USD ($)</option>
                                     <option value="ja">JPN (¥)</option>
                                     <option value="yuan">CNY (元)</option>
-                                    <option value="EUR"selected>EUR (€)</option>
+                                    <option value="EUR" selected>EUR (€)</option>
                                 </select>
                             </div>
                         </div>
@@ -158,9 +145,7 @@
                         <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-user-tie text-amber-400 mr-1"></i><span>Persona Selection:</span></span>
                         <div class="flex items-center bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
                             <input type="text" id="scenario-input" value="Mass Affluent" oninput="handleUserTypeInput()" class="bg-transparent text-slate-100 px-3 py-1.5 font-bold focus:outline-none text-xs w-36">
-     
-              
-<select id="scenario-selector" onchange="handleScenarioSelect(this.value)" class="bg-slate-800 text-slate-400 border-l border-slate-700 focus:outline-none cursor-pointer py-1.5 text-xs px-1">
+                            <select id="scenario-selector" onchange="handleScenarioSelect(this.value)" class="bg-slate-800 text-slate-400 border-l border-slate-700 focus:outline-none cursor-pointer py-1.5 text-xs px-1">
                                 <option value="custom">— Custom —</option>
                                 <option value="ultra_rich">Old Money & Landowner (€10M)</option>
                                 <option value="rich">Frankfurt Financier (€2M)</option>
@@ -168,9 +153,6 @@
                                 <option value="upper_mass">Mass Affluent in EU (QoL & Vacation)(€15k)</option>
                                 <option value="mass">Berlin Nomad / FIRE Challenger (€40k)</option>
                             </select>
-
-
-
                         </div>
                     </div>
                     <div class="flex items-center gap-1 border-t sm:border-t-0 sm:border-l border-slate-700 pt-2.5 sm:pt-0 sm:pl-3">
@@ -256,7 +238,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="text-slate-400 text-[10px] block mb-1">Income Amt ($/yr)</label>
+                                <label class="text-slate-400 text-[10px] block mb-1">Income Amt (€/yr)</label>
                                 <input type="number" id="salary-amount" value="800" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
                             </div>
                             <div>
@@ -330,7 +312,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-3 text-xs">
                             <div>
-                                <label class="text-slate-400 block mb-1">Initial Cash ($)</label>
+                                <label class="text-slate-400 block mb-1">Initial Cash (€)</label>
                                 <input type="number" id="init-cash" value="2500" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 bg-white p-2 font-bold text-slate-800 focus:outline-slate-500">
                             </div>
                             <div>
@@ -366,7 +348,7 @@
                                 <i class="fa-solid fa-chart-line text-blue-500"></i> <span>Lifetime Cash Flow Projection</span>
                             </h2>
                             <p class="text-slate-400 text-xs mt-0.5 flex flex-wrap items-center gap-2">
-                                <span>Hover over data points to visualize asset ratios (%) and total balances ($).</span>
+                                <span>Hover over data points to visualize asset ratios (%) and total balances (€).</span>
                                 <span id="cash-warning-badge" class="hidden px-2.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold text-[10px] animate-pulse">
                                     ⚠️ Cash Shortage Period Detected
                                 </span>
@@ -508,14 +490,14 @@
         function navigateCurrency(target) {
             const baseUrl = "https://hiro-seki-tech.github.io/asset-sim-public/";
             if (target === "dollar") {
-                // すでに米ドル環境にいるため遷移不要
-                return;
+                window.location.href = baseUrl + "dollar/";
             } else if (target === "ja") {
                 window.location.href = baseUrl;
             } else if (target === "yuan") {
                 window.location.href = baseUrl + "yuan/";
             } else if (target === "EUR") {
-                window.location.href = baseUrl + "EUR/";
+                // すでにユーロ環境にいるため遷移不要
+                return;
             }
         }
 
@@ -673,7 +655,7 @@
             const lblTo = ' to ';
             const lblAge = ' yrs';
             const lblBurn = 'Expenses (Life Cost):';
-            const lblUnit = ' $/Year';
+            const lblUnit = ' €/Year';
 
             div.innerHTML = `
                 <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
@@ -705,7 +687,7 @@
             div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
             
             const lblName = "Income Name";
-            const lblAmt = "Amt ($/yr)";
+            const lblAmt = "Amt (€/yr)";
             const lblStart = "Start Age";
             const lblEnd = "End Age";
             const lblTo = "to";
@@ -741,7 +723,7 @@
             
             const lblMemo = "Description";
             const lblAge = "Age";
-            const lblAmt = "Amt ($)";
+            const lblAmt = "Amt (€)";
             const lblTarget = "Destination";
             
             const optCash = "Cash";
@@ -788,7 +770,7 @@
             
             const lblMemo = "Description";
             const lblAge = "Age";
-            const lblAmt = "Amt ($)";
+            const lblAmt = "Amt (€)";
 
             div.innerHTML = `
                 <div class="col-span-4 flex flex-col">
@@ -972,7 +954,7 @@
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[10px]">
                     <div>
-                        <label class="text-slate-400 block mb-0.5">Initial Amt ($)</label>
+                        <label class="text-slate-400 block mb-0.5">Initial Amt (€)</label>
                         <input type="number" class="asset-init-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.initAmt}" oninput="runSimulation();">
                     </div>
                     <div>
@@ -987,11 +969,11 @@
                         </select>
                     </div>
                     <div class="regular-invest-fields">
-                        <label class="text-slate-400 block mb-0.5">Annual Inv ($/yr)</label>
+                        <label class="text-slate-400 block mb-0.5">Annual Inv (€/yr)</label>
                         <input type="number" class="asset-year-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.yearAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="regular-invest-fields">
-                        <label class="text-slate-400 block mb-0.5">Monthly Inv ($/mo)</label>
+                        <label class="text-slate-400 block mb-0.5">Monthly Inv (€/mo)</label>
                         <input type="number" class="asset-month-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.monthAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="grid grid-cols-5 items-center gap-1">
@@ -1007,8 +989,7 @@
                     </div>
                 </div>
             `;
-            container.appendChild(div);
-            applyBorder(data.type);
+            container.appendChild(div); applyBorder(data.type);
 
             const toggleRealestateFields = () => {
                 const regularInvestFields = div.querySelectorAll('.regular-invest-fields');
@@ -1131,9 +1112,8 @@
             if(currentScenario === 'custom') { document.getElementById('scenario-selector').value = 'sub_rich'; handleScenarioSelect('sub_rich'); } else applyScenario(currentScenario);
         }
 
-
         function applyScenario(scenario) {
-const otherContainer = document.getElementById('other-income-container');
+            const otherContainer = document.getElementById('other-income-container');
             const stageContainer = document.getElementById('stage-container');
             const incContainer = document.getElementById('income-container');
             const expContainer = document.getElementById('expense-container');
@@ -1249,7 +1229,12 @@ const otherContainer = document.getElementById('other-income-container');
             runSimulation();
         }
 
-        function formatAssetValue(valInDollar) { return (valInDollar < 0 ? '-' : '') + '$' + Math.abs(Math.round(valInDollar)).toLocaleString(); }
+        function formatAssetValue(valInEuro) { 
+            const roundedVal = Math.round(valInEuro);
+            const absVal = Math.abs(roundedVal);
+            const sign = roundedVal < 0 ? '-' : '';
+            return `${sign}€${absVal.toLocaleString()}`; 
+        }
 
         function runSimulation() {
             const startYear = parseInt(document.getElementById('start-year').value) || 2026;
@@ -1368,7 +1353,7 @@ const otherContainer = document.getElementById('other-income-container');
             const assetsList = [{id:'cash',name:'Cash'},{id:'realestate',name:'Property'},{id:'stocks',name:'Stocks'},{id:'trust',name:'Funds'},{id:'metal',name:'Metals'},{id:'bonds',name:'Bonds'}];
             chartInstance = new Chart(ctx, {
                 type: 'line', data: { labels, datasets: [...assetsList.map(a => ({ label: a.name, data: datasetTemplates[a.id].data, borderColor: assetColors[a.id], backgroundColor: assetColors[a.id] + '11', fill: false, tension: 0.15, borderWidth: 2, pointRadius: labels.length > 30 ? 0.5 : 2.5 })), { label: 'Total Assets', data: totalData, borderColor: '#0f172a', backgroundColor: '#0f172a', borderWidth: 4, fill: false, tension: 0.15, pointRadius: labels.length > 30 ? 1 : 3 }] },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() } } } }
+                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => '€' + v.toLocaleString() } } } }
             });
         }
 
@@ -1434,7 +1419,7 @@ const otherContainer = document.getElementById('other-income-container');
 
         function downloadCSV() {
             if (!lastSimulationData) return;
-            let csvContent = "\uFEFF経過年(西暦/年齢),現金($),不動産($),株式($),投資信託($),貴金属($),債券($),総資産($)\n";
+            let csvContent = "\uFEFF経過年(西暦/年齢),現金(€),不動産(€),株式(€),投資信託(€),貴金属(€),債券(€),総資産(€)\n";
             lastSimulationData.forEach(rec => { csvContent += `"${rec.yearLabel.replace(' ','')}",${rec.cash},${rec.realestate},${rec.stocks},${rec.trust},${rec.metal},${rec.bonds},${rec.total}\n`; });
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(blob)); link.setAttribute("download", "investment_simulation.csv"); link.click();
         }
