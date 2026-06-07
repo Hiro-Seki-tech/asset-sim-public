@@ -1193,7 +1193,10 @@ function applyWorldLine(scenario) {
             if(currentScenario === 'custom') { document.getElementById('scenario-selector').value = 'sub_rich'; handleScenarioSelect('sub_rich'); } else applyScenario(currentScenario);
         }
 
-        function applyScenario(scenario) {
+
+
+
+function applyScenario(scenario) {
             const otherContainer = document.getElementById('other-income-container');
             const stageContainer = document.getElementById('stage-container');
             const incContainer = document.getElementById('income-container');
@@ -1208,7 +1211,7 @@ function applyWorldLine(scenario) {
 
             const titleEl = document.getElementById('graph-title-element');
             const currentName = document.getElementById('scenario-input').value || 'Custom Tier';
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow for "${currentName}"`;
+            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 终身现金流预测 — "${currentName}"`;
 
             if (loadFromLocalStorage(scenario)) {
                 runSimulation();
@@ -1216,100 +1219,100 @@ function applyWorldLine(scenario) {
             }
 
             if (scenario === 'ultra_rich') {
-                // 1. Silicon Valley Founder ($8M)
+                // 1. 上海地产大亨 / 隐形富豪 (総資産 5000万元級)
                 document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 35;
+                document.getElementById('start-age').value = 45;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 0; // 起業売却後は無収入
-                document.getElementById('salary-limit').value = 35;
-                document.getElementById('init-cash').value = 3000000;
+                document.getElementById('salary-amount').value = 0; // 企業家・リタイア済のため給与0
+                document.getElementById('salary-limit').value = 45;
+                document.getElementById('init-cash').value = 15000000; // 潤沢なキャッシュ 1500万元
                 document.getElementById('rate-cash').value = 0.1;
                 
-                addOtherIncomeRow("Angel Investment LP Distributions", 100000, 40, 75);
-                addStageRow(250000, 50); // 若い頃は豪快に消費
-                addStageRow(120000, 85); // 高齢期は落ち着く
-                addIncomeRow("Secondary Share Sale / Inflow", 45, 2000000, "trust");
-                addExpenseRow("Next Venture Seed Funding Outflow", 38, 1000000);
-                addExpenseRow("Philanthropy / Donation Foundation", 60, 1500000);
+                addOtherIncomeRow("高端商铺及写字楼租金收益", 1200000, 45, 75); // 年120万元の家賃収入
+                addStageRow(1500000, 60); // 贅沢な生活（年150万元消費）
+                addStageRow(600000, 85);  // 高齢期は縮小
+                addIncomeRow("家族信托一次性现金派发", 55, 10000000, "cash"); // 55歳時に1000万元流入
+                addExpenseRow("海外置业 / 购买伦敦公寓", 48, 8000000); // 48歳時に800万元流出
                 
-                addAssetElement({ name: "Venture Capital Fund", type: "stocks", initAmt: 3000000, rate: 12.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 35, endAge: 60 });
-                addAssetElement({ name: "S&P 500 Core Index", type: "trust", initAmt: 2000000, rate: 7.0, yearAmt: 0, monthAmt: 0, payout: "cashout", startAge: 35, endAge: 85 });
+                addAssetElement({ name: "核心地段高端商业地产", type: "realestate", initAmt: 25000000, rate: 4.5, yearAmt: 0, monthAmt: 0, payout: "cashout", startAge: 45, endAge: 85 });
+                addAssetElement({ name: "腾讯/阿里等核心蓝筹大票", type: "stocks", initAmt: 10000000, rate: 6.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 70 });
 
             } else if (scenario === 'rich') {
-                // 2. FAANG Principal Engineer ($2M)
+                // 2. 深セン科技巨头 / 高管 (総資産 1500万元級)
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 38;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 500000; // 高額な基本給
-                document.getElementById('salary-limit').value = 55; // 55歳で早期リタイア計画
-                document.getElementById('init-cash').value = 400000;
+                document.getElementById('salary-amount').value = 1200000; // 年収120万元
+                document.getElementById('salary-limit').value = 52; // 52歳でアーリーリタイア計画
+                document.getElementById('init-cash').value = 2000000;
                 document.getElementById('rate-cash').value = 0.1;
                 
-                addOtherIncomeRow("Mega Tech Back-front RSU Vesting", 150000, 38, 55);
-                addStageRow(180000, 55);
-                addStageRow(100000, 85);
-                addIncomeRow("Deferred Compensation Payout", 55, 500000, "cash");
-                addExpenseRow("Silicon Valley Property Down Payment", 40, 300000);
+                addOtherIncomeRow("科技巨头核心团队期权解锁 (RSU)", 400000, 38, 45);
+                addStageRow(500000, 52); // 現役時は教育費込みで年50万消費
+                addStageRow(250000, 85); // 引退後は年25万消費
+                addIncomeRow("大厂离职一次性大额补偿金", 52, 1500000, "cash");
+                addExpenseRow("深セン南山区学区房首付 (头金)", 40, 3000000);
                 
-                addAssetElement({ name: "Big Tech RSU Stock Array", type: "stocks", initAmt: 1000000, rate: 9.5, yearAmt: 50000, monthAmt: 0, payout: "reinvest", startAge: 38, endAge: 55 });
-                addAssetElement({ name: "Nasdaq 100 Index ETF", type: "trust", initAmt: 600000, rate: 8.5, yearAmt: 30000, monthAmt: 0, payout: "reinvest", startAge: 38, endAge: 85 });
+                addAssetElement({ name: "公司股票期权持仓群", type: "stocks", initAmt: 8000000, rate: 8.5, yearAmt: 100000, monthAmt: 0, payout: "reinvest", startAge: 38, endAge: 52 });
+                addAssetElement("沪深300指数增强型基金", { name: "沪深300指数增强型基金", type: "trust", initAmt: 3000000, rate: 5.5, yearAmt: 120000, monthAmt: 0, payout: "reinvest", startAge: 38, endAge: 85 });
 
             } else if (scenario === 'sub_rich') {
-                // 3. HENRY - High Earner, Not Rich Yet ($300k)
+                // 3. 北京AI行业总监 / 核心专家 (総資産 200万元からの攻勢スタンス)
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 32;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 350000; // 高年収
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 100000;
+                document.getElementById('salary-amount').value = 600000; // 年収60万元
+                document.getElementById('salary-limit').value = 60;
+                document.getElementById('init-cash').value = 500000;
                 document.getElementById('rate-cash').value = 0.1;
                 
-                addStageRow(200000, 45); // 都市部（NY/LA）の凶悪な家賃と高い生活支出
-                addStageRow(110000, 85);
-                addExpenseRow("Law/Medical School Student Loan Payoff", 33, 60000); // 奨学金一括返済
-                addExpenseRow("Law/Medical School Student Loan Payoff 2", 34, 60000);
-                addExpenseRow("Manhattan Condo Down Payment", 38, 200000);
+                addStageRow(300000, 45); // 北京での高い生活コスト
+                addStageRow(150000, 85);
+                addExpenseRow("结清清华/交大在职MBA学费", 33, 150000);
+                addExpenseRow("置办新能源汽车 (仰望/问界)", 35, 300000);
                 
-                addAssetElement({ name: "S&P 500 Index / Roth IRA", type: "trust", initAmt: 150000, rate: 7.0, yearAmt: 40000, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 85 });
-                addAssetElement({ name: "Cryptocurrency / High Risk Alts", type: "stocks", initAmt: 5000, rate: 11.0, yearAmt: 10000, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 50 });
+                addAssetElement({ name: "中证红利低波ETF (Core)", type: "trust", initAmt: 1000000, rate: 5.0, yearAmt: 60000, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 85 });
+                addAssetElement({ name: "AI/半导体赛道高弹股票", type: "stocks", initAmt: 500000, rate: 10.0, yearAmt: 40000, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 50 });
 
             } else if (scenario === 'upper_mass') {
-                // 4. DINKs - Tech & Corporate Workers ($100k)
+                // 4. 杭州电商新贵 / 核心金领 (総資産 50万元からの爆速FIRE狙い)
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 28;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 160000; // 世帯合算
-                document.getElementById('salary-limit').value = 50; // 50歳での爆速FIRE狙い
-                document.getElementById('init-cash').value = 40000;
+                document.getElementById('salary-amount').value = 350000; // 世帯年収35万元
+                document.getElementById('salary-limit').value = 48; // 48歳での爆速FIRE計画
+                document.getElementById('init-cash').value = 150000;
                 document.getElementById('rate-cash').value = 0.1;
                 
-                addStageRow(70000, 50); // 子なしのため生活費はスリムに固定
-                addStageRow(55000, 85);
-                addIncomeRow("Corporate 401(k) Match Boost", 50, 150000, "cash");
-                addExpenseRow("Austin/Seattle House Purchase", 32, 80000);
+                addStageRow(120000, 48); // 徹底した倹約（年12万消費）
+                addStageRow(90000, 85);
+                addIncomeRow("自媒体副业变现及分红", 35, 200000, "cash");
+                addExpenseRow("杭州西湖区精装公寓首付", 30, 200000);
                 
-                addAssetElement({ name: "All Country World Index (VT)", type: "trust", initAmt: 60000, rate: 6.5, yearAmt: 0, monthAmt: 3500, startAge: 28, endAge: 85 });
+                addAssetElement({ name: "纳斯达克100跨境联接基金", type: "trust", initAmt: 250000, rate: 7.5, yearAmt: 0, monthAmt: 5000, startAge: 28, endAge: 85 });
 
             } else {
-                // 5. Main Street Middle Class ($15k)
+                // 5. 内陆新一线城市中产 / 独立青年 (初期資産 10万元・堅実労働スタンス)
                 document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 30;
+                document.getElementById('start-age').value = 26;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 75000; // 平均的な世帯年収
-                document.getElementById('salary-limit').value = 65; // 65歳定年まで堅実労働
-                document.getElementById('init-cash').value = 10000;
+                document.getElementById('salary-amount').value = 120000; // 年収12万元（成都/武漢など）
+                document.getElementById('salary-limit').value = 60; // 60歳定年まで堅実労働
+                document.getElementById('init-cash').value = 40000;
                 document.getElementById('rate-cash').value = 0.05;
                 
-                addOtherIncomeRow("Social Security Benefits", 28000, 67, 85);
-                addStageRow(55000, 65); // インフレを考慮した現実的な生活費
-                addStageRow(42000, 85);
-                addExpenseRow("Child College Tuition Fund", 45, 50000);
-                addExpenseRow("Unexpected Medical Out-of-Pocket Cost", 68, 30000);
+                addOtherIncomeRow("基本养老保险金 (社会保障)", 48000, 60, 85); // 60歳以降、月4000元の年金
+                addStageRow(70000, 60); // 生活費年7万
+                addStageRow(50000, 85);
+                addExpenseRow("结婚及家庭初期建设大额支出", 29, 80000);
                 
-                addAssetElement({ name: "401(k) Balanced Target Fund", type: "trust", initAmt: 5000, rate: 5.5, yearAmt: 0, monthAmt: 400, startAge: 30, endAge: 85 });
+                addAssetElement({ name: "银行稳健型定开理财计划", type: "trust", initAmt: 60000, rate: 3.8, yearAmt: 0, monthAmt: 1500, startAge: 26, endAge: 85 });
             }
             runSimulation();
         }
+
+
+
 
         function formatAssetValue(valInYuan) { return (valInYuan < 0 ? '-' : '') + '¥' + Math.abs(Math.round(valInYuan)).toLocaleString(); }
 
