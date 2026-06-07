@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&display=swap');
+        @import url('[https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&family=Cinzel:wght@500;700&family=Shippori+Mincho:wght@500;700&display=swap](https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&family=Cinzel:wght@500;700&family=Shippori+Mincho:wght@500;700&display=swap)');
         body { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -80,24 +80,69 @@
         <header class="bg-slate-900 text-white py-6 px-4 sm:px-8 border-b border-b-slate-800 shadow-md lg:sticky lg:top-0 lg:z-40">
             <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="relative flex items-center">
-                        <div onclick="runSimulation(); showToast('💎 未来が再計算されました！')" class="relative bg-amber-500 text-slate-950 p-3 rounded-xl text-2xl shadow-inner font-black animate-pulse cursor-pointer hover:bg-amber-400 transition-colors flex items-center justify-center select-none" title="クリックしてシミュレーションを実行">
-                            💎
-                            <div class="hidden sm:flex absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
-                                <span class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-amber-500"></span>
-                                <span data-i18n="bubble_start_desktop">試算開始！</span>
-                            </div>
-                            <div class="sm:hidden absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-md whitespace-nowrap shadow-md flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
-                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-amber-500"></span>
-                                <span data-i18n="bubble_start_mobile">試算開始！</span>
-                            </div>
-                        </div>
-                    </div>
+
+
+
+<div class="relative flex items-center">
+    <div onclick="runSimulation(); showToast('⚡️ 未来の資産が再計算されました！')" class="relative cursor-pointer group select-none flex items-center justify-center transition-transform duration-200 hover:scale-105 active:scale-95" title="クリックしてシミュレーションを実行">
+        
+        <div class="relative w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(236,72,153,0.4)] transition-shadow duration-300">
+            
+            <style>
+                @keyframes rainbowGlow {
+                    0% { stop-color: #ff007f; }    /* ピンク */
+                    14% { stop-color: #ff0000; }   /* 赤 */
+                    28% { stop-color: #ff7f00; }   /* オレンジ */
+                    42% { stop-color: #ffff00; }   /* 黄 */
+                    56% { stop-color: #00ff00; }   /* 緑 */
+                    70% { stop-color: #00ffff; }   /* シアン */
+                    84% { stop-color: #0000ff; }   /* 青 */
+                    100% { stop-color: #ff007f; }  /* ピンクに戻る */
+                }
+                .rainbow-stop-1 { animation: rainbowGlow 8s linear infinite; }
+                .rainbow-stop-2 { animation: rainbowGlow 8s linear infinite; animation-delay: -4s; }
+            </style>
+
+            <svg class="w-9 h-9 z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="rainbowBulbGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" class="rainbow-stop-1" />
+                        <stop offset="100%" class="rainbow-stop-2" />
+                    </linearGradient>
+                </defs>
+                
+                <path d="M50 15C33.4 15 20 28.4 20 45C20 55.3 25.2 64.3 33 69.7V80C33 81.7 34.3 83 36 83H64C65.7 83 67 81.7 67 80V69.7C74.8 64.3 80 55.3 80 45C80 28.4 66.6 15 50 15ZM44 78V73H56V78H44ZM42 68V63H58V68H42ZM50 23C59.4 23 67 30.6 67 40C67 41.1 66.1 42 65 42C63.9 42 63 41.1 63 40C63 32.8 57.2 27 50 27C48.9 27 48 26.1 48 25C48 23.9 48.9 23 50 23Z" fill="url(#rainbowBulbGrad)" style="filter: drop-shadow(0 0 4px url(#rainbowBulbGrad));" />
+                
+                <path d="M68 15L46 45H60L38 82L48 51H34L68 15Z" fill="#ffeb3b" style="filter: drop-shadow(0 0 8px #ffeb3b);" class="animate-pulse" />
+            </svg>
+            
+            <div class="absolute inset-0 bg-white/[0.03] group-hover:bg-white/[0.08] transition-colors duration-300"></div>
+        </div>
+
+        <div class="hidden sm:flex absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-[0_4px_12px_rgba(219,39,119,0.3)] items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
+            <span class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-purple-600"></span>
+            <span data-i18n="bubble_start_desktop">試算開始！</span>
+        </div>
+
+        <div class="sm:hidden absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-[0_4px_12px_rgba(219,39,119,0.3)] flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
+            <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-purple-600"></span>
+            <span data-i18n="bubble_start_mobile">試算開始！</span>
+        </div>
+    </div>
+</div>
+
+
+
                     <div class="ml-16 sm:ml-0">
                         <div class="flex items-center gap-3 flex-wrap">
-                            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center flex-wrap gap-2">
-                                <span class="blinking-light">💡</span><span data-i18n="title_simulator">資産・ライフシミュレータ</span><span class="text-xs sm:text-sm text-amber-400 font-extrabold bg-amber-400/10 px-2.5 py-1 rounded border border-amber-500/20" data-i18n="badge_dwz">（💀DIE WITH ZERO判定可能！）</span>
-                            </h1>
+
+
+<h1 class="text-xl sm:text-2xl font-bold text-white flex items-center flex-wrap gap-2" style="font-family: 'Cinzel', 'Shippori Mincho', serif; tracking-content: 0.15em; letter-spacing: 0.08em;">
+    <span data-i18n="title_simulator" class="bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 bg-clip-text text-transparent font-medium">資産・ライフシミュレータ</span>
+    <span class="text-xs sm:text-sm text-amber-400 font-extrabold bg-amber-400/10 px-2.5 py-1 rounded border border-amber-500/20 font-sans letter-spacing-normal" data-i18n="badge_dwz">（💀DIE WITH ZERO判定可能！）</span>
+</h1>
+
+
                          <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 px-1 py-0.5 shadow-sm">
     <i class="fa-solid fa-coins text-slate-400 text-xs ml-1 mr-1"></i>
     <select id="currencySwitcher" onchange="switchCurrencySimulator(this.value)" class="bg-transparent text-slate-200 text-xs font-bold focus:outline-none cursor-pointer pr-1 py-0.5">
