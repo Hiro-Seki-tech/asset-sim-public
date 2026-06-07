@@ -119,14 +119,19 @@
                         <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-user-tie text-amber-400 mr-1"></i><span>Persona Selection:</span></span>
                         <div class="flex items-center bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
                             <input type="text" id="scenario-input" value="Mass Affluent" oninput="handleUserTypeInput()" class="bg-transparent text-slate-100 px-3 py-1.5 font-bold focus:outline-none text-xs w-36">
-                            <select id="scenario-selector" onchange="handleScenarioSelect(this.value)" class="bg-slate-800 text-slate-400 border-l border-slate-700 focus:outline-none cursor-pointer py-1.5 text-xs px-1">
+     
+              
+<select id="scenario-selector" onchange="handleScenarioSelect(this.value)" class="bg-slate-800 text-slate-400 border-l border-slate-700 focus:outline-none cursor-pointer py-1.5 text-xs px-1">
                                 <option value="custom">— Custom —</option>
-                                <option value="ultra_rich">Ultra HNW ($5M+)</option>
-                                <option value="rich">High Net Worth ($1M-$5M)</option>
-                                <option value="sub_rich" selected>Mass Affluent ($100k-$1M)</option>
-                                <option value="upper_mass">Emerging Affluent ($50k-$100k)</option>
-                                <option value="mass">Mass Class (<$50k)</option>
+                                <option value="ultra_rich">Silicon Valley Founder ($8M)</option>
+                                <option value="rich">FAANG Principal Engineer ($2M)</option>
+                                <option value="sub_rich" selected>HENRY - High Earner ($300k)</option>
+                                <option value="upper_mass">DINKs - Tech Cupel ($100k)</option>
+                                <option value="mass">Main Street Middle Class ($15k)</option>
                             </select>
+
+
+
                         </div>
                     </div>
                     <div class="flex items-center gap-1 border-t sm:border-t-0 sm:border-l border-slate-700 pt-2.5 sm:pt-0 sm:pl-3">
@@ -1088,33 +1093,119 @@
         }
 
         function applyScenario(scenario) {
-            document.getElementById('other-income-container').innerHTML = ''; document.getElementById('stage-container').innerHTML = '';
-            document.getElementById('income-container').innerHTML = ''; document.getElementById('expense-container').innerHTML = ''; document.getElementById('dynamic-assets-container').innerHTML = '';
-            const currentName = document.getElementById('scenario-input').value || 'Custom Tier';
-            document.getElementById('graph-title-element').innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow for "${currentName}"`;
+const otherContainer = document.getElementById('other-income-container');
+            const stageContainer = document.getElementById('stage-container');
+            const incContainer = document.getElementById('income-container');
+            const expContainer = document.getElementById('expense-container');
+            const assetContainer = document.getElementById('dynamic-assets-container');
 
-            if (loadFromLocalStorage(scenario)) { runSimulation(); return; }
+            otherContainer.innerHTML = '';
+            stageContainer.innerHTML = '';
+            incContainer.innerHTML = '';
+            expContainer.innerHTML = '';
+            assetContainer.innerHTML = '';
+
+            const titleEl = document.getElementById('graph-title-element');
+            const currentName = document.getElementById('scenario-input').value || 'Custom Tier';
+            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> Lifetime Cash Flow for "${currentName}"`;
+
+            if (loadFromLocalStorage(scenario)) {
+                runSimulation();
+                return;
+            }
 
             if (scenario === 'ultra_rich') {
-                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 45; document.getElementById('years').value = 90; document.getElementById('salary-amount').value = 500000; document.getElementById('salary-limit').value = 55; document.getElementById('init-cash').value = 2000000; document.getElementById('rate-cash').value = 0.2;
-                addOtherIncomeRow("Private Equity Distributions", 150000, 45, 90); addStageRow(350000, 70); addStageRow(200000, 90); addIncomeRow("Tech Startup IPO / Exit", 50, 8000000, "cash"); addExpenseRow("Venture Capital Angel Investment", 48, 500000); addExpenseRow("Luxury Senior Community Entry Fee", 75, 1000000);
-                addAssetElement({ name: "US Tech Growth Stocks", type: "stocks", initAmt: 2000000, rate: 9.0, yearAmt: 50000, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 70 }); addAssetElement({ name: "Global Diversified ETF", type: "trust", initAmt: 1000000, rate: 6.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 90 });
+                // 1. Silicon Valley Founder ($8M)
+                document.getElementById('start-year').value = 2026;
+                document.getElementById('start-age').value = 35;
+                document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 0; // 起業売却後は無収入
+                document.getElementById('salary-limit').value = 35;
+                document.getElementById('init-cash').value = 3000000;
+                document.getElementById('rate-cash').value = 0.1;
+                
+                addOtherIncomeRow("Angel Investment LP Distributions", 100000, 40, 75);
+                addStageRow(250000, 50); // 若い頃は豪快に消費
+                addStageRow(120000, 85); // 高齢期は落ち着く
+                addIncomeRow("Secondary Share Sale / Inflow", 45, 2000000, "trust");
+                addExpenseRow("Next Venture Seed Funding Outflow", 38, 1000000);
+                addExpenseRow("Philanthropy / Donation Foundation", 60, 1500000);
+                
+                addAssetElement({ name: "Venture Capital Fund", type: "stocks", initAmt: 3000000, rate: 12.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 35, endAge: 60 });
+                addAssetElement({ name: "S&P 500 Core Index", type: "trust", initAmt: 2000000, rate: 7.0, yearAmt: 0, monthAmt: 0, payout: "cashout", startAge: 35, endAge: 85 });
+
             } else if (scenario === 'rich') {
-                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 40; document.getElementById('years').value = 85; document.getElementById('salary-amount').value = 250000; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 500000; document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("401(k) / Social Security", 45000, 62, 85); addStageRow(140000, 62); addStageRow(90000, 85); addIncomeRow("Corporate Executive Bonus / 401k", 60, 1000000, "trust"); addExpenseRow("Vacation Home in Florida", 50, 400000); addExpenseRow("Ivy League Tuition for Kids", 48, 300000);
-                addAssetElement({ name: "Roth IRA / S&P 500 Index", type: "trust", initAmt: 700000, rate: 7.0, yearAmt: 24000, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 85 }); addAssetElement({ name: "US Treasury Bonds", type: "bonds", initAmt: 300000, rate: 4.0, yearAmt: 0, monthAmt: 0, payout: "cashout", startAge: 40, endAge: 85 });
+                // 2. FAANG Principal Engineer ($2M)
+                document.getElementById('start-year').value = 2026;
+                document.getElementById('start-age').value = 38;
+                document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 500000; // 高額な基本給
+                document.getElementById('salary-limit').value = 55; // 55歳で早期リタイア計画
+                document.getElementById('init-cash').value = 400000;
+                document.getElementById('rate-cash').value = 0.1;
+                
+                addOtherIncomeRow("Mega Tech Back-front RSU Vesting", 150000, 38, 55);
+                addStageRow(180000, 55);
+                addStageRow(100000, 85);
+                addIncomeRow("Deferred Compensation Payout", 55, 500000, "cash");
+                addExpenseRow("Silicon Valley Property Down Payment", 40, 300000);
+                
+                addAssetElement({ name: "Big Tech RSU Stock Array", type: "stocks", initAmt: 1000000, rate: 9.5, yearAmt: 50000, monthAmt: 0, payout: "reinvest", startAge: 38, endAge: 55 });
+                addAssetElement({ name: "Nasdaq 100 Index ETF", type: "trust", initAmt: 600000, rate: 8.5, yearAmt: 30000, monthAmt: 0, payout: "reinvest", startAge: 38, endAge: 85 });
+
             } else if (scenario === 'sub_rich') {
-                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 35; document.getElementById('years').value = 85; document.getElementById('salary-amount').value = 120000; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 100000; document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("401(k) / Social Security", 30000, 67, 85); addStageRow(75000, 65); addStageRow(50000, 85); addIncomeRow("Inheritance / Spot Inflow", 50, 200000, "trust"); addExpenseRow("Home Down Payment / Mortgage Payoff", 40, 150000); addExpenseRow("Medical & Healthcare Out-of-Pocket Cost", 70, 100000);
-                addAssetElement({ name: "Roth IRA / S&P 500 Index", type: "trust", initAmt: 120000, rate: 6.5, yearAmt: 7000, monthAmt: 0, payout: "reinvest", startAge: 35, endAge: 85 }); addAssetElement({ name: "ESPP (Employee Stock Purchase Plan)", type: "stocks", initAmt: 80000, rate: 5.5, yearAmt: 5000, monthAmt: 0, payout: "reinvest", startAge: 35, endAge: 65 });
+                // 3. HENRY - High Earner, Not Rich Yet ($300k)
+                document.getElementById('start-year').value = 2026;
+                document.getElementById('start-age').value = 32;
+                document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 350000; // 高年収
+                document.getElementById('salary-limit').value = 65;
+                document.getElementById('init-cash').value = 100000;
+                document.getElementById('rate-cash').value = 0.1;
+                
+                addStageRow(200000, 45); // 都市部（NY/LA）の凶悪な家賃と高い生活支出
+                addStageRow(110000, 85);
+                addExpenseRow("Law/Medical School Student Loan Payoff", 33, 60000); // 奨学金一括返済
+                addExpenseRow("Law/Medical School Student Loan Payoff 2", 34, 60000);
+                addExpenseRow("Manhattan Condo Down Payment", 38, 200000);
+                
+                addAssetElement({ name: "S&P 500 Index / Roth IRA", type: "trust", initAmt: 150000, rate: 7.0, yearAmt: 40000, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 85 });
+                addAssetElement({ name: "Cryptocurrency / High Risk Alts", type: "stocks", initAmt: 5000, rate: 11.0, yearAmt: 10000, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 50 });
+
             } else if (scenario === 'upper_mass') {
-                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 30; document.getElementById('years').value = 85; document.getElementById('salary-amount').value = 85000; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 30000; document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("401(k) / Social Security", 24000, 67, 85); addStageRow(55000, 65); addStageRow(40000, 85); addIncomeRow("401k Lump-sum Payout", 65, 300000, "cash"); addExpenseRow("Wedding & Honeymoon", 32, 35000); addExpenseRow("College Fund for Child", 45, 80000);
-                addAssetElement({ name: "Traditional 401(k) Index Fund", type: "trust", initAmt: 40000, rate: 6.0, yearAmt: 0, monthAmt: 500, startAge: 30, endAge: 85 });
+                // 4. DINKs - Tech & Corporate Workers ($100k)
+                document.getElementById('start-year').value = 2026;
+                document.getElementById('start-age').value = 28;
+                document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 160000; // 世帯合算
+                document.getElementById('salary-limit').value = 50; // 50歳での爆速FIRE狙い
+                document.getElementById('init-cash').value = 40000;
+                document.getElementById('rate-cash').value = 0.1;
+                
+                addStageRow(70000, 50); // 子なしのため生活費はスリムに固定
+                addStageRow(55000, 85);
+                addIncomeRow("Corporate 401(k) Match Boost", 50, 150000, "cash");
+                addExpenseRow("Austin/Seattle House Purchase", 32, 80000);
+                
+                addAssetElement({ name: "All Country World Index (VT)", type: "trust", initAmt: 60000, rate: 6.5, yearAmt: 0, monthAmt: 3500, startAge: 28, endAge: 85 });
+
             } else {
-                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 25; document.getElementById('years').value = 85; document.getElementById('salary-amount').value = 50000; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 10000; document.getElementById('rate-cash').value = 0.05;
-                addOtherIncomeRow("401(k) / Social Security", 18000, 67, 85); addStageRow(38000, 65); addStageRow(28000, 85); addIncomeRow("Small Spot Bonus", 40, 10000, "cash"); addExpenseRow("Used Car Purchase", 28, 15000); addExpenseRow("Home Renovation", 55, 30000);
-                addAssetElement({ name: "Emergency Fund / High-Yield Savings", type: "trust", initAmt: 5000, rate: 4.0, yearAmt: 0, monthAmt: 200, startAge: 25, endAge: 85 });
+                // 5. Main Street Middle Class ($15k)
+                document.getElementById('start-year').value = 2026;
+                document.getElementById('start-age').value = 30;
+                document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 75000; // 平均的な世帯年収
+                document.getElementById('salary-limit').value = 65; // 65歳定年まで堅実労働
+                document.getElementById('init-cash').value = 10000;
+                document.getElementById('rate-cash').value = 0.05;
+                
+                addOtherIncomeRow("Social Security Benefits", 28000, 67, 85);
+                addStageRow(55000, 65); // インフレを考慮した現実的な生活費
+                addStageRow(42000, 85);
+                addExpenseRow("Child College Tuition Fund", 45, 50000);
+                addExpenseRow("Unexpected Medical Out-of-Pocket Cost", 68, 30000);
+                
+                addAssetElement({ name: "401(k) Balanced Target Fund", type: "trust", initAmt: 5000, rate: 5.5, yearAmt: 0, monthAmt: 400, startAge: 30, endAge: 85 });
             }
             runSimulation();
         }
