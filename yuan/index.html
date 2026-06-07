@@ -69,7 +69,7 @@
             <canvas id="tooltipPieChart" class="w-full h-full"></canvas>
             <div class="absolute flex flex-col items-center justify-center text-center">
                 <span class="text-[10px] text-slate-400 uppercase tracking-widest leading-none">Total</span>
-                <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">$0</span>
+                <span id="tooltip-total-text" class="text-xs font-bold text-slate-100 mt-0.5">¥0</span>
             </div>
         </div>
         <div id="tooltip-breakdown" class="text-[11px] max-sm:text-[10px] grid grid-cols-1 gap-y-1 max-sm:gap-y-0.5 text-slate-300 border-t border-slate-800 pt-2"></div>
@@ -161,84 +161,95 @@
      
               
 <select id="scenario-selector" onchange="handleScenarioSelect(this.value)" class="bg-slate-800 text-slate-400 border-l border-slate-700 focus:outline-none cursor-pointer py-1.5 text-xs px-1">
-                            <option value="custom">— 自由输入 —</option>
-                            <option value="ultra_rich">上海地产大亨 / 隐形富豪 (¥50M)</option>
-                            <option value="rich">深セン科技巨头 / 高管 (¥15M)</option>
-                            <option value="sub_rich" selected>北京AI行业总监 / 核心专家 (¥2M)</option>
-                            <option value="upper_mass">杭州电商新贵 / 核心金领 (¥500k)</option>
-                            <option value="mass">内陆新一线城市中产 / 独立青年 (¥100k)</option>
-                        </select>
+                                <option value="custom">— 自由输入 —</option>
+                                <option value="ultra_rich">上海地产大亨 / 隐形富豪 (5000万元)</option>
+                                <option value="rich">深セン科技巨头 / 高管 (1500万元)</option>
+                                <option value="sub_rich" selected>北京AI行业总监 / 核心专家 (200万元)</option>
+                                <option value="upper_mass">杭州电商新贵 / 核心金领 (50万元)</option>
+                                <option value="mass">内陆新一线城市中产 / 独立青年 (10万元)</option>
+                            </select>
 
 
                         </div>
                     </div>
-                    <div class="flex items-center gap-1 border-t sm:border-t-0 sm:border-l border-slate-700 pt-2.5 sm:pt-0 sm:pl-3">
-                        <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-earth-asia text-blue-400 mr-1"></i><span>Macroeconomic Worldline:</span></span>
+
+
+
+<div class="flex items-center gap-1 border-t sm:border-t-0 sm:border-l border-slate-700 pt-2.5 sm:pt-0 sm:pl-3">
+                        <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-earth-asia text-blue-400 mr-1"></i><span>宏观经济世界线:</span></span>
                         
                         <div class="relative group" tabindex="0">
-                            <button onclick="applyWorldLine('bright')" class="px-2.5 py-1.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition-colors border border-emerald-500/30 font-bold focus:outline-none">🚀 High Growth</button>
+                            <button onclick="applyWorldLine('bright')" class="px-2.5 py-1.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition-colors border border-emerald-500/30 font-bold focus:outline-none">🚀 高歌猛进</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
-                                <span class="font-bold text-emerald-400">🚀 High Growth (Hyperinflation / Bull Market)</span><br>
-                                <span>• Tactics: Asset Value Maximization Array</span>
+                                <span class="font-bold text-emerald-400">🚀 高歌猛进 (恶性通胀 / 股市大牛市)</span><br>
+                                <span class="text-slate-400 block my-0.5">• 设定年化：现金储蓄 0.1% | 股票资产 15.0% | 投资基金 15.0% | 贵金属/债券 5.0%</span>
+                                <span>• 阵型战术：全部核心资本转向全攻型资产价值最大化阵列</span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
 
                         <div class="relative group" tabindex="0">
-                            <button onclick="applyWorldLine('mild_bull')" class="px-2.5 py-1.5 rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-colors border border-cyan-500/30 font-bold focus:outline-none">📈 Steady Rise</button>
+                            <button onclick="applyWorldLine('mild_bull')" class="px-2.5 py-1.5 rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-colors border border-cyan-500/30 font-bold focus:outline-none">📈 稳步上升</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
-                                <span class="font-bold text-cyan-400">📈 Steady Rise (Moderate Growth / Mild Inflation)</span><br>
-                                <span>• Tactics: Standard Compound Accumulation Array</span>
+                                <span class="font-bold text-cyan-400">📈 稳步上升 (温和增长 / 轻度通胀)</span><br>
+                                <span class="text-slate-400 block my-0.5">• 设定年化：现金储蓄 0.1% | 股票资产 10.0% | 投资基金 8.0% | 贵金属/债券 5.0%</span>
+                                <span>• 阵型战术：标准稳健配置，发挥长期复利滚雪球式积累阵列</span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
 
                         <div class="relative group" tabindex="0">
-                            <button onclick="applyWorldLine('normal')" class="px-2.5 py-1.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors border border-blue-500/30 font-bold focus:outline-none">🌱 Standard Speed</button>
+                            <button onclick="applyWorldLine('normal')" class="px-2.5 py-1.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors border border-emerald-500/30 font-bold focus:outline-none">🌱 基准常态</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
-                                <span class="font-bold text-blue-400">🌱 Standard Speed (Normal Times / Stable Growth)</span><br>
-                                <span>• Tactics: Baseline Asset Preservation Array</span>
+                                <span class="font-bold text-blue-400">🌱 基准常态 (经济常态 / 历史平均水平)</span><br>
+                                <span class="text-slate-400 block my-0.5">• 设定年化：现金储蓄 0.1% | 股票资产 5.0% | 投资基金 4.0% | 贵金属/债券 4.0%</span>
+                                <span>• 阵型战术：回归价值中枢，均衡风险权重的防御保值阵列</span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
 
                         <div class="relative group" tabindex="0">
-                            <button onclick="applyWorldLine('dark')" class="px-2.5 py-1.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors border border-rose-500/30 font-bold focus:outline-none">⛈️ Stagnant Decline</button>
+                            <button onclick="applyWorldLine('dark')" class="px-2.5 py-1.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors border border-rose-500/30 font-bold focus:outline-none">⛈️ 滞胀衰退</button>
                             <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-950 text-slate-200 text-[10px] p-2.5 rounded-lg shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-200 z-50 whitespace-nowrap border border-slate-800 text-left">
-                                <span class="font-bold text-rose-400">⛈️ Stagnant Decline (Stagflation / Asset Deflation)</span><br>
-                                <span>• Tactics: Capital Protection Hedging Array</span>
+                                <span class="font-bold text-rose-400">⛈️ 滞胀衰退 (全面危机 / 资本保全震荡期)</span><br>
+                                <span class="text-slate-400 block my-0.5">• 设定年化：现金储蓄 0.0% | 股票资产 4.0% | 投资基金 1.0% | 贵金属 3.0% | 债券 4.0%</span>
+                                <span>• 阵型战术：极度压缩高风险头寸，全面转向对冲避险与资本收缩阵列</span>
                                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-slate-950"></span>
                             </div>
                         </div>
                     </div>
+
+
                 </div>
             </div>
         </header>
 
         <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 pb-32">
             <section class="lg:col-span-5 flex flex-col gap-6 w-full min-w-0">
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-5">
+
+
+   <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-5">
                     <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-amber-500"></i> <span>Basic Settings</span>
+                        <i class="fa-solid fa-sliders text-amber-500"></i> <span>基本设置 (Basic Settings)</span>
                     </h2>
                     
                     <div class="grid grid-cols-3 gap-3">
                         <div>
-                            <label for="start-year" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Start Year</label>
+                            <label for="start-year" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">开始年份 (西历)</label>
                             <div class="relative">
                                 <span class="absolute left-2.5 top-2.5 text-slate-400 text-xs"><i class="fa-solid fa-calendar-days"></i></span>
                                 <input type="number" id="start-year" value="2026" oninput="runSimulation();" class="pl-7 w-full rounded-xl border border-slate-200 p-2 text-slate-800 font-bold focus:ring-2 focus:ring-slate-900 focus:outline-none text-xs">
                             </div>
                         </div>
                         <div>
-                            <label for="start-age" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Current Age</label>
+                            <label for="start-age" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">当前年龄</label>
                             <div class="relative">
                                 <span class="absolute left-2.5 top-2.5 text-slate-400 text-xs"><i class="fa-solid fa-user-clock"></i></span>
                                 <input type="number" id="start-age" value="40" oninput="updateStageAges(); runSimulation();" class="pl-7 w-full rounded-xl border border-slate-200 p-2 text-slate-800 font-bold focus:ring-2 focus:ring-slate-900 focus:outline-none text-xs">
                             </div>
                         </div>
                         <div>
-                            <label for="years" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">End Age</label>
+                            <label for="years" class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">目标寿命 (岁)</label>
                             <div class="relative">
                                 <span class="absolute left-2.5 top-2.5 text-slate-400 text-xs"><i class="fa-solid fa-hourglass-half"></i></span>
                                 <input type="number" id="years" value="85" min="1" max="120" oninput="runSimulation();" class="pl-7 w-full rounded-xl border border-slate-200 p-2 text-slate-800 font-bold focus:ring-2 focus:ring-slate-900 focus:outline-none text-xs">
@@ -249,21 +260,25 @@
                     <div class="border-t border-slate-100 pt-3">
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                                <i class="fa-solid fa-briefcase text-emerald-500"></i> <span>Employment Income</span>
+                                <i class="fa-solid fa-briefcase text-emerald-500"></i> <span>工作职业收入</span>
                             </span>
-                            <span class="text-[10px] text-slate-400">Added to cash account annually</span>
+                            <span class="text-[10px] text-slate-400">每年自动计入现金账户</span>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="text-slate-400 text-[10px] block mb-1">Income Amt ($/yr)</label>
+                                <label class="text-slate-400 text-[10px] block mb-1">年收入金额 (元/年)</label>
                                 <input type="number" id="salary-amount" value="800" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
                             </div>
                             <div>
-                                <label class="text-slate-400 text-[10px] block mb-1">Duration (Until Age)</label>
+                                <label class="text-slate-400 text-[10px] block mb-1">持续阶段 (至该年龄)</label>
                                 <input type="number" id="salary-limit" value="65" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
                             </div>
                         </div>
                     </div>
+
+
+
+
 
                     <div class="border-t border-slate-100 pt-3">
                         <div class="flex items-center justify-between mb-2">
@@ -314,108 +329,128 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-4">
+
+
+
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-4">
                     <h2 class="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
                         <span class="flex items-center gap-2">
-                            <i class="fa-solid fa-chart-pie text-emerald-500"></i> <span>Asset Allocation</span>
+                            <i class="fa-solid fa-chart-pie text-emerald-500"></i> <span>资产配置初始值 (Asset Allocation)</span>
                         </span>
-                        <span class="text-xs font-normal text-slate-400">Cash Flow Linked</span>
+                        <span class="text-xs font-normal text-slate-400">现金流动态联动</span>
                     </h2>
 
                     <div class="border-l-4 border-slate-500 bg-slate-50 p-4 rounded-xl flex flex-col gap-3">
                         <div class="flex items-center justify-between">
-                            <span class="font-bold text-slate-800 text-sm flex items-center gap-2">💵 Cash Account (Savings)</span>
-                            <span class="text-xs text-slate-500 font-medium">Hub Account for Income Inflow</span>
+                            <span class="font-bold text-slate-800 text-sm flex items-center gap-2">💵 现金储蓄账户 (Cash Account)</span>
+                            <span class="text-xs text-slate-500 font-medium">核心资金流入/出主账户</span>
                         </div>
                         <div class="grid grid-cols-2 gap-3 text-xs">
                             <div>
-                                <label class="text-slate-400 block mb-1">Initial Cash ($)</label>
+                                <label class="text-slate-400 block mb-1">初始现金存量 (元)</label>
                                 <input type="number" id="init-cash" value="2500" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 bg-white p-2 font-bold text-slate-800 focus:outline-slate-500">
                             </div>
                             <div>
-                                <label class="text-slate-400 block mb-1">Return Rate (%)</label>
+                                <label class="text-slate-400 block mb-1">活期/储蓄收益率 (%)</label>
                                 <input type="number" id="rate-cash" value="0.1" step="0.1" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 bg-white p-2 font-bold text-slate-800 focus:outline-slate-500">
                             </div>
                         </div>
                     </div>
 
-                    <div class="border-t border-slate-100 pt-4 flex flex-col gap-3">
-                        <span class="font-bold text-slate-700 text-xs">📈 Investment Asset Portfolio</span>
+
+
+
+<div class="border-t border-slate-100 pt-4 flex flex-col gap-3">
+                        <span class="font-bold text-slate-700 text-xs">📈 投资资产组合 (Investment Portfolio)</span>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                            <button type="button" onclick="addDirectAsset('stocks')" class="px-2 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-bold rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-1">📈 Add Stocks</button>
-                            <button type="button" onclick="addDirectAsset('trust')" class="px-2 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-bold rounded-lg hover:bg-emerald-100 transition-colors flex items-center justify-center gap-1">💼 Add Funds</button>
-                            <button type="button" onclick="addDirectAsset('realestate')" class="px-2 py-1.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded-lg hover:bg-rose-100 transition-colors flex items-center justify-center gap-1">🏢 Add Property</button>
-                            <button type="button" onclick="addDirectAsset('metal')" class="px-2 py-1.5 bg-amber-50 text-amber-600 border border-amber-200 text-[10px] font-bold rounded-lg hover:bg-amber-100 transition-colors flex items-center justify-center gap-1">👑 Add Metals</button>
-                            <button type="button" onclick="addDirectAsset('bonds')" class="px-2 py-1.5 bg-purple-50 text-purple-600 border border-purple-200 text-[10px] font-bold rounded-lg hover:bg-purple-100 transition-colors flex items-center justify-center gap-1">📜 Add Bonds</button>
+                            <button type="button" onclick="addDirectAsset('stocks')" class="px-2 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-bold rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-1">📈 添加股票资产</button>
+                            <button type="button" onclick="addDirectAsset('trust')" class="px-2 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-bold rounded-lg hover:bg-emerald-100 transition-colors flex items-center justify-center gap-1">💼 添加投资基金</button>
+                            <button type="button" onclick="addDirectAsset('realestate')" class="px-2 py-1.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded-lg hover:bg-rose-100 transition-colors flex items-center justify-center gap-1">🏢 添加房地产</button>
+                            <button type="button" onclick="addDirectAsset('metal')" class="px-2 py-1.5 bg-amber-50 text-amber-600 border border-amber-200 text-[10px] font-bold rounded-lg hover:bg-amber-100 transition-colors flex items-center justify-center gap-1">👑 添加贵金属</button>
+                            <button type="button" onclick="addDirectAsset('bonds')" class="px-2 py-1.5 bg-purple-50 text-purple-600 border border-purple-200 text-[10px] font-bold rounded-lg hover:bg-purple-100 transition-colors flex items-center justify-center gap-1">📜 添加债券资产</button>
                         </div>
                         <div id="dynamic-assets-container" class="flex flex-col gap-4 mt-2"></div>
                     </div>
-                </div>
+
+
 
                 <button onclick="runSimulation()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-calculator text-amber-400"></i> <span>Execute Strategy Simulation</span>
                 </button>
             </section>
 
-            <section class="lg:col-span-7 flex flex-col gap-6 w-full min-w-0">
+
+
+
+<section class="lg:col-span-7 flex flex-col gap-6 w-full min-w-0">
                 <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-4">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                         <div>
                             <h2 id="graph-title-element" class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-line text-blue-500"></i> <span>Lifetime Cash Flow Projection</span>
+                                <i class="fa-solid fa-chart-line text-blue-500"></i> <span>终身现金流预测 (Lifetime Cash Flow)</span>
                             </h2>
                             <p class="text-slate-400 text-xs mt-0.5 flex flex-wrap items-center gap-2">
-                                <span>Hover over data points to visualize asset ratios (%) and total balances ($).</span>
+                                <span>将鼠标悬停在数据点上可查看资产比例 (%) 和总余额 (元)。</span>
                                 <span id="cash-warning-badge" class="hidden px-2.5 py-0.5 rounded bg-rose-100 text-rose-700 font-bold text-[10px] animate-pulse">
-                                    ⚠️ Cash Shortage Period Detected
+                                    ⚠️ 检测到现金资产枯竭跨度
                                 </span>
                             </p>
                         </div>
                         
                         <div class="flex flex-wrap items-center gap-2 self-stretch sm:self-auto w-full sm:w-auto">
                             <button id="save-local-btn" onclick="saveToLocalStorage()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-floppy-disk"></i> <span>💾 Save Settings</span>
+                                <i class="fa-solid fa-floppy-disk"></i> <span>💾 保存当前配置</span>
                             </button>
                             <button id="clear-local-btn" onclick="clearLocalStorage()" class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-trash-can"></i> <span>🧹 Reset</span>
+                                <i class="fa-solid fa-trash-can"></i> <span>🧹 初始化</span>
                             </button>
                             <label for="csv-import-file" class="cursor-pointer px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-file-import"></i> <span>Import CSV</span>
+                                <i class="fa-solid fa-file-import"></i> <span>导入 CSV 账簿</span>
                             </label>
                             <input type="file" id="csv-import-file" accept=".csv" class="hidden" onchange="importCSV(event)">
                             <button onclick="downloadCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-file-csv"></i> <span>Export CSV</span>
+                                <i class="fa-solid fa-file-csv"></i> <span>导出 CSV 账簿</span>
                             </button>
                         </div>
                     </div>
+
+
+
 
                     <div class="relative w-full h-[380px] bg-slate-50/50 rounded-xl p-2 border border-slate-100">
                         <canvas id="growthChart"></canvas>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-4">
+
+
+
+ <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 flex flex-col gap-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-table text-violet-500"></i> <span>Annual Ledger Details</span>
+                            <i class="fa-solid fa-table text-violet-500"></i> <span>年度资产明细账簿 (Annual Ledger)</span>
                         </h2>
-                        <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium max-sm:hidden">Incomes flow into cash; investments are deducted from cash at year-end.</span>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium max-sm:hidden">各类收入直接计入现金，追加投资于每年年底从现金中扣除。</span>
                     </div>
 
                     <div class="table-container custom-scrollbar overflow-x-auto rounded-xl border border-slate-100 max-h-[480px]">
                         <table id="resultTable" class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-900/90 text-white text-xs tracking-wider">
-                                    <th class="p-4 text-center font-bold sticky top-0 bg-slate-900 z-10 w-24">Year</th>
-                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Cash</th>
-                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Property</th>
-                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Stocks</th>
-                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Funds</th>
-                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Metals</th>
-                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">Bonds</th>
-                                    <th class="p-4 text-right font-bold bg-slate-950 sticky top-0 z-20 shadow-[-4px_0_10px_rgba(0,0,0,0.1)] w-36">Total Net Assets</th>
+                                    <th class="p-4 text-center font-bold sticky top-0 bg-slate-900 z-10 w-24">时间轴 (年)</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">现金储蓄</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">房地产</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">股票资产</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">投资基金</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">贵金属</th>
+                                    <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10">债券资产</th>
+                                    <th class="p-4 text-right font-bold bg-slate-950 sticky top-0 z-20 shadow-[-4px_0_10px_rgba(0,0,0,0.1)] w-36">净资产总计 (元)</th>
                                 </tr>
                             </thead>
+
+
+
+
                             <tbody class="divide-y divide-slate-100 text-xs font-medium"></tbody>
                         </table>
                     </div>
@@ -428,7 +463,9 @@
         </footer>
     </div>
 
-    <div id="dwz-view" class="hidden min-h-screen bg-slate-950 text-slate-100 flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden">
+
+
+<div id="dwz-view" class="hidden min-h-screen bg-slate-950 text-slate-100 flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08)_0%,transparent_60%)] pointer-events-none"></div>
         
         <div class="max-w-3xl w-full bg-slate-900/90 border-2 border-amber-500/30 rounded-3xl p-6 sm:p-10 shadow-[0_0_50px_rgba(245,158,11,0.15)] flex flex-col gap-6 relative z-10 animate-fade-in">
@@ -437,13 +474,13 @@
                     <span class="text-3xl">💀</span>
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-amber-400">
-                            DIE WITH ZERO !<br>— Lifetime Asset Depletion Warning —
+                            DIE WITH ZERO !<br>— 终身资产彻底清零战略评估 —
                         </h2>
-                        <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5">The Army Counselor's Ultimate Strategy</p>
+                        <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5">资产量化与生命价值最大化战略</p>
                     </div>
                 </div>
                 <button onclick="backToSimulator()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1">
-                    <i class="fa-solid fa-arrow-left"></i> <span>Back to Simulator</span>
+                    <i class="fa-solid fa-arrow-left"></i> <span>返回模拟盘面</span>
                 </button>
             </div>
 
@@ -454,12 +491,12 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800">
-                    <span class="text-[10px] uppercase text-slate-500 font-bold block mb-2">Asset Portfolio at Demise</span>
+                    <span class="text-[10px] uppercase text-slate-500 font-bold block mb-2">终点时的资产组合残余 (Portfolio at Demise)</span>
                     <div id="dwz-breakdown-list" class="flex flex-col gap-2 text-xs">
                         </div>
                 </div>
                 <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
-                    <span class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Strategic Advice from the Counselor</span>
+                    <span class="text-[10px] uppercase text-slate-400 font-bold block mb-1">来自军師ジェムキン的终极献策</span>
                     <p id="dwz-advice-text" class="text-xs text-amber-300 italic max-w-xs mt-1 leading-relaxed">
                         </p>
                 </div>
@@ -467,11 +504,14 @@
 
             <div class="flex items-center justify-center pt-4">
                 <button onclick="backToSimulator()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-sm rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-arrow-left"></i> <span>Return to Simulator & Adjust Strategy</span>
+                    <i class="fa-solid fa-arrow-left"></i> <span>返回模拟盘面并调整战略</span>
                 </button>
             </div>
         </div>
     </div>
+
+
+
 
     <div class="fixed top-1/2 -translate-y-1/2 right-4 z-[60]" style="transform: translate3d(0,-50%,0); will-change: transform;">
         <button onclick="transitionToDwz()" class="pulse-dwz bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 font-black px-4 py-3 sm:px-5 sm:py-4 rounded-2xl shadow-[0_10px_30px_rgba(245,158,11,0.4)] flex items-center gap-2 transition-all group focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs sm:text-sm">
@@ -672,7 +712,7 @@
             const lblTo = ' to ';
             const lblAge = ' yrs';
             const lblBurn = 'Expenses (Life Cost):';
-            const lblUnit = ' $/Year';
+            const lblUnit = ' 元/Year';
 
             div.innerHTML = `
                 <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
@@ -704,7 +744,7 @@
             div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
             
             const lblName = "Income Name";
-            const lblAmt = "Amt ($/yr)";
+            const lblAmt = "Amt (元/yr)";
             const lblStart = "Start Age";
             const lblEnd = "End Age";
             const lblTo = "to";
@@ -740,7 +780,7 @@
             
             const lblMemo = "Description";
             const lblAge = "Age";
-            const lblAmt = "Amt ($)";
+            const lblAmt = "Amt (元)";
             const lblTarget = "Destination";
             
             const optCash = "Cash";
@@ -787,7 +827,7 @@
             
             const lblMemo = "Description";
             const lblAge = "Age";
-            const lblAmt = "Amt ($)";
+            const lblAmt = "Amt (元)";
 
             div.innerHTML = `
                 <div class="col-span-4 flex flex-col">
@@ -956,7 +996,9 @@
                 if (type === 'bonds') div.classList.add('border-purple-500');
             };
 
-            const typeLabelText = { realestate: '🏢 Property', stocks: '📈 Stocks', trust: '💼 Funds', metal: '👑 Metals', bonds: '📜 Bonds' }[data.type];
+
+
+const typeLabelText = { realestate: '🏢 房地产', stocks: '📈 股票资产', trust: '💼 投资基金', metal: '👑 贵金属', bonds: '📜 债券资产' }[data.type];
 
             div.innerHTML = `
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -971,41 +1013,44 @@
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[10px]">
                     <div>
-                        <label class="text-slate-400 block mb-0.5">Initial Amt ($)</label>
+                        <label class="text-slate-400 block mb-0.5">初始投入本金 (元)</label>
                         <input type="number" class="asset-init-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.initAmt}" oninput="runSimulation();">
                     </div>
                     <div>
-                        <label class="text-slate-400 block mb-0.5">Return Rate (%)</label>
+                        <label class="text-slate-400 block mb-0.5">预期年化收益率 (%)</label>
                         <input type="number" class="asset-rate-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.rate}" step="0.1" oninput="runSimulation();">
                     </div>
                     <div>
-                        <label class="text-slate-400 block mb-0.5">Profit Payout</label>
+                        <label class="text-slate-400 block mb-0.5">收益分配处理方式</label>
                         <select class="asset-payout-field w-full rounded border border-slate-200 p-1 bg-white font-semibold" onchange="runSimulation();">
-                            <option value="reinvest">Reinvest</option>
-                            <option value="cashout">Cash Payout</option>
+                            <option value="reinvest">红利再投资 (Reinvest)</option>
+                            <option value="cashout">现金分红 (Cash Payout)</option>
                         </select>
                     </div>
                     <div class="regular-invest-fields">
-                        <label class="text-slate-400 block mb-0.5">Annual Inv ($/yr)</label>
+                        <label class="text-slate-400 block mb-0.5">定期年追加额 (元/年)</label>
                         <input type="number" class="asset-year-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.yearAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="regular-invest-fields">
-                        <label class="text-slate-400 block mb-0.5">Monthly Inv ($/mo)</label>
+                        <label class="text-slate-400 block mb-0.5">定期月追加额 (元/月)</label>
                         <input type="number" class="asset-month-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.monthAmt || 0}" oninput="runSimulation();">
                     </div>
                     <div class="grid grid-cols-5 items-center gap-1">
                         <div class="col-span-2">
-                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">Start Age</label>
+                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">启动年龄</label>
                             <input type="number" class="asset-start-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.startAge}" oninput="runSimulation();">
                         </div>
                         <span class="col-span-1 text-center text-slate-400 mt-3 font-bold">-</span>
                         <div class="col-span-2">
-                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">End Age</label>
+                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">结束年龄</label>
                             <input type="number" class="asset-end-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.endAge}" oninput="runSimulation();">
                         </div>
                     </div>
                 </div>
             `;
+
+
+
             container.appendChild(div);
             applyBorder(data.type);
 
@@ -1029,32 +1074,50 @@
             runSimulation(); showToast(`${assetNames[chosenType]} card deployed onto strategy board.`);
         }
 
-        function applyWorldLine(scenario) {
-            if (scenario === 'bright' || scenario === 'mild_bull' || scenario === 'normal') document.getElementById('rate-cash').value = "0.1";
-            else if (scenario === 'dark') document.getElementById('rate-cash').value = "0.0";
+
+
+function applyWorldLine(scenario) {
+            // 固定の現金口座金利の書き換え
+            if (scenario === 'bright' || scenario === 'mild_bull' || scenario === 'normal') {
+                document.getElementById('rate-cash').value = "0.1";
+            } else if (scenario === 'dark') {
+                document.getElementById('rate-cash').value = "0.0";
+            }
             
+            // 動的に追加されたアセットカード群の金利一斉書き換え
             const cards = document.querySelectorAll('.asset-card');
             cards.forEach(card => {
                 const type = card.querySelector('.asset-type-field')?.value;
-                const rateEl = card.querySelector('.asset-rate-field');
-                if (!type || !rateEl) return;
+                const rateInput = card.querySelector('.asset-rate-field');
+                if (!type || !rateInput) return;
+                
                 if (scenario === 'bright') {
-                    if (type === 'stocks' || type === 'trust') rateEl.value = "15.0";
-                    if (type === 'metal' || type === 'bonds') rateEl.value = "5.0";
+                    if (type === 'stocks' || type === 'trust') rateInput.value = "15.0";
+                    if (type === 'metal' || type === 'bonds') rateInput.value = "5.0";
                 } else if (scenario === 'mild_bull') {
-                    if (type === 'stocks') rateEl.value = "10.0"; if (type === 'trust') rateEl.value = "8.0";
-                    if (type === 'metal' || type === 'bonds') rateEl.value = "5.0";
+                    if (type === 'stocks') rateInput.value = "10.0";
+                    if (type === 'trust') rateInput.value = "8.0";
+                    if (type === 'metal' || type === 'bonds') rateInput.value = "5.0";
                 } else if (scenario === 'normal') {
-                    if (type === 'stocks') rateEl.value = "5.0"; if (type === 'trust') rateEl.value = "4.0";
-                    if (type === 'metal' || type === 'bonds') rateEl.value = "4.0";
+                    if (type === 'stocks') rateInput.value = "5.0";
+                    if (type === 'trust') rateInput.value = "4.0";
+                    if (type === 'metal' || type === 'bonds') rateInput.value = "4.0";
                 } else if (scenario === 'dark') {
-                    if (type === 'stocks') rateEl.value = "4.0"; if (type === 'trust') rateEl.value = "1.0";
-                    if (type === 'metal') rateEl.value = "3.0"; if (type === 'bonds') rateEl.value = "4.0";
+                    if (type === 'stocks') rateInput.value = "4.0";
+                    if (type === 'trust') rateInput.value = "1.0";
+                    if (type === 'metal') rateInput.value = "3.0";
+                    if (type === 'bonds') rateInput.value = "4.0";
                 }
-                if (type === 'realestate') rateEl.value = "0.0";
+                if (type === 'realestate') rateInput.value = "0.0"; // 不動産ベースは固定据え置き
             });
+            
+            // マトリックス再計算を実行しトースト通知
             runSimulation();
+            const modeNames = { bright: '高歌猛进', mild_bull: '稳步上升', normal: '基准常态', dark: '滞胀衰退' };
+            showToast("⚡️ 宏观经济世界线已切换至「" + modeNames[scenario] + "」，预期年化收益率已一斉刷新！");
         }
+
+
 
         function handleUserTypeInput() {
             const inputVal = document.getElementById('scenario-input').value || 'Unnamed';
@@ -1131,7 +1194,7 @@
         }
 
         function applyScenario(scenario) {
-const otherContainer = document.getElementById('other-income-container');
+            const otherContainer = document.getElementById('other-income-container');
             const stageContainer = document.getElementById('stage-container');
             const incContainer = document.getElementById('income-container');
             const expContainer = document.getElementById('expense-container');
@@ -1248,7 +1311,7 @@ const otherContainer = document.getElementById('other-income-container');
             runSimulation();
         }
 
-        function formatAssetValue(valInDollar) { return (valInDollar < 0 ? '-' : '') + '$' + Math.abs(Math.round(valInDollar)).toLocaleString(); }
+        function formatAssetValue(valInYuan) { return (valInYuan < 0 ? '-' : '') + '¥' + Math.abs(Math.round(valInYuan)).toLocaleString(); }
 
         function runSimulation() {
             const startYear = parseInt(document.getElementById('start-year').value) || 2026;
@@ -1367,7 +1430,7 @@ const otherContainer = document.getElementById('other-income-container');
             const assetsList = [{id:'cash',name:'Cash'},{id:'realestate',name:'Property'},{id:'stocks',name:'Stocks'},{id:'trust',name:'Funds'},{id:'metal',name:'Metals'},{id:'bonds',name:'Bonds'}];
             chartInstance = new Chart(ctx, {
                 type: 'line', data: { labels, datasets: [...assetsList.map(a => ({ label: a.name, data: datasetTemplates[a.id].data, borderColor: assetColors[a.id], backgroundColor: assetColors[a.id] + '11', fill: false, tension: 0.15, borderWidth: 2, pointRadius: labels.length > 30 ? 0.5 : 2.5 })), { label: 'Total Assets', data: totalData, borderColor: '#0f172a', backgroundColor: '#0f172a', borderWidth: 4, fill: false, tension: 0.15, pointRadius: labels.length > 30 ? 1 : 3 }] },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString() } } } }
+                options: { responsive: true, maintenanceAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => '¥' + v.toLocaleString() } } } }
             });
         }
 
@@ -1379,13 +1442,16 @@ const otherContainer = document.getElementById('other-income-container');
             if (dissolveAnimId) cancelAnimationFrame(dissolveAnimId); animateDissolve(canvas, ctx);
             overlay.classList.remove('pointer-events-none'); overlay.style.opacity = '1';
 
-            setTimeout(() => {
+
+
+
+setTimeout(() => {
                 runSimulation(); if (!lastSimulationData || lastSimulationData.length === 0) return;
                 const currentAge = parseInt(document.getElementById('start-age').value) || 40; const endAge = parseInt(document.getElementById('years').value) || 85; const yearsRemaining = Math.max(endAge - currentAge, 1);
                 const finalRecord = lastSimulationData[lastSimulationData.length - 1]; const totalRemainingYen = finalRecord.total;
                 const breakdownList = document.getElementById('dwz-breakdown-list'); breakdownList.innerHTML = '';
                 
-                [{ name: 'Cash', val: finalRecord.cash, color: 'bg-slate-500' }, { name: 'Property', val: finalRecord.realestate, color: 'bg-rose-500' }, { name: 'Stocks', val: finalRecord.stocks, color: 'bg-blue-500' }, { name: 'Funds', val: finalRecord.trust, color: 'bg-emerald-500' }, { name: 'Metals', val: finalRecord.metal, color: 'bg-amber-500' }, { name: 'Bonds', val: finalRecord.bonds, color: 'bg-purple-500' }].forEach(item => {
+                [{ name: '现金储蓄', val: finalRecord.cash, color: 'bg-slate-500' }, { name: '房地产', val: finalRecord.realestate, color: 'bg-rose-500' }, { name: '股票资产', val: finalRecord.stocks, color: 'bg-blue-500' }, { name: '投资基金', val: finalRecord.trust, color: 'bg-emerald-500' }, { name: '贵金属', val: finalRecord.metal, color: 'bg-amber-500' }, { name: '债券资产', val: finalRecord.bonds, color: 'bg-purple-500' }].forEach(item => {
                     const div = document.createElement('div'); div.className = 'flex items-center justify-between pb-1 border-b border-slate-800';
                     div.innerHTML = `<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full ${item.color}"></span><span class="text-slate-400">${item.name}</span></div><span class="font-mono text-slate-100 font-bold">${formatAssetValue(item.val)}</span>`;
                     breakdownList.appendChild(div);
@@ -1393,18 +1459,21 @@ const otherContainer = document.getElementById('other-income-container');
 
                 let cashShortageAge = null;
                 for (let i = 0; i < lastSimulationData.length; i++) { if (lastSimulationData[i].cash < 0) { const m = lastSimulationData[i].yearLabel.match(/Age\s*(\d+)/i); cashShortageAge = m ? parseInt(m[1]) : currentAge + lastSimulationData[i].index; break; } }
-                let prefix = cashShortageAge !== null ? `<div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs">⚠️ At this rate, cash reserves will be depleted by age ${cashShortageAge}, halting baseline operations. Strategic liquidations are advised prior to this terminal window.</div>` : '';
+                let prefix = cashShortageAge !== null ? `<div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs">⚠️ 警告：按目前趋势，现金储备将在临界点 <span class="text-rose-400 font-black">${cashShortageAge}岁</span> 耗尽，从而迫使基本盘防御阵线停摆。建议在此窗口期前有计划地变现部分非现金资产。</div>` : '';
 
                 if (totalRemainingYen < 0) {
                     let bankruptAge = endAge;
                     for (let i = 0; i < lastSimulationData.length; i++) { if (lastSimulationData[i].total < 0) { const m = lastSimulationData[i].yearLabel.match(/Age\s*(\d+)/i); bankruptAge = m ? parseInt(m[1]) : currentAge + lastSimulationData[i].index; break; } }
                     const deficit = Math.abs(totalRemainingYen);
-                    document.getElementById('dwz-message-box').innerHTML = `${prefix}Under the current configuration, your absolute net wealth breaks below the zero floor at <span class="text-rose-400 font-black text-lg">Age ${bankruptAge}</span>.<br><br>By your terminal projection limit (<span class="text-amber-400 font-black">Age ${endAge}</span>), you run an aggregate budget deficit of <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(deficit)}</span>.<br><br>To achieve stability without early bankruptcy across the remaining <span class="text-amber-400 font-extrabold">${yearsRemaining} years</span>, you must downsize living expenditures by:<br><span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(Math.round(deficit / yearsRemaining))}／yr</span> (approx. <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(Math.round(deficit / yearsRemaining / 12))}／mo</span>).`;
-                    document.getElementById('dwz-advice-text').innerHTML = `"Running entirely out of provisions before reaching the journey's end is a critical tactical failure. You must downsize expenditures within your life stages, optimize yield acceleration arrays, or reinforce your capital preservation defense parameters immediately."`;
+                    document.getElementById('dwz-message-box').innerHTML = `${prefix}根据当前战略推演，您的总净资产将在 <span class="text-rose-400 font-black text-lg">Age ${bankruptAge} (岁)</span> 跌破零底线。<br><br>至规划的生命终点 limit (<span class="text-amber-400 font-black">Age ${endAge}</span>) 為止、累计预算赤字缺口高达 <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(deficit)}</span>。<br><br>若要在余下的 <span class="text-amber-400 font-extrabold">${yearsRemaining}年</span> 中维持阵线稳定且不发生提前破产，您必须在现有阶段中缩减年度生活开支：<br><span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(Math.round(deficit / yearsRemaining))}／年</span> ( 约折合 <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(Math.round(deficit / yearsRemaining / 12))}／月</span> )。`;
+                    document.getElementById('dwz-advice-text').innerHTML = `"在抵达终点前就耗尽全部粮草，是战略上的严重失误。主公应当立刻重新审视人生各阶段的开支权重、优化高收益资产进攻阵列、或筑牢资本保全的防御壁垒。"`;
                 } else {
-                    document.getElementById('dwz-message-box').innerHTML = `${prefix}Current metrics indicate that upon reaching your planned terminal age (<span class="text-amber-400 font-black">Age ${endAge}</span>), you will leave behind a surplus balance of <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(totalRemainingYen)}</span>.<br><br>To completely wipe out this unutilized surplus capital and achieve an optimal <span class="text-amber-400 font-bold">Die With Zero</span> run, you have the tactical capacity to deploy an additional:<br><span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(Math.round(totalRemainingYen / yearsRemaining))}／yr</span> (approx. <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(Math.round(totalRemainingYen / yearsRemaining / 12))}／mo</span>) over the remaining <span class="text-amber-400 font-extrabold">${yearsRemaining} years</span>.`;
-                    document.getElementById('dwz-advice-text').innerHTML = `"Entering the grave with unspent capital is a profound misallocation of human utility. Pivot your surplus capital toward experience-driven investments during your active years to maximize the aggregate lifecycle return of your life."`;
+                    document.getElementById('dwz-message-box').innerHTML = `${prefix}当前策略矩阵显示，当您达到预定的生命终点 (<span class="text-amber-400 font-black">Age ${endAge}</span>) 時、仍将留有高达 <span class="text-rose-400 font-black text-lg border-b border-dashed border-rose-400">${formatAssetValue(totalRemainingYen)}</span> 的财富盈余。<br><br>为了将这一未被利用的资产完全转化为生命体验、达成完美的 <span class="text-amber-400 font-bold">Die With Zero</span>，您在接下来的 <span class="text-amber-400 font-extrabold">${yearsRemaining}年</span> 中，具备额外释放以下消费额度的战略空间：<br><span class="text-yellow-400 font-black text-2xl px-1.5 py-0.5 bg-yellow-400/10 rounded-lg shadow-inner">${formatAssetValue(Math.round(totalRemainingYen / yearsRemaining))}／年</span> ( 约折合 <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(Math.round(totalRemainingYen / yearsRemaining / 12))}／月</span> )。`;
+                    document.getElementById('dwz-advice-text').innerHTML = `"带着未能转化为财富体验的余额走向终点，是对生命效能的一种错配。主公应当在精力充沛的黄金岁月中转守为攻，将资产有计划地注入健康、远见与极致的人生体验之中。"`;
                 }
+
+
+
 
                 document.getElementById('simulator-view').classList.add('hidden'); document.getElementById('dwz-view').classList.remove('hidden'); document.getElementById('dwz-view').classList.add('flex');
                 window.scrollTo({ top: 0, behavior: 'smooth' }); overlay.style.opacity = '0'; overlay.classList.add('pointer-events-none');
@@ -1433,7 +1502,7 @@ const otherContainer = document.getElementById('other-income-container');
 
         function downloadCSV() {
             if (!lastSimulationData) return;
-            let csvContent = "\uFEFF経過年(西暦/年齢),現金($),不動産($),株式($),投資信託($),貴金属($),債券($),総資産($)\n";
+            let csvContent = "\uFEFF経過年(西暦/年齢),現金(元),不動産(元),株式(元),投資信託(元),貴金属(元),債券(元),総資産(元)\n";
             lastSimulationData.forEach(rec => { csvContent += `"${rec.yearLabel.replace(' ','')}",${rec.cash},${rec.realestate},${rec.stocks},${rec.trust},${rec.metal},${rec.bonds},${rec.total}\n`; });
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(blob)); link.setAttribute("download", "investment_simulation.csv"); link.click();
         }
