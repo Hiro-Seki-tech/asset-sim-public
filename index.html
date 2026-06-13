@@ -170,7 +170,7 @@
                 
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60 text-xs">
                     <div class="flex items-center gap-1.5 relative">
-                        <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-user-tie text-amber-400 mr-1"></i><span data-i18n="label_character_selection">人物選択：</span></span>
+                        <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-user-tie text-amber-400 mr-1"></i><span data-i18n="label_character_selection">人生の雛形選択：</span></span>
                         <div class="flex items-center bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
                             <input type="text" id="scenario-input" value="準富裕層" oninput="handleUserTypeInput()" class="bg-transparent text-slate-100 px-3 py-1.5 font-bold focus:outline-none text-xs w-36">
                           
@@ -462,20 +462,36 @@
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08)_0%,transparent_60%)] pointer-events-none"></div>
         
         <div class="max-w-3xl w-full bg-slate-900/90 border-2 border-amber-500/30 rounded-3xl p-6 sm:p-10 shadow-[0_0_50px_rgba(245,158,11,0.15)] flex flex-col gap-6 relative z-10 animate-fade-in">
-            <div class="flex items-center justify-between border-b border-amber-500/20 pb-4">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">💀</span>
-                    <div>
-                        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-amber-400" data-i18n="dwz_alert_title">
-                            DIE WITH ZERO !<br>— 生涯資金・完全使い切り警告 —
-                        </h2>
-                        <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5" data-i18n="dwz_strategy_sub_label">The Army Counselor's Ultimate Strategy</p>
-                    </div>
+
+
+
+<div class="flex items-center justify-between border-b border-amber-500/20 pb-4 max-sm:flex-col max-sm:items-start max-sm:gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">💀</span>
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-amber-400" data-i18n="dwz_alert_title">
+                        DIE WITH ZERO !<br>— 生涯資金・完全使い切り警告 —
+                    </h2>
+                    <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5" data-i18n="dwz_strategy_sub_label">The Army Counselor's Ultimate Strategy</p>
                 </div>
-                <button onclick="backToSimulator()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1">
-                    <i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_return_to_sim">シミュレータに戻る</span>
-                </button>
             </div>
+
+            <div class="flex flex-col gap-2 shrink-0 items-end max-sm:w-full">
+                
+                <button onclick="backToSimulator()" class="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-colors flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_return_to_sim">シミュレータ（尽生）に戻る</span>
+                </button>
+
+                <a href="https://hiro-seki-tech.github.io/inheritance-sim/" class="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-purple-300 hover:text-purple-200 rounded-xl text-xs font-bold border border-slate-700 hover:border-purple-900/60 transition-colors flex items-center justify-center gap-1 group" style="text-decoration: none;">
+                    <span>このまま相続する（宝均へ）</span>
+                    <span class="transform group-hover:translate-x-0.5 transition-transform duration-200">→</span>
+                </a>
+
+            </div>
+        </div>
+
+
+
 
             <div class="bg-slate-950/60 rounded-2xl p-6 border border-amber-500/10 flex flex-col gap-5">
                 <p id="dwz-message-box" class="text-sm sm:text-base leading-relaxed text-slate-200">
@@ -496,9 +512,25 @@
             </div>
 
             <div class="flex items-center justify-center pt-4">
-                <button onclick="backToSimulator()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-sm rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_re-plan_strategy">資産・ライフプランシミュレータに戻って軍略を練り直す</span>
-                </button>
+              
+
+<div class="mt-4 flex flex-col gap-3 w-full">
+    
+    <button onclick="backToSimulator()" class="w-full px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-sm rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_re-plan_strategy">資産・ライフプランシミュレータ【尽生（Jin-Sei）】に戻って軍略を練り直す</span>
+    </button>
+
+    <a href="https://hiro-seki-tech.github.io/inheritance-sim/" class="w-full px-8 py-4 bg-gradient-to-r from-purple-950 via-slate-900 to-zinc-900 hover:from-purple-900 hover:via-purple-950 hover:to-zinc-800 text-purple-200 hover:text-purple-100 font-black text-sm rounded-2xl border border-purple-800/40 hover:border-purple-700/60 shadow-lg text-center tracking-widest flex items-center justify-center gap-2 group transition-all transform hover:-translate-y-0.5 active:translate-y-0" style="text-decoration: none;">
+        この状態を引き継いで相続シミュレータ【宝均（Gem-Kin）】へ！
+        <span class="transform group-hover:translate-x-1 transition-transform duration-200 text-purple-400">→</span>
+    </a>
+
+</div>
+
+
+
+
+
             </div>
         </div>
     </div>
