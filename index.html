@@ -45,7 +45,7 @@
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
 
 
-/* 💡吹き出し内部の極小電球を7色へ美しく循環させるグラデーション定義 */
+        /* 💡吹き出し内部の極小電球を7色へ美しく循環させるグラデーション定義 */
         @keyframes plipRainbowText {
             0%   { color: #ff0055; text-shadow: 0 0 4px rgba(255, 0, 85, 0.3); }
             14%  { color: #ff5500; text-shadow: 0 0 4px rgba(255, 85, 0, 0.3); }
@@ -68,10 +68,6 @@
         .plip-noble-bubble {
             animation: plipNobleFloat 3s infinite ease-in-out;
         }
-
-
-
-
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased transition-all duration-300">
@@ -113,49 +109,173 @@
                     <div class="relative flex items-center">
                         <div onclick="runSimulation(); showToast('⚡️ 未来の資産が再計算されました！')" class="relative cursor-pointer group select-none flex items-center justify-center transition-transform duration-200 hover:scale-105 active:scale-95" title="クリックしてシミュレーションを実行">
                             
-                            <div class="relative w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(236,72,153,0.4)] transition-shadow duration-300">
+                            <div class="relative w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-shadow duration-300">
                                 
-                                <style>
-                                    @keyframes rainbowGlow {
-                                        0% { stop-color: #ff007f; }    /* ピンク */
-                                        14% { stop-color: #ff0000; }   /* 赤 */
-                                        28% { stop-color: #ff7f00; }   /* オレンジ */
-                                        42% { stop-color: #ffff00; }   /* 黄 */
-                                        56% { stop-color: #00ff00; }   /* 緑 */
-                                        70% { stop-color: #00ffff; }   /* シアン */
-                                        84% { stop-color: #0000ff; }   /* 青 */
-                                        100% { stop-color: #ff007f; }  /* ピンクに戻る */
-                                    }
-                                    .rainbow-stop-1 { animation: rainbowGlow 8s linear infinite; }
-                                    .rainbow-stop-2 { animation: rainbowGlow 8s linear infinite; animation-delay: -4s; }
-                                </style>
-
-                                <div class="absolute top-1 text-[10px] font-black tracking-widest uppercase select-none z-20" style="font-family: 'Cinzel', sans-serif;">
-                                    <span style="background: linear-gradient(to right, #ff007f, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); animate-pulse">
-                                        PLIP
+                                <div class="absolute top-0.5 text-[8px] font-black tracking-widest uppercase select-none z-20" style="font-family: 'Cinzel', sans-serif;">
+                                    <span class="text-amber-400 drop-shadow-[0_0_2px_rgba(0,0,0,0.8)]">
+                                        Jin-Sei
                                     </span>
                                 </div>
                                 
-                                <svg class="w-9 h-9 z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <linearGradient id="rainbowBulbGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                                            <stop offset="0%" class="rainbow-stop-1" />
-                                            <stop offset="100%" class="rainbow-stop-2" />
-                                        </linearGradient>
-                                    </defs>
-                                    
-                                    <path d="M50 15C33.4 15 20 28.4 20 45C20 55.3 25.2 64.3 33 69.7V80C33 81.7 34.3 83 36 83H64C65.7 83 67 81.7 67 80V69.7C74.8 64.3 80 55.3 80 45C80 28.4 66.6 15 50 15ZM44 78V73H56V78H44ZM42 68V63H58V68H42ZM50 23C59.4 23 67 30.6 67 40C67 41.1 66.1 42 65 42C63.9 42 63 41.1 63 40C63 32.8 57.2 27 50 27C48.9 27 48 26.1 48 25C48 23.9 48.9 23 50 23Z" fill="url(#rainbowBulbGrad)" style="filter: drop-shadow(0 0 4px url(#rainbowBulbGrad));" />
-                                    
-                                    <path d="M68 15L46 45H60L38 82L48 51H34L68 15Z" fill="#ffeb3b" style="filter: drop-shadow(0 0 8px #ffeb3b);" class="animate-pulse" />
+                                <svg class="w-10 h-10 z-10 mt-2" viewBox="0 0 240 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <defs>
+                                    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+                                      <stop offset="0%" stop-color="#FFD700"/>
+                                      <stop offset="100%" stop-color="#C0A060"/>
+                                    </linearGradient>
+
+                                    <linearGradient id="gemShine" x1="0" y1="0" x2="1" y2="1">
+                                      <stop offset="0%" stop-color="#FFFCE0"/>
+                                      <stop offset="40%" stop-color="#FFE27A"/>
+                                      <stop offset="100%" stop-color="#C0A060"/>
+                                      <animate attributeName="x1" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+                                      <animate attributeName="y1" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+                                    </linearGradient>
+                                  </defs>
+
+                                  <rect x="40" y="20" width="160" height="30" rx="15" fill="url(#gold)"/>
+
+                                  <rect x="40" y="310" width="160" height="30" rx="15" fill="url(#gold)"/>
+
+                                  <rect x="50" y="50" width="10" height="260" rx="5" fill="url(#gold)"/>
+                                  <rect x="180" y="50" width="10" height="260" rx="5" fill="url(#gold)"/>
+
+                                  <path d="M70,50 C120,120 120,160 70,230 L70,280 C120,220 120,180 70,120 Z" fill="none" stroke="url(#gold)" stroke-width="5"/>
+                                  <path d="M170,50 C120,120 120,160 170,230 L170,280 C120,220 120,180 170,120 Z" fill="none" stroke="url(#gold)" stroke-width="5"/>
+
+                                  <circle cx="120" cy="80" r="5" fill="#FFD700">
+                                    <animate attributeName="cy" from="80" to="260" dur="4.2s" begin="0s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="120;123;117;120" dur="4.2s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="140" cy="90" r="4" fill="#FFD700">
+                                    <animate attributeName="cy" from="90" to="260" dur="5.1s" begin="0.8s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="140;142;138;140" dur="5.1s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="100" cy="70" r="4" fill="#FFD700">
+                                    <animate attributeName="cy" from="70" to="260" dur="3.7s" begin="1.2s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="100;103;97;100" dur="3.7s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="110" cy="95" r="3" fill="#FFD700">
+                                    <animate attributeName="cy" from="95" to="260" dur="4.8s" begin="0.4s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="110;112;108;110" dur="4.8s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="150" cy="75" r="3" fill="#FFD700">
+                                    <animate attributeName="cy" from="75" to="260" dur="5.5s" begin="1.6s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="150;152;148;150" dur="5.5s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="90" cy="85" r="4" fill="#FFD700">
+                                    <animate attributeName="cy" from="85" to="260" dur="4.4s" begin="0.3s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="90;92;88;90" dur="4.4s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="130" cy="65" r="3" fill="#FFD700">
+                                    <animate attributeName="cy" from="65" to="260" dur="5.8s" begin="1.4s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="130;132;128;130" dur="5.8s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="105" cy="100" r="3" fill="#FFD700">
+                                    <animate attributeName="cy" from="100" to="260" dur="4.1s" begin="0.6s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="105;107;103;105" dur="4.1s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="160" cy="95" r="4" fill="#FFD700">
+                                    <animate attributeName="cy" from="95" to="260" dur="5.3s" begin="1.9s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="160;163;157;160" dur="5.3s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="80" cy="75" r="3" fill="#FFD700">
+                                    <animate attributeName="cy" from="75" to="260" dur="3.9s" begin="0.9s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="80;83;77;80" dur="3.9s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="125" cy="60" r="3" fill="#FFD700">
+                                    <animate attributeName="cy" from="60" to="260" dur="5.7s" begin="1.3s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="125;128;122;125" dur="5.7s" repeatCount="indefinite"/>
+                                  </circle>
+                                  <circle cx="95" cy="105" r="3" fill="#FFD700">
+                                    <animate attributeName="cy" from="105" to="260" dur="4.6s" begin="0.2s" repeatCount="indefinite"/>
+                                    <animate attributeName="cx" values="95;98;92;95" dur="4.6s" repeatCount="indefinite"/>
+                                  </circle>
+
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 185" dur="5.2s" begin="0.4s" repeatCount="indefinite"/>
+                                    <polygon points="120,85 128,92 128,102 120,109 112,102 112,92" fill="url(#gemShine)">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 120 97" to="720 120 97" dur="6s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 175" dur="5.8s" begin="1.2s" repeatCount="indefinite"/>
+                                    <polygon points="95,110 102,100 112,100 118,110 112,120 102,120 95,110" fill="url(#gemShine)">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 106 110" to="720 106 110" dur="6.4s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 190" dur="5.4s" begin="0.7s" repeatCount="indefinite"/>
+                                    <polygon points="140,105 147,112 147,122 140,129 133,122 133,112" fill="url(#gemShine)">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 140 117" to="720 140 117" dur="6.2s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 165" dur="4.9s" begin="1.8s" repeatCount="indefinite"/>
+                                    <polygon points="110,120 118,128 110,136 102,128" fill="url(#gemShine)">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 110 128" to="720 110 128" dur="5.8s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 170" dur="4.7s" begin="0.3s" repeatCount="indefinite"/>
+                                    <polygon points="130,115 135,120 130,125 125,120" fill="#FFF27A">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 130 120" to="720 130 120" dur="5.4s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 180" dur="5.1s" begin="1.5s" repeatCount="indefinite"/>
+                                    <polygon points="100,130 105,135 100,140 95,135" fill="#FFE08A">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 100 135" to="720 100 135" dur="5.9s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 195" dur="5.6s" begin="0.9s" repeatCount="indefinite"/>
+                                    <polygon points="150,115 157,122 157,132 150,139 143,132 143,122" fill="#FFFFFF">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 150 127" to="720 150 127" dur="6.5s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 160" dur="4.6s" begin="1.1s" repeatCount="indefinite"/>
+                                    <polygon points="125,135 130,140 125,145 120,140" fill="#D0FF80">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 125 140" to="720 125 140" dur="5.3s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 185" dur="5.9s" begin="0.5s" repeatCount="indefinite"/>
+                                    <polygon points="115,145 122,135 132,135 138,145 132,155 122,155 115,145" fill="#FFF27A">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 126 145" to="720 126 145" dur="6.7s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+                                  <g>
+                                    <animateTransform attributeName="transform" type="translate" from="0 0" to="0 175" dur="5.3s" begin="1.7s" repeatCount="indefinite"/>
+                                    <polygon points="90,140 97,147 97,157 90,164 83,157 83,147" fill="#FFE08A">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 90 152" to="720 90 152" dur="6.1s" repeatCount="indefinite"/>
+                                    </polygon>
+                                  </g>
+
+                                  <rect x="130" y="60" width="20" height="10" fill="#A0FFB0">
+                                    <animate attributeName="x" values="130;135;130;125;130" dur="5s" begin="0.4s" repeatCount="indefinite"/>
+                                    <animate attributeName="y" from="60" to="260" dur="5s" begin="0.4s" repeatCount="indefinite"/>
+                                  </rect>
+                                  <rect x="90" y="85" width="20" height="10" fill="#A0FFB0">
+                                    <animate attributeName="x" values="90;95;90;85;90" dur="5.4s" begin="1.1s" repeatCount="indefinite"/>
+                                    <animate attributeName="y" from="85" to="260" dur="5.4s" begin="1.1s" repeatCount="indefinite"/>
+                                  </rect>
+                                  <rect x="110" y="70" width="20" height="10" fill="#A0FFB0">
+                                    <animate attributeName="x" values="110;115;110;105;110" dur="5.2s" begin="0.7s" repeatCount="indefinite"/>
+                                    <animate attributeName="y" from="70" to="260" dur="5.2s" begin="0.7s" repeatCount="indefinite"/>
+                                  </rect>
+                                  <rect x="150" y="95" width="20" height="10" fill="#A0FFB0">
+                                    <animate attributeName="x" values="150;155;150;145;150" dur="5.6s" begin="1.5s" repeatCount="indefinite"/>
+                                    <animate attributeName="y" from="95" to="260" dur="5.6s" begin="1.5s" repeatCount="indefinite"/>
+                                  </rect>
                                 </svg>
                                 
                                 <div class="absolute inset-0 bg-white/[0.03] group-hover:bg-white/[0.08] transition-colors duration-300"></div>
                             </div>
 
                             <div class="absolute top-[62px] left-1/2 plip-noble-bubble bg-[#151d30] border border-amber-500/40 text-[10px] font-black tracking-widest px-3 py-1.5 rounded-lg text-amber-400 whitespace-nowrap shadow-[0_10px_25px_rgba(0,0,0,0.5)] pointer-events-none select-none z-50 flex items-center justify-center gap-1.5">
-                              
-
-<span class="absolute bottom-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#151d30] border-t border-l border-amber-500/40 transform rotate-45 translate-y-[5px]"></span>                            
+                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#151d30] border-t border-l border-amber-500/40 transform rotate-45 translate-y-[5px]"></span>                            
                                 <span class="relative inline-block w-4 h-4 align-middle">
                                     <i class="fa-solid fa-lightbulb plip-rainbow-text-bulb text-[11px] absolute left-0 top-0.5"></i>
                                     <i class="fa-solid fa-bolt text-yellow-300 text-[8px] absolute right-0 -top-0.5 drop-shadow-[0_0_2px_#fde047]"></i>
@@ -604,7 +724,6 @@
     <script src="./js/i18n.js"></script>
 
     <script>
-// 通貨切り替えスイッチ用の画面遷移関数
         function switchCurrencySimulator(selectedCurrency) {
             if (selectedCurrency === 'usd') {
                 window.location.href = './dollar/index.html';
@@ -614,7 +733,6 @@
                 window.location.href = './yuan/index.html';
             }
         }
-
 
         let chartInstance = null;
         let tooltipPieChartInstance = null;
@@ -630,12 +748,9 @@
         };
 
         const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
-
-        // トランジションキャンバス用アニメーション制御変数
         let dissolveAnimId = null;
         let particles = [];
 
-        /* トースト表示処理 */
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastText = document.getElementById('toast-text');
@@ -656,16 +771,12 @@
             }, 3000);
         }
 
-        /* ⚠️ 選択肢B「黄金の砂時計・完全使い切りの霧散（ディゾルブ）」専用のサラサラと崩れ去る神秘的な音 */
         function playDissolveSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
-                
-                const duration = 1.6; // 1.6秒かけて砂が流れ落ちる
-                
-                // 1. サラサラとした砂の流れを作るためのホワイトノイズ
+                const duration = 1.6;
                 const sampleRate = ctx.sampleRate;
                 const bufferSize = sampleRate * duration;
                 const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
@@ -676,31 +787,27 @@
                 const noiseNode = ctx.createBufferSource();
                 noiseNode.buffer = buffer;
 
-                // 砂が風に舞うような周波数特性を作るバンドパスフィルター
                 const noiseFilter = ctx.createBiquadFilter();
                 noiseFilter.type = 'bandpass';
                 noiseFilter.frequency.setValueAtTime(800, ctx.currentTime);
-                // 周周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
                 noiseFilter.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + duration);
                 noiseFilter.Q.setValueAtTime(1.5, ctx.currentTime);
 
                 const noiseGain = ctx.createGain();
-                noiseGain.gain.setValueAtTime(0.04, ctx.currentTime); // 小さめの穏やかな音
+                noiseGain.gain.setValueAtTime(0.04, ctx.currentTime);
                 noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
-                // 2. 黄金のききらめき、砂時計の硝子を連想させる高周波チャイム音
                 const chime1 = ctx.createOscillator();
                 const chime2 = ctx.createOscillator();
                 chime1.type = 'sine';
                 chime2.type = 'sine';
-                chime1.frequency.setValueAtTime(2200, ctx.currentTime); // 高い金属音
-                chime2.frequency.setValueAtTime(2850, ctx.currentTime); // 重ねて澄んだ高音を創出
+                chime1.frequency.setValueAtTime(2200, ctx.currentTime);
+                chime2.frequency.setValueAtTime(2850, ctx.currentTime);
 
                 const chimeGain = ctx.createGain();
-                chimeGain.gain.setValueAtTime(0.02, ctx.currentTime); // かすかに響く音量
+                chimeGain.gain.setValueAtTime(0.02, ctx.currentTime);
                 chimeGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration - 0.2);
 
-                // 結線して再生
                 noiseNode.connect(noiseFilter);
                 noiseFilter.connect(noiseGain);
                 noiseGain.connect(ctx.destination);
@@ -721,24 +828,19 @@
             }
         }
 
-        /* 黄金の砂粒子クラス定義 */
         class GoldGrain {
             constructor(w, h) {
                 this.canvasWidth = w;
                 this.canvasHeight = h;
-                // 画面中央や中央上部から砂のようにこぼれ落ち、または舞い散る
                 this.x = Math.random() * w;
-                this.y = Math.random() * h * 0.4 + h * 0.1; // 上中部に集中
+                this.y = Math.random() * h * 0.4 + h * 0.1;
                 this.size = Math.random() * 2.2 + 0.8;
-                // 風に流されるような軌道
-                this.vx = (Math.random() - 0.4) * 2.5; 
-                this.vy = Math.random() * 3 + 1.5; // 下方向に落ちる
+                this.vx = (Math.random() - 0.4) * 2.5;
+                this.vy = Math.random() * 3 + 1.5;
                 this.alpha = 1.0;
-                // 個体差をつけて霧散の美しさを際立たせる
                 this.decay = Math.random() * 0.012 + 0.006;
-                // 黄金・アンバー色のカラーレンジ
-                const r = Math.floor(Math.random() * 45 + 210); // 210~255
-                const g = Math.floor(Math.random() * 60 + 140); // 140~200
+                const r = Math.floor(Math.random() * 45 + 210);
+                const g = Math.floor(Math.random() * 60 + 140);
                 this.color = `rgba(${r}, ${g}, 11,`;
             }
             update() {
@@ -754,17 +856,13 @@
             }
         }
 
-        /* 黄金パーティクルアニメーションループ */
         function animateDissolve(canvas, ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 毎フレーム一定の黄金の粒子を注入
             if (particles.length < 250) {
                 for (let i = 0; i < 6; i++) {
                     particles.push(new GoldGrain(canvas.width, canvas.height));
                 }
             }
-
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
                 p.update();
@@ -773,11 +871,9 @@
                     particles.splice(i, 1);
                 }
             }
-
             dissolveAnimId = requestAnimationFrame(() => animateDissolve(canvas, ctx));
         }
 
-        /* ライフステージ定義の年齢連動 */
         function updateStageAges() {
             const startAge = parseInt(document.getElementById('start-age').value) || 40;
             const rows = document.querySelectorAll('.stage-row');
@@ -786,19 +882,16 @@
             rows.forEach((row, index) => {
                 const titleSpan = row.querySelector('.stage-title');
                 if (titleSpan) {
-                    // 日本語・英語辞書からタイトルヘッダーを動的に自動生成
                     const baseTitle = (typeof currentTranslations !== 'undefined' && currentTranslations['title_living_costs']) 
                         ? currentTranslations['title_living_costs'].replace(/💸\s*/, '').split('（')[0].trim()
                         : '人生のステージ';
                     titleSpan.innerHTML = `<i class="fa-solid fa-layer-group mr-1"></i>${baseTitle} ${romanNumerals[index] || (index + 1)}`;
                 }
-                
                 const startInput = row.querySelector('.stage-start');
                 if (startInput) startInput.value = currentStart;
 
                 const endInput = row.querySelector('.stage-end');
                 const currentEnd = parseInt(endInput.value) || (currentStart + 10);
-                
                 currentStart = currentEnd + 1;
             });
         }
@@ -813,7 +906,6 @@
             const div = document.createElement('div');
             div.className = 'stage-row bg-rose-50/10 p-3 rounded-xl border border-rose-100/40 flex flex-col gap-2 text-[11px]';
             
-            // 動的追加フィールドのテキストパーツを現在の言語に同期
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const lblTo = isEn ? ' to ' : ' ～ ';
             const lblAge = isEn ? ' years old' : ' 歳';
@@ -849,7 +941,6 @@
             const div = document.createElement('div');
             div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
             
-            // その他所得追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultName = isEn ? "Pension" : name;
             const lblName = isEn ? "Income Name" : "所得の名称";
@@ -887,7 +978,6 @@
             const div = document.createElement('div');
             div.className = 'income-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 臨時収入追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? "Retirement Bonus" : memo;
             const lblMemo = isEn ? "Description" : "収入の名称";
@@ -937,7 +1027,6 @@
             const div = document.createElement('div');
             div.className = 'expense-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 臨時出費追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? "Special Event" : memo;
             const lblMemo = isEn ? "Description" : "出費の名称";
@@ -966,7 +1055,6 @@
         function drawTooltipPieChart(data) {
             const ctx = document.getElementById('tooltipPieChart').getContext('2d');
             const total = data.cash + data.realestate + data.stocks + data.trust + data.metal + data.bonds;
-            
             const isMobile = window.innerWidth < 1024;
             const totalCenterText = document.getElementById('tooltip-total-text').parentElement;
             const chartContainer = document.getElementById('tooltipPieChart').parentElement;
@@ -979,7 +1067,6 @@
                 totalCenterText.style.position = 'static';
                 totalCenterText.style.transform = 'none';
                 totalCenterText.style.display = 'flex';
-                
                 ctx.canvas.style.maxWidth = '50%';
                 ctx.canvas.style.height = '16px';
                 
@@ -997,14 +1084,9 @@
                         ]
                     },
                     options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
                         plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                        scales: {
-                            x: { stacked: true, display: false, grid: { display: false } },
-                            y: { stacked: true, display: false, grid: { display: false } }
-                        }
+                        scales: { x: { stacked: true, display: false }, y: { stacked: true, display: false } }
                     }
                 });
             } else {
@@ -1013,7 +1095,6 @@
                 totalCenterText.style.position = '';
                 totalCenterText.style.transform = '';
                 totalCenterText.style.display = 'flex';
-                
                 ctx.canvas.style.maxWidth = '';
                 ctx.canvas.style.height = '';
                 
@@ -1024,14 +1105,11 @@
                         datasets: [{
                             data: [data.cash, data.realestate, data.stocks, data.trust, data.metal, data.bonds],
                             backgroundColor: [assetColors.cash, assetColors.realestate, assetColors.stocks, assetColors.trust, assetColors.metal, assetColors.bonds],
-                            borderColor: 'rgba(15, 23, 42, 0.95)',
-                            borderWidth: 1.5
+                            borderColor: 'rgba(15, 23, 42, 0.95)', borderWidth: 1.5
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '72%',
+                        responsive: true, maintainAspectRatio: false, cutout: '72%',
                         plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } }
                     }
                 });
@@ -1058,9 +1136,9 @@
                 item.innerHTML = `
                     <div class="flex items-center gap-1 w-[45%]">
                         <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${asset.color}"></span>
-                        <span class="text-slate-400 truncate text-[10px] max-sm:text-[9px] text-left">${asset.name}</span>
+                        <span class="text-slate-400 truncate text-[10px] text-left">${asset.name}</span>
                     </div>
-                    <div class="flex justify-end w-[55%] text-right gap-1 font-mono text-[10px] max-sm:text-[9px]">
+                    <div class="flex justify-end w-[55%] text-right gap-1 font-mono text-[10px]">
                         <span class="text-slate-100 font-bold">${formatAssetValue(value)}</span>
                         <span class="text-amber-400">(${pct}%)</span>
                     </div>
@@ -1102,7 +1180,6 @@
                 tooltipEl.style.position = 'fixed';
                 tooltipEl.style.left = '50%';
                 tooltipEl.style.transform = 'translateX(-50%)';
-                tooltipEl.style.right = 'auto';
                 tooltipEl.style.bottom = '8px';
                 tooltipEl.style.top = 'auto';
                 tooltipEl.style.width = '260px';
@@ -1181,12 +1258,12 @@
                     </div>
                     <div class="grid grid-cols-5 items-center gap-1">
                         <div class="col-span-2">
-                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">購入年齢</label>
+                            <label class="text-slate-400 block mb-0.5 text-[9px]">購入年齢</label>
                             <input type="number" class="asset-start-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.startAge}" oninput="runSimulation();">
                         </div>
                         <span class="col-span-1 text-center text-slate-400 mt-3 font-bold">-</span>
                         <div class="col-span-2">
-                            <label class="text-slate-400 block mb-0.5 text-[9px] truncate">売却年齢</label>
+                            <label class="text-slate-400 block mb-0.5 text-[9px]">売却年齢</label>
                             <input type="number" class="asset-end-field w-full rounded border border-slate-200 p-1 text-center font-bold text-[10px]" value="${data.endAge}" oninput="runSimulation();">
                         </div>
                     </div>
@@ -1214,24 +1291,15 @@
             const assetNames = { stocks: '新興個別株', trust: 'つみたてインデックス', realestate: '新規不動産B', metal: '地金', bonds: '国債' };
 
             addAssetElement({
-                name: assetNames[chosenType],
-                type: chosenType,
-                initAmt: 100,
-                rate: 4.0,
-                yearAmt: 0,
-                monthAmt: 0,
-                payout: chosenType === 'bonds' ? 'cashout' : 'reinvest',
-                startAge: startAge,
-                endAge: endAge
+                name: assetNames[chosenType], type: chosenType, initAmt: 100, rate: 4.0, yearAmt: 0, monthAmt: 0,
+                payout: chosenType === 'bonds' ? 'cashout' : 'reinvest', startAge: startAge, endAge: endAge
             });
             runSimulation();
             showToast(`${assetNames[chosenType]}カードを戦場に展開しました。`);
         }
 
         function applyWorldLine(scenario) {
-            if (scenario === 'bright') document.getElementById('rate-cash').value = "0.1";
-            else if (scenario === 'mild_bull') document.getElementById('rate-cash').value = "0.1";
-            else if (scenario === 'normal') document.getElementById('rate-cash').value = "0.1";
+            if (scenario === 'bright' || scenario === 'mild_bull' || scenario === 'normal') document.getElementById('rate-cash').value = "0.1";
             else if (scenario === 'dark') document.getElementById('rate-cash').value = "0.0";
             
             const cards = document.querySelectorAll('.asset-card');
@@ -1244,32 +1312,27 @@
                 if (scenario === 'bright') {
                     if (type === 'stocks' || type === 'trust') rateEl.value = "15.0";
                     if (type === 'metal' || type === 'bonds') rateEl.value = "5.0";
-                    if (type === 'realestate') rateEl.value = "0.0";
                 } else if (scenario === 'mild_bull') {
                     if (type === 'stocks') rateEl.value = "10.0";
                     if (type === 'trust') rateEl.value = "8.0";
                     if (type === 'metal' || type === 'bonds') rateEl.value = "5.0";
-                    if (type === 'realestate') rateEl.value = "0.0";
                 } else if (scenario === 'normal') {
                     if (type === 'stocks') rateEl.value = "5.0";
-                    if (type === 'trust') rateEl.value = "4.0";
-                    if (type === 'metal' || type === 'bonds') rateEl.value = "4.0";
-                    if (type === 'realestate') rateEl.value = "0.0";
+                    if (type === 'trust' || type === 'metal' || type === 'bonds') rateEl.value = "4.0";
                 } else if (scenario === 'dark') {
                     if (type === 'stocks') rateEl.value = "4.0";
                     if (type === 'trust') rateEl.value = "1.0";
                     if (type === 'metal') rateEl.value = "3.0";
                     if (type === 'bonds') rateEl.value = "4.0";
-                    if (type === 'realestate') rateEl.value = "0.0";
                 }
+                if (type === 'realestate') rateEl.value = "0.0";
             });
             runSimulation();
         }
 
         function handleUserTypeInput() {
             const inputVal = document.getElementById('scenario-input').value || '名無し';
-            const titleEl = document.getElementById('graph-title-element');
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${inputVal}」の生涯キャッシュフロー`;
+            document.getElementById('graph-title-element').innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${inputVal}」の生涯キャッシュフロー`;
             document.getElementById('scenario-selector').value = 'custom';
         }
 
@@ -1301,20 +1364,15 @@
                 document.getElementById('income-container').innerHTML = state.incomeHTML || '';
                 document.getElementById('expense-container').innerHTML = state.expenseHTML || '';
                 
-                const container = document.getElementById('dynamic-assets-container');
-                container.innerHTML = '';
+                document.getElementById('dynamic-assets-container').innerHTML = '';
                 if (state.assets && Array.isArray(state.assets)) {
-                    state.assets.forEach(asset => {
-                        addAssetElement(asset);
-                    });
+                    state.assets.forEach(asset => addAssetElement(asset));
                 }
                 
                 if (state.customName) {
                     document.getElementById('scenario-input').value = state.customName;
-                    const titleEl = document.getElementById('graph-title-element');
-                    titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${state.customName}」の生涯キャッシュフロー`;
+                    document.getElementById('graph-title-element').innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${state.customName}」の生涯キャッシュフロー`;
                 }
-                
                 localStorage.setItem('gemkin_active_scenario', scenario);
                 return true;
             } catch(e) {
@@ -1389,194 +1447,81 @@
         }
 
         function applyScenario(scenario) {
-            const otherContainer = document.getElementById('other-income-container');
-            const stageContainer = document.getElementById('stage-container');
-            const incContainer = document.getElementById('income-container');
-            const expContainer = document.getElementById('expense-container');
-            const assetContainer = document.getElementById('dynamic-assets-container');
+            document.getElementById('other-income-container').innerHTML = '';
+            document.getElementById('stage-container').innerHTML = '';
+            document.getElementById('income-container').innerHTML = '';
+            document.getElementById('expense-container').innerHTML = '';
+            document.getElementById('dynamic-assets-container').innerHTML = '';
 
-            otherContainer.innerHTML = '';
-            stageContainer.innerHTML = '';
-            incContainer.innerHTML = '';
-            expContainer.innerHTML = '';
-            assetContainer.innerHTML = '';
-
-            const titleEl = document.getElementById('graph-title-element');
             const currentName = document.getElementById('scenario-input').value || 'カスタム階層';
-            titleEl.innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${currentName}」の生涯キャッシュフロー`;
+            document.getElementById('graph-title-element').innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${currentName}」の生涯キャッシュフロー`;
 
             if (loadFromLocalStorage(scenario)) {
                 runSimulation();
                 return;
             }
 
-            // ==========================================
-            // ◆ 旧野村総合研究所 5階層の防衛数値（円換算・万単位）
-            // ==========================================
             if (scenario === 'nri_ultra_rich') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 50;
-                document.getElementById('years').value = 90;
-                document.getElementById('salary-amount').value = 3500;
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 15000;
-                document.getElementById('rate-cash').value = 0.2;
-                addOtherIncomeRow("事業オーナー配当金", 2000, 50, 90);
-                addStageRow(3200, 70);   
-                addStageRow(2200, 90);  
-                addIncomeRow("海外不動産売却益", 65, 10000, "cash");
-                addExpenseRow("資産管理法人設立費用", 55, 3000);
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 50; document.getElementById('years').value = 90;
+                document.getElementById('salary-amount').value = 3500; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 15000; document.getElementById('rate-cash').value = 0.2;
+                addOtherIncomeRow("事業オーナー配当金", 2000, 50, 90); addStageRow(3200, 70); addStageRow(2200, 90); addIncomeRow("海外不動産売却益", 65, 10000, "cash"); addExpenseRow("資産管理法人設立費用", 55, 3000);
                 addAssetElement({ name: "米国プライベートエクイティ", type: "stocks", initAmt: 20000, rate: 8.0, yearAmt: 1000, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 85 });
                 addAssetElement({ name: "コアインデックス投信", type: "trust", initAmt: 15000, rate: 5.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 91 });
-
             } else if (scenario === 'nri_rich') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 45;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 1800;
-                document.getElementById('salary-limit').value = 60;
-                document.getElementById('init-cash').value = 5000;
-                document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("未公開株配当等", 300, 45, 85);
-                addStageRow(1600, 65);
-                addStageRow(1100, 85);
-                addIncomeRow("役員退職慰労金", 60, 5000, "trust");
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 45; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 1800; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 5000; document.getElementById('rate-cash').value = 0.1;
+                addOtherIncomeRow("未公開株配当等", 300, 45, 85); addStageRow(1600, 65); addStageRow(1100, 85); addIncomeRow("役員退職慰労金", 60, 5000, "trust");
                 addAssetElement({ name: "欧米高配当個別株", type: "stocks", initAmt: 6000, rate: 6.0, yearAmt: 200, monthAmt: 0, payout: "cashout", startAge: 45, endAge: 80 });
                 addAssetElement({ name: "世界分散ファンド", type: "trust", initAmt: 8000, rate: 4.5, yearAmt: 300, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 86 });
-
             } else if (scenario === 'nri_sub_rich') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 40;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 1000;
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 2500;
-                document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("厚生・国民年金", 220, 65, 85);
-                addStageRow(800, 65);  
-                addStageRow(580, 85);   
-                addIncomeRow("大企業定年退職金", 65, 2000, "trust");
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 40; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 1000; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 2500; document.getElementById('rate-cash').value = 0.1;
+                addOtherIncomeRow("厚生・国民年金", 220, 65, 85); addStageRow(800, 65); addStageRow(580, 85); addIncomeRow("大企業定年退職金", 65, 2000, "trust");
                 addAssetElement({ name: "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
                 addAssetElement({ name: "優良インデックス投信", type: "trust", initAmt: 3500, rate: 4.0, yearAmt: 120, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 86 });
-
             } else if (scenario === 'nri_upper_mass') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 35;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 700;
-                document.getElementById('salary-limit').value = 60;
-                document.getElementById('init-cash').value = 1500;
-                document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("基礎・厚生年金", 180, 65, 85);
-                addStageRow(550, 60);
-                addStageRow(420, 85);
-                addIncomeRow("中小企業退職金", 60, 1000, "cash");
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 35; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 700; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 1500; document.getElementById('rate-cash').value = 0.1;
+                addOtherIncomeRow("基礎・厚生年金", 180, 65, 85); addStageRow(550, 60); addStageRow(420, 85); addIncomeRow("中小企業退職金", 60, 1000, "cash");
                 addAssetElement({ name: "つみたてオルカン投信", type: "trust", initAmt: 2000, rate: 4.0, yearAmt: 0, monthAmt: 10, startAge: 35, endAge: 86 });
-
             } else if (scenario === 'nri_mass') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 30;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 500;
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 600;
-                document.getElementById('rate-cash').value = 0.05;
-                addOtherIncomeRow("老齢基礎年金", 130, 65, 85);
-                addStageRow(420, 65);
-                addStageRow(320, 85);
-                addIncomeRow("小規模退職一時金", 65, 500, "cash");
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 30; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 500; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 600; document.getElementById('rate-cash').value = 0.05;
+                addOtherIncomeRow("老齢基礎年金", 130, 65, 85); addStageRow(420, 65); addStageRow(320, 85); addIncomeRow("小規模退職一時金", 65, 500, "cash");
                 addAssetElement({ name: "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 86 });
-
-            // ==========================================
-            // ◆ 現代日本 新・生き方多様化 6階層の防衛数値（万単位）
-            // ==========================================
             } else if (scenario === 'live_power_couple') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 32;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 1600; 
-                document.getElementById('salary-limit').value = 60;
-                document.getElementById('init-cash').value = 1500;
-                document.getElementById('rate-cash').value = 0.1;
-                addStageRow(900, 60); 
-                addStageRow(500, 85);
-                addExpenseRow("タワマン大規模修繕積立金増額", 45, 500);
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 32; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 1600; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 1500; document.getElementById('rate-cash').value = 0.1;
+                addStageRow(900, 60); addStageRow(500, 85); addExpenseRow("タワマン大規模修繕積立金増額", 45, 500);
                 addAssetElement({ name: "新NISA・夫婦満額オルカン積立", type: "trust", initAmt: 1000, rate: 6.5, yearAmt: 0, monthAmt: 30, startAge: 32, endAge: 86 });
-                addAssetElement({ name: "サテライト米国個別株", type: "stocks", initAmt: 500, rate: 8.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 32, textEndAge: 55 });
-
+                addAssetElement({ name: "サテライト米国個別株", type: "stocks", initAmt: 500, rate: 8.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 55 });
             } else if (scenario === 'live_fire') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 42;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 0; 
-                document.getElementById('salary-limit').value = 42;
-                document.getElementById('init-cash').value = 1000;
-                document.getElementById('rate-cash').value = 0.05;
-                addOtherIncomeRow("国民年金（将来受給）", 65, 65, 85);
-                addStageRow(300, 65); 
-                addStageRow(240, 85);
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 42; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 0; document.getElementById('salary-limit').value = 42; document.getElementById('init-cash').value = 1000; document.getElementById('rate-cash').value = 0.05;
+                addOtherIncomeRow("国民年金（将来受給）", 65, 65, 85); addStageRow(300, 65); addStageRow(240, 85);
                 addAssetElement({ name: "高配当株ポートフォリオ", type: "stocks", initAmt: 4000, rate: 4.5, yearAmt: 0, monthAmt: 0, payout: "cashout", startAge: 42, endAge: 86 });
                 addAssetElement({ name: "新NISA・インデックスコア", type: "trust", initAmt: 2000, rate: 5.5, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 42, endAge: 86 });
-
             } else if (scenario === 'live_middle_mainstream') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 35;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 650; 
-                document.getElementById('salary-limit').value = 60;
-                document.getElementById('init-cash').value = 400;
-                document.getElementById('rate-cash').value = 0.05;
-                addOtherIncomeRow("厚生年金・夫婦合算", 220, 65, 85);
-                addStageRow(480, 60); 
-                addStageRow(300, 85); 
-                addIncomeRow("定年時の会社退職金", 60, 1500, "cash");
-                addExpenseRow("子供の大学進学費用（私立文系）", 50, 500);
-                addExpenseRow("住宅リフォーム・修繕コスト", 65, 300);
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 35; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 650; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 400; document.getElementById('rate-cash').value = 0.05;
+                addOtherIncomeRow("厚生年金・夫婦合算", 220, 65, 85); addStageRow(480, 60); addStageRow(300, 85); addIncomeRow("定年時の会社退職金", 60, 1500, "cash"); addExpenseRow("子供の大学進学費用（私立文系）", 50, 500); addExpenseRow("住宅リフォーム・修繕コスト", 65, 300);
                 addAssetElement({ name: "新NISA・手堅いインデックス積立", type: "trust", initAmt: 200, rate: 5.0, yearAmt: 0, monthAmt: 5, startAge: 35, endAge: 86 });
-
             } else if (scenario === 'live_children_room') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 38;
-                document.getElementById('years').value = 80;
-                document.getElementById('salary-amount').value = 450; 
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 1000;
-                document.getElementById('rate-cash').value = 0.05;
-                addStageRow(80, 65); 
-                addStageRow(200, 85); 
-                addExpenseRow("実家の相続登記・固定資産税清算", 65, 200);
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 38; document.getElementById('years').value = 80;
+                document.getElementById('salary-amount').value = 450; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 1000; document.getElementById('rate-cash').value = 0.05;
+                addStageRow(80, 65); addStageRow(200, 85); addExpenseRow("実家の相続登記・固定資産税清算", 65, 200);
                 addAssetElement({ name: "限界聖域・全力特定インデックス", type: "trust", initAmt: 2000, rate: 6.0, yearAmt: 200, monthAmt: 10, startAge: 38, endAge: 85 });
-
             } else if (scenario === 'live_local_startup') {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 38;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 300; 
-                document.getElementById('salary-limit').value = 65;
-                document.getElementById('init-cash').value = 500;
-                document.getElementById('rate-cash').value = 0.05;
-                addStageRow(240, 65); 
-                addStageRow(180, 85);
-                addIncomeRow("ローカルビジネス小規模M&A売却益", 50, 3000, "trust");
-                addExpenseRow("古民家リノベーション工事費用", 39, 400);
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 38; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 300; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 500; document.getElementById('rate-cash').value = 0.05;
+                addStageRow(240, 65); addStageRow(180, 85); addIncomeRow("ローカルビジネス小規模M&A売却益", 50, 3000, "trust"); addExpenseRow("古民家リノベーション工事費用", 39, 400);
                 addAssetElement({ name: "新NISA（オルカン自動積立）", type: "trust", initAmt: 300, rate: 5.0, yearAmt: 0, monthAmt: 3, startAge: 38, endAge: 85 });
-
             } else {
-                document.getElementById('start-year').value = 2026;
-                document.getElementById('start-age').value = 28;
-                document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 550; 
-                document.getElementById('salary-limit').value = 60;
-                document.getElementById('init-cash').value = 200;
-                document.getElementById('rate-cash').value = 0.05;
-                addOtherIncomeRow("老齢厚生年金", 160, 65, 85);
-                addStageRow(380, 60); 
-                addStageRow(260, 85);
-                addExpenseRow("地元工務店でのローコストハウス頭金", 30, 400);
-                addExpenseRow("子供2人の高校・大学進学費用", 48, 800);
+                document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 28; document.getElementById('years').value = 85;
+                document.getElementById('salary-amount').value = 550; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 200; document.getElementById('rate-cash').value = 0.05;
+                addOtherIncomeRow("老齢厚生年金", 160, 65, 85); addStageRow(380, 60); addStageRow(260, 85); addExpenseRow("地元工務店でのローコストハウス頭金", 30, 400); addExpenseRow("子供2人の高校・大学進学費用", 48, 800);
                 addAssetElement({ name: "地元のJA定期貯金・国債", type: "bonds", initAmt: 100, rate: 1.5, yearAmt: 10, monthAmt: 0, payout: "reinvest", startAge: 28, endAge: 85 });
             }
-
             runSimulation();
         }
 
@@ -1769,7 +1714,6 @@
                 metal: { name: '貴金属', data: simRecords.map(r => r.metal) },
                 bonds: { name: '債券', data: simRecords.map(r => r.bonds) }
             };
-
             renderTableAndChart(labels, aggregatedTemplates, totalData, simRecords);
         }
 
@@ -1802,7 +1746,6 @@
                     fill: false, tension: 0.15, borderWidth: 2, pointRadius: labels.length > 30 ? 0.5 : 2.5
                 };
             });
-
             datasets.push({ label: '総資産', data: totalData, borderColor: '#0f172a', backgroundColor: '#0f172a', borderWidth: 4, fill: false, tension: 0.15, pointRadius: labels.length > 30 ? 1 : 3 });
 
             chartInstance = new Chart(ctx, {
@@ -1819,10 +1762,7 @@
         function transitionToDwz() {
             playDissolveSound();
             const tooltipEl = document.getElementById('chart-tooltip');
-            if (tooltipEl) {
-                tooltipEl.style.opacity = '0';
-                tooltipEl.style.pointerEvents = 'none';
-            }
+            if (tooltipEl) { tooltipEl.style.opacity = '0'; tooltipEl.style.pointerEvents = 'none'; }
             const overlay = document.getElementById('transition-overlay');
             const canvas = document.getElementById('dissolve-canvas');
             const ctx = canvas.getContext('2d');
@@ -1830,30 +1770,23 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             particles = [];
-            for (let i = 0; i < 150; i++) {
-                particles.push(new GoldGrain(canvas.width, canvas.height));
-            }
+            for (let i = 0; i < 150; i++) { particles.push(new GoldGrain(canvas.width, canvas.height)); }
 
             if (dissolveAnimId) cancelAnimationFrame(dissolveAnimId);
             animateDissolve(canvas, ctx);
-            overlay.classList.remove('pointer-events-none');
-            overlay.style.opacity = '1';
+            overlay.classList.remove('pointer-events-none'); overlay.style.opacity = '1';
 
             setTimeout(() => {
                 runSimulation();
-                
                 if (!lastSimulationData || lastSimulationData.length === 0) {
                     showToast("有効なシミュレーションデータがありません。", "error");
-                    overlay.style.opacity = '0';
-                    overlay.classList.add('pointer-events-none');
-                    cancelAnimationFrame(dissolveAnimId);
-                    return;
+                    overlay.style.opacity = '0'; overlay.classList.add('pointer-events-none');
+                    cancelAnimationFrame(dissolveAnimId); return;
                 }
 
                 const currentAge = parseInt(document.getElementById('start-age').value) || 40;
                 const endAge = parseInt(document.getElementById('years').value) || 85;
                 const yearsRemaining = Math.max(endAge - currentAge, 1);
-
                 const finalRecord = lastSimulationData[lastSimulationData.length - 1];
                 const totalRemainingYen = finalRecord.total; 
 
@@ -1893,9 +1826,7 @@
                     }
                 }
 
-                let advicePrefixHtml = '';
-                let dwzDisclaimer = '';
-
+                let advicePrefixHtml = ''; let dwzDisclaimer = '';
                 if (cashShortageAge !== null) {
                     advicePrefixHtml = `
                         <div class="bg-rose-950/80 border border-rose-500/40 rounded-xl p-4 mb-4 text-rose-200 font-bold text-xs sm:text-sm flex items-start gap-2">
@@ -1909,12 +1840,8 @@
                 if (totalRemainingYen < 0) {
                     let bankruptAge = endAge;
                     for (let i = 0; i < lastSimulationData.length; i++) {
-                        if (lastSimulationData[i].total < 0) {
-                            bankruptAge = currentAge + lastSimulationData[i].index;
-                            break;
-                        }
+                        if (lastSimulationData[i].total < 0) { bankruptAge = currentAge + lastSimulationData[i].index; break; }
                     }
-
                     const deficitAmt = Math.abs(totalRemainingYen);
                     const reduceSpendPerYear = Math.round(deficitAmt / yearsRemaining);
                     const reduceSpendPerMonth = Math.round(reduceSpendPerYear / 12);
@@ -1928,10 +1855,7 @@
                         （すなわち、月々約 <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(reduceSpendPerMonth)}／月</span>）
                         【減らさなければ】なりません。
                     `;
-
-                    if (adviceBox) {
-                        adviceBox.innerHTML = `「兵糧が最期を前に尽きるは痛恨の極み。生活の日々の支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`;
-                    }
+                    if (adviceBox) { adviceBox.innerHTML = `「兵糧が最期を前に尽きるは痛恨の極み。生活の日々の支出や高齢期の臨時コストを削減するか、年利運用を向上させる防御陣を今すぐ敷かれよ。」`; }
                 } else {
                     const additionalSpendPerYear = Math.round(totalRemainingYen / yearsRemaining);
                     const additionalSpendPerMonth = Math.round(additionalSpendPerYear / 12);
@@ -1946,38 +1870,30 @@
                         （すなわち <span class="text-yellow-400 font-black text-xl px-1 bg-yellow-400/10 rounded">${formatAssetValue(additionalSpendPerMonth)}／月</span>）
                         【多く】使わなければなりません。
                     `;
-
-                    if (adviceBox) {
-                        adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは人生の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。生きるを尽くせ！」`;
-                    }
+                    if (adviceBox) { adviceBox.innerHTML = `「富を抱いたまま墓場へ入るは人生の恥辱。若き日に経験という名の投資へ配分を移し、人生の効用を極大化させよ。生きるを尽くせ！」`; }
                 }
 
                 document.getElementById('simulator-view').classList.add('hidden');
                 document.getElementById('dwz-view').classList.remove('hidden');
                 document.getElementById('dwz-view').classList.add('flex');
-                
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
                 setTimeout(() => {
-                    overlay.style.opacity = '0';
-                    overlay.classList.add('pointer-events-none');
+                    overlay.style.opacity = '0'; overlay.classList.add('pointer-events-none');
                     cancelAnimationFrame(dissolveAnimId);
                     showToast("💀 ダイ・ウィズ・ゼロ 判定を展開しました。");
                 }, 400);
-
             }, 1200);
         }
 
         function backToSimulator() {
-            document.getElementById('dwz-view').classList.remove('flex');
-            document.getElementById('dwz-view').classList.add('hidden');
+            document.getElementById('dwz-view').classList.remove('flex'); document.getElementById('dwz-view').classList.add('hidden');
             document.getElementById('simulator-view').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function importCSV(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const file = event.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 const text = e.target.result;
@@ -1987,8 +1903,7 @@
                     let imported = [];
                     for(let i=1; i<lines.length; i++) {
                         if (!lines[i].trim()) continue;
-                        const cols = parseCols(lines[i]);
-                        if(cols.length < 8) continue;
+                        const cols = parseCols(lines[i]); if(cols.length < 8) continue;
                         imported.push({ yearLabel: cols[0], cash: parseInt(cols[1])||0, realestate: parseInt(cols[2])||0, stocks: parseInt(cols[3])||0, trust: parseInt(cols[4])||0, metal: parseInt(cols[5])||0, bonds: parseInt(cols[6])||0, total: parseInt(cols[7])||0 });
                     }
                     if (imported.length === 0) return;
@@ -2025,13 +1940,9 @@
             
             window.addEventListener('resize', () => {
                 const canvas = document.getElementById('dissolve-canvas');
-                if (canvas) {
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
-                }
+                if (canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
             });
 
-            // 💡使い方モーダルの開閉制御ロジック（イベント委譲による絶対防衛陣形）
             const modal = document.getElementById('use-modal');
             const modalContent = document.getElementById('use-modal-content');
 
@@ -2040,21 +1951,14 @@
                     modal.classList.remove('hidden');
                     setTimeout(() => {
                         modal.classList.remove('opacity-0');
-                        modalContent.classList.remove('scale-95');
-                        modalContent.classList.add('scale-100');
+                        modalContent.classList.remove('scale-95'); modalContent.classList.add('scale-100');
                     }, 10);
                 };
-
                 const closeModal = () => {
                     modal.classList.add('opacity-0');
-                    modalContent.classList.remove('scale-100');
-                    modalContent.classList.add('scale-95');
-                    setTimeout(() => {
-                        modal.classList.add('hidden');
-                    }, 300);
+                    modalContent.classList.remove('scale-100'); modalContent.classList.add('scale-95');
+                    setTimeout(() => modal.classList.add('hidden'), 300);
                 };
-
-                // body全体でクリックを監視し、i18n置換後のボタンも確実に捕捉する
                 document.body.addEventListener('click', (e) => {
                     if (e.target.closest('#how-to-use-btn')) { openModal(); }
                     if (e.target.closest('#close-use-modal') || e.target.closest('#close-use-modal-btn')) { closeModal(); }
