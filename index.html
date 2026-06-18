@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&family=Cinzel:wght@500;700&family=Shippori+Mincho:wght@500;700&display=swap](https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&family=Cinzel:wght@500;700&family=Shippori+Mincho:wght@500;700&display=swap)');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&family=Noto+Sans+JP:wght=300;400;500;700&family=Cinzel:wght=500;700&family=Shippori+Mincho:wght=500;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -43,6 +43,35 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+
+
+/* 💡吹き出し内部の極小電球を7色へ美しく循環させるグラデーション定義 */
+        @keyframes plipRainbowText {
+            0%   { color: #ff0055; text-shadow: 0 0 4px rgba(255, 0, 85, 0.3); }
+            14%  { color: #ff5500; text-shadow: 0 0 4px rgba(255, 85, 0, 0.3); }
+            28%  { color: #ffcc00; text-shadow: 0 0 4px rgba(255, 204, 0, 0.3); }
+            42%  { color: #00ff66; text-shadow: 0 0 4px rgba(0, 255, 102, 0.3); }
+            56%  { color: #00ccff; text-shadow: 0 0 4px rgba(0, 204, 255, 0.3); }
+            70%  { color: #3333ff; text-shadow: 0 0 4px rgba(51, 51, 255, 0.3); }
+            84%  { color: #9900ff; text-shadow: 0 0 4px rgba(153, 0, 255, 0.3); }
+            100% { color: #ff0055; text-shadow: 0 0 4px rgba(255, 0, 85, 0.3); }
+        }
+        .plip-rainbow-text-bulb {
+            animation: plipRainbowText 7s linear infinite;
+        }
+
+        /* 吹き出し全体の静かな浮遊挙動定義 */
+        @keyframes plipNobleFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.95; }
+            50% { transform: translateX(-50%) translateY(3px); opacity: 1; }
+        }
+        .plip-noble-bubble {
+            animation: plipNobleFloat 3s infinite ease-in-out;
+        }
+
+
+
+
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased transition-all duration-300">
@@ -81,101 +110,98 @@
             <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
 
+                    <div class="relative flex items-center">
+                        <div onclick="runSimulation(); showToast('⚡️ 未来の資産が再計算されました！')" class="relative cursor-pointer group select-none flex items-center justify-center transition-transform duration-200 hover:scale-105 active:scale-95" title="クリックしてシミュレーションを実行">
+                            
+                            <div class="relative w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(236,72,153,0.4)] transition-shadow duration-300">
+                                
+                                <style>
+                                    @keyframes rainbowGlow {
+                                        0% { stop-color: #ff007f; }    /* ピンク */
+                                        14% { stop-color: #ff0000; }   /* 赤 */
+                                        28% { stop-color: #ff7f00; }   /* オレンジ */
+                                        42% { stop-color: #ffff00; }   /* 黄 */
+                                        56% { stop-color: #00ff00; }   /* 緑 */
+                                        70% { stop-color: #00ffff; }   /* シアン */
+                                        84% { stop-color: #0000ff; }   /* 青 */
+                                        100% { stop-color: #ff007f; }  /* ピンクに戻る */
+                                    }
+                                    .rainbow-stop-1 { animation: rainbowGlow 8s linear infinite; }
+                                    .rainbow-stop-2 { animation: rainbowGlow 8s linear infinite; animation-delay: -4s; }
+                                </style>
 
+                                <div class="absolute top-1 text-[10px] font-black tracking-widest uppercase select-none z-20" style="font-family: 'Cinzel', sans-serif;">
+                                    <span style="background: linear-gradient(to right, #ff007f, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); animate-pulse">
+                                        PLIP
+                                    </span>
+                                </div>
+                                
+                                <svg class="w-9 h-9 z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="rainbowBulbGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                            <stop offset="0%" class="rainbow-stop-1" />
+                                            <stop offset="100%" class="rainbow-stop-2" />
+                                        </linearGradient>
+                                    </defs>
+                                    
+                                    <path d="M50 15C33.4 15 20 28.4 20 45C20 55.3 25.2 64.3 33 69.7V80C33 81.7 34.3 83 36 83H64C65.7 83 67 81.7 67 80V69.7C74.8 64.3 80 55.3 80 45C80 28.4 66.6 15 50 15ZM44 78V73H56V78H44ZM42 68V63H58V68H42ZM50 23C59.4 23 67 30.6 67 40C67 41.1 66.1 42 65 42C63.9 42 63 41.1 63 40C63 32.8 57.2 27 50 27C48.9 27 48 26.1 48 25C48 23.9 48.9 23 50 23Z" fill="url(#rainbowBulbGrad)" style="filter: drop-shadow(0 0 4px url(#rainbowBulbGrad));" />
+                                    
+                                    <path d="M68 15L46 45H60L38 82L48 51H34L68 15Z" fill="#ffeb3b" style="filter: drop-shadow(0 0 8px #ffeb3b);" class="animate-pulse" />
+                                </svg>
+                                
+                                <div class="absolute inset-0 bg-white/[0.03] group-hover:bg-white/[0.08] transition-colors duration-300"></div>
+                            </div>
 
-<div class="relative flex items-center">
-    <div onclick="runSimulation(); showToast('⚡️ 未来の資産が再計算されました！')" class="relative cursor-pointer group select-none flex items-center justify-center transition-transform duration-200 hover:scale-105 active:scale-95" title="クリックしてシミュレーションを実行">
-        
-        <div class="relative w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/10 overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_25px_rgba(236,72,153,0.4)] transition-shadow duration-300">
-            
-            <style>
-                @keyframes rainbowGlow {
-                    0% { stop-color: #ff007f; }    /* ピンク */
-                    14% { stop-color: #ff0000; }   /* 赤 */
-                    28% { stop-color: #ff7f00; }   /* オレンジ */
-                    42% { stop-color: #ffff00; }   /* 黄 */
-                    56% { stop-color: #00ff00; }   /* 緑 */
-                    70% { stop-color: #00ffff; }   /* シアン */
-                    84% { stop-color: #0000ff; }   /* 青 */
-                    100% { stop-color: #ff007f; }  /* ピンクに戻る */
-                }
-                .rainbow-stop-1 { animation: rainbowGlow 8s linear infinite; }
-                .rainbow-stop-2 { animation: rainbowGlow 8s linear infinite; animation-delay: -4s; }
-            </style>
+                            <div class="absolute top-[62px] left-1/2 plip-noble-bubble bg-[#151d30] border border-amber-500/40 text-[10px] font-black tracking-widest px-3 py-1.5 rounded-lg text-amber-400 whitespace-nowrap shadow-[0_10px_25px_rgba(0,0,0,0.5)] pointer-events-none select-none z-50 flex items-center justify-center gap-1.5">
+                              
 
-
-<div class="absolute top-1 text-[10px] font-black tracking-widest uppercase select-none z-20" style="font-family: 'Cinzel', sans-serif;">
-    <span style="background: linear-gradient(to right, #ff007f, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); animate-pulse">
-        PLIP
-    </span>
-</div>
-<svg class="w-9 h-9 z-10" viewBox="0 0 100 100" fill="none" ...>
-
-
-            <svg class="w-9 h-9 z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="rainbowBulbGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                        <stop offset="0%" class="rainbow-stop-1" />
-                        <stop offset="100%" class="rainbow-stop-2" />
-                    </linearGradient>
-                </defs>
-                
-                <path d="M50 15C33.4 15 20 28.4 20 45C20 55.3 25.2 64.3 33 69.7V80C33 81.7 34.3 83 36 83H64C65.7 83 67 81.7 67 80V69.7C74.8 64.3 80 55.3 80 45C80 28.4 66.6 15 50 15ZM44 78V73H56V78H44ZM42 68V63H58V68H42ZM50 23C59.4 23 67 30.6 67 40C67 41.1 66.1 42 65 42C63.9 42 63 41.1 63 40C63 32.8 57.2 27 50 27C48.9 27 48 26.1 48 25C48 23.9 48.9 23 50 23Z" fill="url(#rainbowBulbGrad)" style="filter: drop-shadow(0 0 4px url(#rainbowBulbGrad));" />
-                
-                <path d="M68 15L46 45H60L38 82L48 51H34L68 15Z" fill="#ffeb3b" style="filter: drop-shadow(0 0 8px #ffeb3b);" class="animate-pulse" />
-            </svg>
-            
-            <div class="absolute inset-0 bg-white/[0.03] group-hover:bg-white/[0.08] transition-colors duration-300"></div>
-        </div>
-
-        <div class="hidden sm:flex absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-[0_4px_12px_rgba(219,39,119,0.3)] items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
-            <span class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-purple-600"></span>
-            <span data-i18n="bubble_start_desktop">試算開始！</span>
-        </div>
-
-        <div class="sm:hidden absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-[0_4px_12px_rgba(219,39,119,0.3)] flex items-center select-none animate-bounce z-50" style="animation-duration: 2s;">
-            <span class="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-b-[6px] border-b-purple-600"></span>
-            <span data-i18n="bubble_start_mobile">試算開始！</span>
-        </div>
-    </div>
-</div>
-
-
+<span class="absolute bottom-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#151d30] border-t border-l border-amber-500/40 transform rotate-45 translate-y-[5px]"></span>                            
+                                <span class="relative inline-block w-4 h-4 align-middle">
+                                    <i class="fa-solid fa-lightbulb plip-rainbow-text-bulb text-[11px] absolute left-0 top-0.5"></i>
+                                    <i class="fa-solid fa-bolt text-yellow-300 text-[8px] absolute right-0 -top-0.5 drop-shadow-[0_0_2px_#fde047]"></i>
+                                </span>
+                                <span>PLIP !!</span>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="ml-16 sm:ml-0">
                         <div class="flex items-center gap-3 flex-wrap">
-
-
-<h1 class="text-xl sm:text-2xl font-black text-white flex items-center flex-wrap gap-2" style="font-family: 'Cinzel', 'Shippori Mincho', serif; tracking-content: 0.15em; letter-spacing: 0.06em;">
-    <span data-i18n="title_simulator" class="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent font-extrabold drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">資産・ライフシミュレータ【尽生：Jin-Sei】</span>
-    <span class="text-xs sm:text-sm text-amber-400 font-black bg-amber-400/10 px-2.5 py-1 rounded border border-amber-500/20 font-sans letter-spacing-normal" data-i18n="badge_dwz">（💀DIE WITH ZERO判定可能！）</span>
-</h1>
-
-
-                         <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 px-1 py-0.5 shadow-sm">
-    <i class="fa-solid fa-coins text-slate-400 text-xs ml-1 mr-1"></i>
-    <select id="currencySwitcher" onchange="switchCurrencySimulator(this.value)" class="bg-transparent text-slate-200 text-xs font-bold focus:outline-none cursor-pointer pr-1 py-0.5">
-        <option value="jpy" selected>🇯🇵 JPY (¥)</option>
-        <option value="usd">🇺🇸 USD ($)</option>
-        <option value="eur">🇪🇺 EUR (€)</option>
-        <option value="cny">🇨🇳 CNY (元)</option>
-    </select>
-</div>
+                            <h1 class="text-xl sm:text-2xl font-black text-white flex items-center flex-wrap gap-2" style="font-family: 'Cinzel', 'Shippori Mincho', serif; tracking-content: 0.15em; letter-spacing: 0.06em;">
+                                <span data-i18n="title_simulator" class="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent font-extrabold drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">資産・ライフシミュレータ【尽生：Jin-Sei】</span>
+                                <span class="text-xs sm:text-sm text-amber-400 font-black bg-amber-400/10 px-2.5 py-1 rounded border border-amber-500/20 font-sans letter-spacing-normal" data-i18n="badge_dwz">（💀DIE WITH ZERO判定可能！）</span>
+                                
+                                <button id="how-to-use-btn" class="bg-slate-800 hover:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 shadow-md select-none border border-slate-700 transform active:scale-95 ml-1">
+                                    <i class="fas fa-question-circle text-amber-400"></i> 使い方？
+                                </button>
+                            </h1>
                         </div>
-                        <p class="text-slate-400 text-xs sm:text-sm mt-0.5 font-light" data-i18n="header_description">
-                            人生の軍略盤 — 日々の所得と生涯の生活費がリアルタイムに現金と連動する、あなただけの「人生の設計図」
-                        </p>
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 mt-0.5">
+                            <p class="text-slate-400 text-xs sm:text-sm font-light" data-i18n="header_description">
+                                人生の軍略盤 — 日々の所得と生涯の生活費がリアルタイムに現金と連動する、あなただけの「人生の設計図」
+                            </p>
+                            <div class="flex items-center bg-slate-800 rounded-lg border border-slate-700 px-1 py-0.5 shadow-sm w-fit shrink-0">
+                                <i class="fa-solid fa-coins text-slate-400 text-xs ml-1 mr-1"></i>
+                                <select id="currencySwitcher" onchange="switchCurrencySimulator(this.value)" class="bg-transparent text-slate-200 text-xs font-bold focus:outline-none cursor-pointer pr-1 py-0.5">
+                                    <option value="jpy" selected>🇯🇵 JPY (¥)</option>
+                                    <option value="usd">🇺🇸 USD ($)</option>
+                                    <option value="eur">🇪🇺 EUR (€)</option>
+                                    <option value="cny">🇨🇳 CNY (元)</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60 text-xs">
                     <div class="flex items-center gap-1.5 relative">
                         <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-user-tie text-amber-400 mr-1"></i><span data-i18n="label_character_selection">人生の雛形：</span></span>
+                        
                         <div class="flex items-center bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
                             <input type="text" id="scenario-input" value="準富裕層" oninput="handleUserTypeInput()" class="bg-transparent text-slate-100 px-3 py-1.5 font-bold focus:outline-none text-xs w-36">
-                          
-
-<select id="scenario-selector" onchange="handleScenarioSelect(this.value)" class="bg-slate-800 text-slate-400 border-l border-slate-700 focus:outline-none cursor-pointer py-1.5 text-xs px-1">
+                            
+                            <select id="scenario-selector" onchange="handleScenarioSelect(this.value)" class="bg-slate-800 text-slate-400 border-l border-slate-700 focus:outline-none cursor-pointer py-1.5 text-xs px-1">
                                 <option value="custom" data-i18n="opt_custom_input">— 自由入力 —</option>
                                 <option value="nri_ultra_rich">【資産】超富裕層（5億円以上）</option>
                                 <option value="nri_rich">【資産】富裕層（1億〜5億円）</option>
@@ -189,11 +215,9 @@
                                 <option value="live_local_startup">【生活】地方移住・脱サラローカル起業層</option>
                                 <option value="live_mild_yankee">【生活】地方マイルドヤンキー（堅実地元定住）</option>
                             </select>
-
-
-
                         </div>
                     </div>
+                    
                     <div class="flex items-center gap-1 border-t sm:border-t-0 sm:border-l border-slate-700 pt-2.5 sm:pt-0 sm:pl-3">
                         <span class="text-slate-400 font-bold whitespace-nowrap"><i class="fa-solid fa-earth-asia text-blue-400 mr-1"></i><span data-i18n="label_macro_economic_worldline">マクロ経済世界線：</span></span>
                         
@@ -312,6 +336,7 @@
                             <span class="font-bold text-rose-700 text-xs flex items-center gap-1.5">
                                 <i class="fa-solid fa-circle-minus text-rose-500"></i> <span data-i18n="title_living_costs">💸 年間生活費（人生の出費）</span>
                             </span>
+                            <span class="text-[10px] text-slate-400">数値を変更するだけで自動・即時計算</span>
                             <button type="button" onclick="addStageRow()" class="px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold rounded hover:bg-rose-100 transition-colors" data-i18n="btn_add_stage">
                                 ＋ ステージ追加
                             </button>
@@ -463,74 +488,55 @@
         
         <div class="max-w-3xl w-full bg-slate-900/90 border-2 border-amber-500/30 rounded-3xl p-6 sm:p-10 shadow-[0_0_50px_rgba(245,158,11,0.15)] flex flex-col gap-6 relative z-10 animate-fade-in">
 
+            <div class="flex items-center justify-between border-b border-amber-500/20 pb-4 max-sm:flex-col max-sm:items-start max-sm:gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">💀</span>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-amber-400" data-i18n="dwz_alert_title">
+                            DIE WITH ZERO !<br>— 生涯資金・完全使い切り警告 —
+                        </h2>
+                        <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5" data-i18n="dwz_strategy_sub_label">The Army Counselor's Ultimate Strategy</p>
+                    </div>
+                </div>
 
+                <div class="flex flex-col gap-2 shrink-0 items-end max-sm:w-full">
+                    <button onclick="backToSimulator()" class="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-colors flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_return_to_sim">シミュレータ（尽生）に戻る</span>
+                    </button>
 
-<div class="flex items-center justify-between border-b border-amber-500/20 pb-4 max-sm:flex-col max-sm:items-start max-sm:gap-4">
-            <div class="flex items-center gap-3">
-                <span class="text-3xl">💀</span>
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-amber-400" data-i18n="dwz_alert_title">
-                        DIE WITH ZERO !<br>— 生涯資金・完全使い切り警告 —
-                    </h2>
-                    <p class="text-slate-400 text-xs uppercase tracking-widest mt-0.5" data-i18n="dwz_strategy_sub_label">The Army Counselor's Ultimate Strategy</p>
+                    <a href="https://hiro-seki-tech.github.io/inheritance-sim/" class="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-purple-300 hover:text-purple-200 rounded-xl text-xs font-bold border border-slate-700 hover:border-purple-900/60 transition-colors flex items-center justify-center gap-1 group" style="text-decoration: none;">
+                        <span>このまま相続する（宝均へ）</span>
+                        <span class="transform group-hover:translate-x-0.5 transition-transform duration-200">→</span>
+                    </a>
                 </div>
             </div>
 
-            <div class="flex flex-col gap-2 shrink-0 items-end max-sm:w-full">
-                
-                <button onclick="backToSimulator()" class="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-colors flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_return_to_sim">シミュレータ（尽生）に戻る</span>
-                </button>
-
-                <a href="https://hiro-seki-tech.github.io/inheritance-sim/" class="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-purple-300 hover:text-purple-200 rounded-xl text-xs font-bold border border-slate-700 hover:border-purple-900/60 transition-colors flex items-center justify-center gap-1 group" style="text-decoration: none;">
-                    <span>このまま相続する（宝均へ）</span>
-                    <span class="transform group-hover:translate-x-0.5 transition-transform duration-200">→</span>
-                </a>
-
-            </div>
-        </div>
-
-
-
-
             <div class="bg-slate-950/60 rounded-2xl p-6 border border-amber-500/10 flex flex-col gap-5">
-                <p id="dwz-message-box" class="text-sm sm:text-base leading-relaxed text-slate-200">
-                    </p>
+                <p id="dwz-message-box" class="text-sm sm:text-base leading-relaxed text-slate-200"></p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800">
                     <span class="text-[10px] uppercase text-slate-500 font-bold block mb-2" data-i18n="dwz_assets_portfolio_title">逝去時の資産ポートフォリオ</span>
-                    <div id="dwz-breakdown-list" class="flex flex-col gap-2 text-xs">
-                        </div>
+                    <div id="dwz-breakdown-list" class="flex flex-col gap-2 text-xs"></div>
                 </div>
                 <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 flex flex-col justify-center items-center text-center">
                     <span class="text-[10px] uppercase text-slate-400 font-bold block mb-1" data-i18n="dwz_advisor_advice_title">人生の軍師からのアドバイス</span>
-                    <p id="dwz-advice-text" class="text-xs text-amber-300 italic max-w-xs mt-1 leading-relaxed">
-                        </p>
+                    <p id="dwz-advice-text" class="text-xs text-amber-300 italic max-w-xs mt-1 leading-relaxed"></p>
                 </div>
             </div>
 
             <div class="flex items-center justify-center pt-4">
-              
+                <div class="mt-4 flex flex-col gap-3 w-full">
+                    <button onclick="backToSimulator()" class="w-full px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-sm rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_re-plan_strategy">資産・ライフプランシミュレータ【尽生（Jin-Sei）】に戻って軍略を練り直す</span>
+                    </button>
 
-<div class="mt-4 flex flex-col gap-3 w-full">
-    
-    <button onclick="backToSimulator()" class="w-full px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-sm rounded-2xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
-        <i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_re-plan_strategy">資産・ライフプランシミュレータ【尽生（Jin-Sei）】に戻って軍略を練り直す</span>
-    </button>
-
-    <a href="https://hiro-seki-tech.github.io/inheritance-sim/" class="w-full px-8 py-4 bg-gradient-to-r from-purple-950 via-slate-900 to-zinc-900 hover:from-purple-900 hover:via-purple-950 hover:to-zinc-800 text-purple-200 hover:text-purple-100 font-black text-sm rounded-2xl border border-purple-800/40 hover:border-purple-700/60 shadow-lg text-center tracking-widest flex items-center justify-center gap-2 group transition-all transform hover:-translate-y-0.5 active:translate-y-0" style="text-decoration: none;">
-        この状態を引き継いで相続シミュレータ【宝均（Gem-Kin）】へ！
-        <span class="transform group-hover:translate-x-1 transition-transform duration-200 text-purple-400">→</span>
-    </a>
-
-</div>
-
-
-
-
-
+                    <a href="https://hiro-seki-tech.github.io/inheritance-sim/" class="w-full px-8 py-4 bg-gradient-to-r from-purple-950 via-slate-900 to-zinc-900 hover:from-purple-900 hover:via-purple-950 hover:to-zinc-800 text-purple-200 hover:text-purple-100 font-black text-sm rounded-2xl border border-purple-800/40 hover:border-purple-700/60 shadow-lg text-center tracking-widest flex items-center justify-center gap-2 group transition-all transform hover:-translate-y-0.5 active:translate-y-0" style="text-decoration: none;">
+                        この状態を引き継いで相続シミュレータ【宝均（Gem-Kin）】へ！
+                        <span class="transform group-hover:translate-x-1 transition-transform duration-200 text-purple-400">→</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -541,6 +547,58 @@
             <span class="text-[10px] sm:text-xs uppercase tracking-widest font-black" data-i18n="btn_floating_dwz_check">DIE WITH ZERO !</span>
             <i class="fa-solid fa-chevron-right text-[10px] sm:text-xs group-hover:translate-x-1 transition-transform"></i>
         </button>
+    </div>
+
+    <div id="use-modal" class="fixed inset-0 z-[150] flex items-center justify-center bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div id="use-modal-content" class="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-11/12 mx-auto shadow-2xl transform scale-95 transition-transform duration-300 relative text-slate-100">
+            <button id="close-use-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="flex items-center gap-2 border-b border-slate-700 pb-2 mb-4">
+                <span class="text-amber-400 text-lg"><i class="fas fa-info-circle"></i></span>
+                <h3 class="text-lg font-bold tracking-wider text-amber-400">『尽生：Jin-Sei』の簡単な使い方</h3>
+            </div>
+
+            <div class="bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 mb-5 text-xs leading-relaxed text-rose-200 shadow-sm">
+                <div class="font-bold text-rose-400 flex items-center gap-1.5 mb-1 text-sm">
+                    <i class="fas fa-shield-alt animate-pulse"></i> 安心のセキュリティ告知
+                </div>
+                当シミュレータに入力された資産データや個人情報は、外部のサーバー等へ送信・保存されることは一切ございません。全て<span class="text-amber-400 font-bold">「貴殿のブラウザ内（LocalStorage）」にのみ完全秘匿</span>で記憶されます。躊躇なく安心してお試しください。
+            </div>
+
+            <div class="space-y-4 text-sm text-slate-300 mb-2">
+                <div class="flex items-start gap-2">
+                    <span class="text-amber-400 font-bold mt-0.5">1.</span>
+                    <div>
+                        <strong class="text-slate-100">人生の雛形を選ぶ</strong>
+                        <p class="text-xs text-slate-400 mt-0.5">上部のメニューからあなたの資産階層や生き方のモデルを選びましょう。</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-2">
+                    <span class="text-amber-400 font-bold mt-0.5">2.</span>
+                    <div>
+                        <strong class="text-slate-100">設定を整える</strong>
+                        <p class="text-xs text-slate-400 mt-0.5">必要に応じて、基本設定や資産の値を変えましょう。（※数値を変更するだけで、自動かつ瞬時に未来が計算されます）</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-2">
+                    <span class="text-amber-400 font-bold mt-0.5">3.</span>
+                    <div>
+                        <strong class="text-slate-100">未来を見る</strong>
+                        <p class="text-xs text-slate-400 mt-0.5">💀Die With Zero ボタンを押して未来を見る！</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 text-right">
+                <button id="close-use-modal-btn" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-5 py-2 rounded-xl text-xs transition-all shadow-lg shadow-amber-500/20">
+                    了解しました
+                </button>
+            </div>
+        </div>
     </div>
 
     <script src="./js/i18n.js"></script>
@@ -622,7 +680,7 @@
                 const noiseFilter = ctx.createBiquadFilter();
                 noiseFilter.type = 'bandpass';
                 noiseFilter.frequency.setValueAtTime(800, ctx.currentTime);
-                // 周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
+                // 周周波数を徐々にスイープさせて、砂が崩れ落ちて遠ざかる質感を出す
                 noiseFilter.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + duration);
                 noiseFilter.Q.setValueAtTime(1.5, ctx.currentTime);
 
@@ -630,7 +688,7 @@
                 noiseGain.gain.setValueAtTime(0.04, ctx.currentTime); // 小さめの穏やかな音
                 noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
-                // 2. 黄金のきらめき、砂時計の硝子を連想させる高周波チャイム音
+                // 2. 黄金のききらめき、砂時計の硝子を連想させる高周波チャイム音
                 const chime1 = ctx.createOscillator();
                 const chime2 = ctx.createOscillator();
                 chime1.type = 'sine';
@@ -728,7 +786,7 @@
             rows.forEach((row, index) => {
                 const titleSpan = row.querySelector('.stage-title');
                 if (titleSpan) {
-                    // 💡第1手修正：日本語・英語辞書からタイトルヘッダーを動的に自動生成
+                    // 日本語・英語辞書からタイトルヘッダーを動的に自動生成
                     const baseTitle = (typeof currentTranslations !== 'undefined' && currentTranslations['title_living_costs']) 
                         ? currentTranslations['title_living_costs'].replace(/💸\s*/, '').split('（')[0].trim()
                         : '人生のステージ';
@@ -755,7 +813,7 @@
             const div = document.createElement('div');
             div.className = 'stage-row bg-rose-50/10 p-3 rounded-xl border border-rose-100/40 flex flex-col gap-2 text-[11px]';
             
-            // 💡第1手修正：動的追加フィールドのテキストパーツを現在の言語に同期
+            // 動的追加フィールドのテキストパーツを現在の言語に同期
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const lblTo = isEn ? ' to ' : ' ～ ';
             const lblAge = isEn ? ' years old' : ' 歳';
@@ -791,7 +849,7 @@
             const div = document.createElement('div');
             div.className = 'other-income-row grid grid-cols-12 gap-1 items-center bg-slate-50/50 p-1.5 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡第1手修正：その他所得追加パーツの完全多言語化
+            // その他所得追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultName = isEn ? "Pension" : name;
             const lblName = isEn ? "Income Name" : "所得の名称";
@@ -829,7 +887,7 @@
             const div = document.createElement('div');
             div.className = 'income-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡第1手修正：臨時収入追加パーツの完全多言語化
+            // 臨時収入追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? "Retirement Bonus" : memo;
             const lblMemo = isEn ? "Description" : "収入の名称";
@@ -879,7 +937,7 @@
             const div = document.createElement('div');
             div.className = 'expense-row grid grid-cols-12 gap-1.5 items-center bg-slate-50/50 p-2 rounded-lg border border-slate-100 text-[11px]';
             
-            // 💡第1手修正：臨時出費追加パーツの完全多言語化
+            // 臨時出費追加パーツの完全多言語化
             const isEn = (typeof currentTranslations !== 'undefined' && currentTranslations['th_cash'] === 'Cash');
             const defaultMemo = isEn ? "Special Event" : memo;
             const lblMemo = isEn ? "Description" : "出費の名称";
@@ -974,7 +1032,7 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         cutout: '72%',
-                        plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                        plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' }, usePointStyle: true } }, tooltip: { enabled: false, external: customTooltipHandler } }
                     }
                 });
             }
@@ -1330,11 +1388,8 @@
             }
         }
 
-
-
-
         function applyScenario(scenario) {
-const otherContainer = document.getElementById('other-income-container');
+            const otherContainer = document.getElementById('other-income-container');
             const stageContainer = document.getElementById('stage-container');
             const incContainer = document.getElementById('income-container');
             const expContainer = document.getElementById('expense-container');
@@ -1436,92 +1491,86 @@ const otherContainer = document.getElementById('other-income-container');
             // ◆ 現代日本 新・生き方多様化 6階層の防衛数値（万単位）
             // ==========================================
             } else if (scenario === 'live_power_couple') {
-                // 1. パワーカップル（タワマン共働き）
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 32;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 1600; // 世帯合算
+                document.getElementById('salary-amount').value = 1600; 
                 document.getElementById('salary-limit').value = 60;
                 document.getElementById('init-cash').value = 1500;
                 document.getElementById('rate-cash').value = 0.1;
-                addStageRow(900, 60); // タワマン維持費・高い生活支出
+                addStageRow(900, 60); 
                 addStageRow(500, 85);
                 addExpenseRow("タワマン大規模修繕積立金増額", 45, 500);
                 addAssetElement({ name: "新NISA・夫婦満額オルカン積立", type: "trust", initAmt: 1000, rate: 6.5, yearAmt: 0, monthAmt: 30, startAge: 32, endAge: 86 });
-                addAssetElement({ name: "サテライト米国個別株", type: "stocks", initAmt: 500, rate: 8.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 55 });
+                addAssetElement({ name: "サテライト米国個別株", type: "stocks", initAmt: 500, rate: 8.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 32, textEndAge: 55 });
 
             } else if (scenario === 'live_fire') {
-                // 2. FIRE達成（早期引退者）
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 42;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 0; // 完全退職につき労働収入ゼロ
+                document.getElementById('salary-amount').value = 0; 
                 document.getElementById('salary-limit').value = 42;
                 document.getElementById('init-cash').value = 1000;
                 document.getElementById('rate-cash').value = 0.05;
                 addOtherIncomeRow("国民年金（将来受給）", 65, 65, 85);
-                addStageRow(300, 65); // 徹底した省エネ生活支出
+                addStageRow(300, 65); 
                 addStageRow(240, 85);
                 addAssetElement({ name: "高配当株ポートフォリオ", type: "stocks", initAmt: 4000, rate: 4.5, yearAmt: 0, monthAmt: 0, payout: "cashout", startAge: 42, endAge: 86 });
                 addAssetElement({ name: "新NISA・インデックスコア", type: "trust", initAmt: 2000, rate: 5.5, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 42, endAge: 86 });
 
             } else if (scenario === 'live_middle_mainstream') {
-                // 3. THE・日本の中流（最もメジャーな普通の暮らし）★新規追加
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 35;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 650; // 日本の平均的な共働き・世帯年収
+                document.getElementById('salary-amount').value = 650; 
                 document.getElementById('salary-limit').value = 60;
                 document.getElementById('init-cash').value = 400;
                 document.getElementById('rate-cash').value = 0.05;
                 addOtherIncomeRow("厚生年金・夫婦合算", 220, 65, 85);
-                addStageRow(480, 60); // 住宅ローン、子供の養育費を含む平均支出
-                addStageRow(300, 85); // 老後の基礎生活費
+                addStageRow(480, 60); 
+                addStageRow(300, 85); 
                 addIncomeRow("定年時の会社退職金", 60, 1500, "cash");
                 addExpenseRow("子供の大学進学費用（私立文系）", 50, 500);
                 addExpenseRow("住宅リフォーム・修繕コスト", 65, 300);
                 addAssetElement({ name: "新NISA・手堅いインデックス積立", type: "trust", initAmt: 200, rate: 5.0, yearAmt: 0, monthAmt: 5, startAge: 35, endAge: 86 });
 
             } else if (scenario === 'live_children_room') {
-                // 4. 実家暮らし子供部屋おじさん
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 38;
                 document.getElementById('years').value = 80;
-                document.getElementById('salary-amount').value = 450; // 平均的な単身年収
+                document.getElementById('salary-amount').value = 450; 
                 document.getElementById('salary-limit').value = 65;
                 document.getElementById('init-cash').value = 1000;
                 document.getElementById('rate-cash').value = 0.05;
-                addStageRow(80, 65); // 家賃光熱費ゼロの極限低燃費
-                addStageRow(200, 85); // 両親他界後の孤独な維持・生活費
+                addStageRow(80, 65); 
+                addStageRow(200, 85); 
                 addExpenseRow("実家の相続登記・固定資産税清算", 65, 200);
                 addAssetElement({ name: "限界聖域・全力特定インデックス", type: "trust", initAmt: 2000, rate: 6.0, yearAmt: 200, monthAmt: 10, startAge: 38, endAge: 85 });
 
             } else if (scenario === 'live_local_startup') {
-                // 5. 地方移住・脱サラローカル起業
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 38;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 300; // 独立初期の抑え目の役員報酬
+                document.getElementById('salary-amount').value = 300; 
                 document.getElementById('salary-limit').value = 65;
                 document.getElementById('init-cash').value = 500;
                 document.getElementById('rate-cash').value = 0.05;
-                addStageRow(240, 65); // 地方移住による低コストライフ
+                addStageRow(240, 65); 
                 addStageRow(180, 85);
                 addIncomeRow("ローカルビジネス小規模M&A売却益", 50, 3000, "trust");
                 addExpenseRow("古民家リノベーション工事費用", 39, 400);
                 addAssetElement({ name: "新NISA（オルカン自動積立）", type: "trust", initAmt: 300, rate: 5.0, yearAmt: 0, monthAmt: 3, startAge: 38, endAge: 85 });
 
             } else {
-                // 6. 地方マイルドヤンキー（堅実地元定住）
                 document.getElementById('start-year').value = 2026;
                 document.getElementById('start-age').value = 28;
                 document.getElementById('years').value = 85;
-                document.getElementById('salary-amount').value = 550; // 地元企業での世帯合算
+                document.getElementById('salary-amount').value = 550; 
                 document.getElementById('salary-limit').value = 60;
                 document.getElementById('init-cash').value = 200;
                 document.getElementById('rate-cash').value = 0.05;
                 addOtherIncomeRow("老齢厚生年金", 160, 65, 85);
-                addStageRow(380, 60); // 地方の安定した生活費
+                addStageRow(380, 60); 
                 addStageRow(260, 85);
                 addExpenseRow("地元工務店でのローコストハウス頭金", 30, 400);
                 addExpenseRow("子供2人の高校・大学進学費用", 48, 800);
@@ -1981,6 +2030,37 @@ const otherContainer = document.getElementById('other-income-container');
                     canvas.height = window.innerHeight;
                 }
             });
+
+            // 💡使い方モーダルの開閉制御ロジック（イベント委譲による絶対防衛陣形）
+            const modal = document.getElementById('use-modal');
+            const modalContent = document.getElementById('use-modal-content');
+
+            if (modal && modalContent) {
+                const openModal = () => {
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modal.classList.remove('opacity-0');
+                        modalContent.classList.remove('scale-95');
+                        modalContent.classList.add('scale-100');
+                    }, 10);
+                };
+
+                const closeModal = () => {
+                    modal.classList.add('opacity-0');
+                    modalContent.classList.remove('scale-100');
+                    modalContent.classList.add('scale-95');
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                    }, 300);
+                };
+
+                // body全体でクリックを監視し、i18n置換後のボタンも確実に捕捉する
+                document.body.addEventListener('click', (e) => {
+                    if (e.target.closest('#how-to-use-btn')) { openModal(); }
+                    if (e.target.closest('#close-use-modal') || e.target.closest('#close-use-modal-btn')) { closeModal(); }
+                    if (e.target === modal) { closeModal(); }
+                });
+            }
         }
     </script>
 </body>
