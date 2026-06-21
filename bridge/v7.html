@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宝均（Gem-Kin） - 資産兵站調停門</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #051614; color: #f1f5f9; }
+    /* 算盤の珠が動くような、妖しく美しいパルス明滅 */
+    .bead-pulse { animation: pulseBead 1.5s infinite ease-in-out; }
+    @keyframes pulseBead {
+      0%, 100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 5px rgba(20, 185, 129, 0.2); }
+      50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center font-sans px-4">
+
+  <div class="text-center space-y-8 max-w-md w-full p-8 bg-black/40 border border-emerald-500/30 rounded-2xl backdrop-blur-md shadow-2xl">
+    
+    <div class="flex items-center justify-center space-x-3 relative h-16">
+      <div class="bead-pulse w-4 h-4 rounded-full bg-emerald-400" style="animation-delay: 0s;"></div>
+      <div class="bead-pulse w-4 h-4 rounded-full bg-amber-400" style="animation-delay: 0.2s;"></div>
+      <div class="bead-pulse w-4 h-4 rounded-full bg-emerald-400" style="animation-delay: 0.4s;"></div>
+      <div class="bead-pulse w-4 h-4 rounded-full bg-amber-400" style="animation-delay: 0.6s;"></div>
+      <i class="fa-solid fa-calculator text-3xl absolute -top-8 animate-bounce text-amber-400"></i>
+    </div>
+
+    <div class="space-y-3">
+      <h2 class="text-xs tracking-[0.3em] font-black text-amber-400 font-mono">ASSET LOGISTICS MEDIATION</h2>
+      <h1 class="text-xl font-bold text-white tracking-wide">『尽生』から『宝均』へ 資産調停中...</h1>
+      <p class="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
+        主君、焦る必要はございません。ただいま、人生最後の残り資産を相続税シミュレータ規格へスタープラチナ級の緻密さで組み替えております。
+      </p>
+    </div>
+
+    <div id="bridge-status" class="text-xs font-mono text-emerald-400 font-bold bg-emerald-950/40 border border-emerald-800/40 rounded-lg py-2 px-4 inline-block">
+      兵站線接続確認中...
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const statusBox = document.getElementById('bridge-status');
+      
+      // ⚔️ 我が君より拝領した宝均の正統なる本陣URL
+      const targetUrl = "https://hiro-seki-tech.github.io/inheritance-sim/index.html";
+
+      setTimeout(() => {
+        // 1. 『尽生』のクリックイベントが退避させたデータをポシェット（localStorage）から確認
+        let bridgeRawData = localStorage.getItem('jinsei_to_gemkin_bridge');
+        let isDummy = false;
+
+        // 🛡️ データがない場合は自動で華麗なるダミー資産（大富豪クラス）を錬成
+        if (!bridgeRawData) {
+          isDummy = true;
+          statusBox.className = "text-xs font-mono text-amber-400 font-bold bg-amber-950/40 border border-amber-800/40 rounded-lg py-2 px-4 inline-block";
+          statusBox.innerText = "💡 独立検証モード：ダミー大富豪資産を錬成中...";
+          
+          const dummyAssets = {
+            cash: 120000000,       // 現金 1億2000万円
+            realestate: 80000000,  // 不動産 8000万円
+            stocks: 60000000,      // 株式 6000万円
+            trust: 30000000,       // 投信 3000万円
+            metal: 10000000,       // 貴金属 1000万円
+            bonds: 20000000        // 債券 2000万円
+          };
+          bridgeRawData = JSON.stringify(dummyAssets);
+        } else {
+          statusBox.innerText = "💀 『尽生』の最期より、残り資産を補足完了...";
+        }
+
+        const rawAssets = JSON.parse(bridgeRawData);
+
+        setTimeout(() => {
+          statusBox.innerText = "🔮 相続税資産データへ完全翻訳中...";
+
+          // 2. 円単位データの集計
+          const cash = parseFloat(rawAssets.cash) || 0;
+          const realestate = parseFloat(rawAssets.realestate) || 0;
+          const stocks = parseFloat(rawAssets.stocks) || 0;
+          const trust = parseFloat(rawAssets.trust) || 0;
+          const metal = parseFloat(rawAssets.metal) || 0;
+          const bonds = parseFloat(rawAssets.bonds) || 0;
+
+          const totalEstateYen = cash + realestate + stocks + trust + metal + bonds;
+
+          // 2.5 各資産カードを動的に錬成（0円の資産は除外し、株式と投資信託を完全分離。割合は宝均側で自動初期化）
+          const activeAssets = [];
+          
+          // 【現金】 0円でなければ配備
+          if (cash !== 0) {
+            activeAssets.push({
+              id: "a1", name: "預貯金・現金", type: "cash", amount: cash, canSplit: true, splitMode: "auto"
+            });
+          }
+          
+          // 【不動産】 0円でなければ配備（地積を自然な100㎡に設定）
+          if (realestate !== 0) {
+            activeAssets.push({
+              id: "a2", name: "宅地（不動産）", type: "land", landEvaluationType: "fixedAsset", 
+              area: 100, rosenka: 0, amount: realestate, canSplit: true, splitMode: "auto", 
+              shokuboType: "none", shokuboApplicableHeirs: []
+            });
+          }
+          
+          // 【個別株式】 0円でなければ分離配備
+          if (stocks !== 0) {
+            activeAssets.push({
+              id: "a3", name: "有価証券（個別株式）", type: "stock", nameStock: "個別株式", 
+              amount: stocks, canSplit: true, splitMode: "auto"
+            });
+          }
+
+          // 【投資信託】 0円でなければ分離配備（IDをa5として完全独立）
+          if (trust !== 0) {
+            activeAssets.push({
+              id: "a5", name: "投資信託", type: "stock", nameStock: "投資信託", 
+              amount: trust, canSplit: true, splitMode: "auto"
+            });
+          }
+          
+          // 【その他財産】 0円でなければ配備
+          if ((metal + bonds) !== 0) {
+            activeAssets.push({
+              id: "a4", name: "その他財産", type: "other", amount: metal + bonds, canSplit: true, splitMode: "auto"
+            });
+          }
+
+          // 3. 『宝均（v86.html）』の初期起動エンジンが求める正統なるデータ構造に成形
+          const primaryResultData = {
+            totalEstate: totalEstateYen, // 総額（円単位数値）
+            spouseActualShare: 50,       // 初期配分（50%）
+            spouseAcquisition: totalEstateYen * 0.5,
+            childCount: 2,
+            legalSpouseId: "h1",
+            
+            // ⚔️ 【特命フラグ注入】宝均本陣の起動エンジン（510行目付近）に自動初期化を強制執行させる合図
+            forceUniformSplit: true,    // 「全資産の配分を起動時に自動初期化せよ」との突撃命令
+            targetSpouseShare: 50,      // 「配偶者50%、残りを子供たちで均等按分」とする指定
+            
+            // 🛡️ 上記で動的に選別・分離を完了したアセット配列を流し込む
+            assets: activeAssets,
+            
+            // v86.html の state.heirs の型に完全追従させた相続人配列
+            heirs: [
+              { id: "h1", name: "配偶者（法律婚）", relation: "spouse_legal", spouseType: "legal", share: 50, useZoyo: false },
+              { id: "h2", name: "長男", relation: "child", spouseType: null, share: 25, useZoyo: false },
+              { id: "h3", name: "長女", relation: "child", spouseType: null, share: 25, useZoyo: false }
+            ]
+          };
+
+          // 4. 宝均本陣が待ち受ける localStorage の防衛線（ポシェット）へ一撃注入！
+          localStorage.setItem('gemkin_primary_result', JSON.stringify(primaryResultData));
+
+          // 兵站線のクリーンアップ
+          localStorage.removeItem('jinsei_to_gemkin_bridge');
+
+          setTimeout(() => {
+            if (isDummy) {
+              statusBox.innerText = "⚔️ ダミー陣形構築完了！GitHub Pages本陣へ進軍します！";
+            } else {
+              statusBox.innerText = "⚔️ 陣形構築完了！宝均本陣へ進軍します！";
+            }
+            
+            setTimeout(() => {
+              // 5. 我が君の指定された絶対パスURLへ堂々リダイレクト！
+              window.location.href = targetUrl;
+            }, 800);
+          }, 1000);
+
+        }, 1000);
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
