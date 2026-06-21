@@ -30,7 +30,7 @@
 
     <div class="space-y-3">
       <h2 class="text-xs tracking-[0.3em] font-black text-amber-400 font-mono">ASSET LOGISTICS MEDIATION</h2>
-      <h1 class="text-xl font-bold text-white tracking-wide">『尽生』から『宝均』へ 資産調停中...v.6</h1>
+      <h1 class="text-xl font-bold text-white tracking-wide">『尽生』から『宝均』へ 資産調停中...v.7</h1>
       <p class="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
         主君、焦る必要はございません。ただいま、人生最後の残り資産を相続税シミュレータ規格へスタープラチナ級の緻密さで組み替えております。
       </p>
@@ -136,6 +136,10 @@
             spouseAcquisition: totalEstateYen * 0.5,
             childCount: 2,
             legalSpouseId: "h1",
+            
+            // ⚔️ 【特命フラグ注入】宝均本陣の起動エンジン（510行目付近）に自動初期化を強制執行させる合図
+            forceUniformSplit: true,    // 「全資産の配分を起動時に自動初期化せよ」との突撃命令
+            targetSpouseShare: 50,      // 「配偶者50%、残りを子供たちで均等按分」とする指定
             
             // 🛡️ 上記で動的に選別・分離を完了したアセット配列を流し込む
             assets: activeAssets,
