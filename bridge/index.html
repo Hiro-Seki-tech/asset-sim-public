@@ -45,7 +45,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const statusBox = document.getElementById('bridge-status');
       
-      // ⚔️ 我が君より拝領した宝均の正統なる本陣URL（末尾にスラッシュを補正）
+      // ⚔️ 我が君より拝領した宝均の正統なる本陣URL
       const targetUrl = "https://hiro-seki-tech.github.io/inheritance-sim/index.html";
 
       setTimeout(() => {
@@ -53,7 +53,7 @@
         let bridgeRawData = localStorage.getItem('jinsei_to_gemkin_bridge');
         let isDummy = false;
 
-        // 🛡️【我が君の指示】：データがない場合は自動で華麗なるダミー資産（大富豪クラス）を錬成
+        // 🛡️ データがない場合は自動で華麗なるダミー資産（大富豪クラス）を錬成
         if (!bridgeRawData) {
           isDummy = true;
           statusBox.className = "text-xs font-mono text-amber-400 font-bold bg-amber-950/40 border border-amber-800/40 rounded-lg py-2 px-4 inline-block";
@@ -87,26 +87,29 @@
 
           const totalEstateYen = cash + realestate + stocks + trust + metal + bonds;
 
-          // 3. 『宝均』のメイン画面（v86.html）が100%喜ぶ完璧なデータ構造（陣形）に成形
+          // 3. 『宝均（v86.html）』の初期起動エンジンが求める正統なるデータ構造に成形
           const primaryResultData = {
-            totalEstate: totalEstateYen,
-            spouseActualShare: 50,
+            totalEstate: totalEstateYen, // 総額（円単位数値）
+            spouseActualShare: 50,       // 初期配分（50%）
             spouseAcquisition: totalEstateYen * 0.5,
-            childCount: 2, 
+            childCount: 2,
+            legalSpouseId: "h1",
             
-            // 🛡️ 宝均の内部stateを完全ハッキングする資産・相続人配列
+            // 🛡️【大調停】キー名を value から amount へ、category から type へ、
+            // 不動産は land 、株式は stock へと、v86.html の配列構造に100%完全同期！
             assets: [
-              { id: "a1", name: "預貯金・現金", category: "cash", value: cash, canSplit: true, splitMode: "auto" },
-              { id: "a2", name: "宅地（不動産）", category: "land", value: realestate, canSplit: true, splitMode: "auto", subCategory: "live" },
-              { id: "a3", name: "有価証券（株式）", category: "stock", value: stocks + trust, canSplit: true, splitMode: "auto" },
-              { id: "a4", name: "その他財産", category: "other", value: metal + bonds, canSplit: true, splitMode: "auto" }
+              { id: "a1", name: "預貯金・現金", type: "cash", amount: cash, canSplit: true, splitMode: "auto" },
+              { id: "a2", name: "宅地（不動産）", type: "land", landEvaluationType: "fixedAsset", area: 0, rosenka: 0, amount: realestate, canSplit: true, splitMode: "auto", shokuboType: "none", shokuboApplicableHeirs: [] },
+              { id: "a3", name: "有価証券（株式等）", type: "stock", nameStock: "株式・投信", amount: stocks + trust, canSplit: true, splitMode: "auto" },
+              { id: "a4", name: "その他財産", type: "other", amount: metal + bonds, canSplit: true, splitMode: "auto" }
             ],
+            
+            // v86.html の state.heirs の型に完全追従させた相続人配列
             heirs: [
-              { id: "h1", name: "配偶者（法律婚）", relation: "spouse_legal", share: 50 },
-              { id: "h2", name: "長男", relation: "child", share: 25 },
-              { id: "h3", name: "長女", relation: "child", share: 25 }
-            ],
-            legalSpouseId: "h1"
+              { id: "h1", name: "配偶者（法律婚）", relation: "spouse_legal", spouseType: "legal", share: 50, useZoyo: false },
+              { id: "h2", name: "長男", relation: "child", spouseType: null, share: 25, useZoyo: false },
+              { id: "h3", name: "長女", relation: "child", spouseType: null, share: 25, useZoyo: false }
+            ]
           };
 
           // 4. 宝均本陣が待ち受ける localStorage の防衛線（ポシェット）へ一撃注入！
@@ -123,7 +126,7 @@
             }
             
             setTimeout(() => {
-              // 5. 我が君の GitHub Pages上の『宝均』へ完全リダイレクト跳躍！
+              // 5. 我が君の指定された絶対パスURLへ堂々リダイレクト！
               window.location.href = targetUrl;
             }, 800);
           }, 1000);
