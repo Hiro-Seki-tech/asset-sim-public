@@ -30,7 +30,7 @@
 
     <div class="space-y-3">
       <h2 class="text-xs tracking-[0.3em] font-black text-amber-400 font-mono">ASSET LOGISTICS MEDIATION</h2>
-      <h1 class="text-xl font-bold text-white tracking-wide">『尽生』から『宝均』へ 資産調停中...</h1>
+      <h1 class="text-xl font-bold text-white tracking-wide">『尽生』から『宝均』へ 資産調停中...v.5</h1>
       <p class="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
         主君、焦る必要はございません。ただいま、人生最後の残り資産を相続税シミュレータ規格へスタープラチナ級の緻密さで組み替えております。
       </p>
@@ -87,6 +87,44 @@
 
           const totalEstateYen = cash + realestate + stocks + trust + metal + bonds;
 
+          // 2.5 各資産カードを動的に錬成（0円の資産は除外し、かつ法定割合50:25:25を初期配分）
+          const activeAssets = [];
+          
+          // 【現金】 0円でなければ配備
+          if (cash !== 0) {
+            activeAssets.push({
+              id: "a1", name: "預貯金・現金", type: "cash", amount: cash, canSplit: true, splitMode: "auto",
+              splitShares: { h1: 50, h2: 25, h3: 25 } // ⚖️ 法定相続割合を最初から完全自動配分
+            });
+          }
+          
+          // 【不動産】 0円でなければ配備（地積を自然な100㎡に設定）
+          if (realestate !== 0) {
+            activeAssets.push({
+              id: "a2", name: "宅地（不動産）", type: "land", landEvaluationType: "fixedAsset", 
+              area: 100, rosenka: 0, amount: realestate, canSplit: true, splitMode: "auto", 
+              shokuboType: "none", shokuboApplicableHeirs: [],
+              splitShares: { h1: 50, h2: 25, h3: 25 } // ⚖️ 法定相続割合を最初から完全自動配分
+            });
+          }
+          
+          // 【有価証券】 0円でなければ配備
+          if ((stocks + trust) !== 0) {
+            activeAssets.push({
+              id: "a3", name: "有価証券（株式等）", type: "stock", nameStock: "株式・投信", 
+              amount: stocks + trust, canSplit: true, splitMode: "auto",
+              splitShares: { h1: 50, h2: 25, h3: 25 } // ⚖️ 法定相続割合を最初から完全自動配分
+            });
+          }
+          
+          // 【その他】 0円でなければ配備
+          if ((metal + bonds) !== 0) {
+            activeAssets.push({
+              id: "a4", name: "その他財産", type: "other", amount: metal + bonds, canSplit: true, splitMode: "auto",
+              splitShares: { h1: 50, h2: 25, h3: 25 } // ⚖️ 法定相続割合を最初から完全自動配分
+            });
+          }
+
           // 3. 『宝均（v86.html）』の初期起動エンジンが求める正統なるデータ構造に成形
           const primaryResultData = {
             totalEstate: totalEstateYen, // 総額（円単位数値）
@@ -95,14 +133,8 @@
             childCount: 2,
             legalSpouseId: "h1",
             
-            // 🛡️【大調停】キー名を value から amount へ、category から type へ、
-            // 不動産は land 、株式は stock へと、v86.html の配列構造に100%完全同期！
-            assets: [
-              { id: "a1", name: "預貯金・現金", type: "cash", amount: cash, canSplit: true, splitMode: "auto" },
-              { id: "a2", name: "宅地（不動産）", type: "land", landEvaluationType: "fixedAsset", area: 0, rosenka: 0, amount: realestate, canSplit: true, splitMode: "auto", shokuboType: "none", shokuboApplicableHeirs: [] },
-              { id: "a3", name: "有価証券（株式等）", type: "stock", nameStock: "株式・投信", amount: stocks + trust, canSplit: true, splitMode: "auto" },
-              { id: "a4", name: "その他財産", type: "other", amount: metal + bonds, canSplit: true, splitMode: "auto" }
-            ],
+            // 🛡️ 上記で動的に選別・配分を完了したアセット配列を流し込む
+            assets: activeAssets,
             
             // v86.html の state.heirs の型に完全追従させた相続人配列
             heirs: [
