@@ -522,17 +522,17 @@
                         
                         <div class="flex flex-wrap items-center gap-2 self-stretch sm:self-auto w-full sm:w-auto">
                             <button id="save-local-btn" onclick="saveToLocalStorage()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btn_save_settings">💾 設定を保存</span>
+                                <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btn_save_settings">💾 設定をブラウザに保存</span>
                             </button>
                             <button id="clear-local-btn" onclick="clearLocalStorage()" class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-trash-can"></i> <span data-i18n="btn_clear_settings">🧹 初期化</span>
+                                <i class="fa-solid fa-trash-can"></i> <span data-i18n="btn_clear_settings">🧹 設定を初期化</span>
                             </button>
                             <label for="csv-import-file" class="cursor-pointer px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-file-import"></i> <span data-i18n="btn_csv_import_label">CSV読込</span>
+                                <i class="fa-solid fa-file-import"></i> <span data-i18n="btn_csv_import_label">設定のCSV読込</span>
                             </label>
                             <input type="file" id="csv-import-file" accept=".csv" class="hidden" onchange="importCSV(event)">
                             <button onclick="downloadCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 justify-center flex-1 sm:flex-initial">
-                                <i class="fa-solid fa-file-csv"></i> <span data-i18n="btn_csv_export_label">CSV出力</span>
+                                <i class="fa-solid fa-file-csv"></i> <span data-i18n="btn_csv_export_label">設定のCSV出力</span>
                             </button>
                         </div>
                     </div>
@@ -1865,46 +1865,177 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+
+
+
+// 📤 超・完全無欠版：CSV読み込み（全データをデータレベルで100%完全再現）
         function importCSV(event) {
-            const file = event.target.files[0]; if (!file) return;
+            const file = event.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
-                try {
-                    const lines = text.split('\n');
-                    const parseCols = str => str.trim().split(/,(?=(?:[^"]*"){2})*[^"]*$/).map(c => c.replace(/^"|"$/g, ''));
-                    let imported = [];
-                    for(let i=1; i<lines.length; i++) {
-                        if (!lines[i].trim()) continue;
-                        const cols = parseCols(lines[i]); if(cols.length < 8) continue;
-                        imported.push({ yearLabel: cols[0], cash: parseInt(cols[1])||0, realestate: parseInt(cols[2])||0, stocks: parseInt(cols[3])||0, trust: parseInt(cols[4])||0, metal: parseInt(cols[5])||0, bonds: parseInt(cols[6])||0, total: parseInt(cols[7])||0 });
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                const lines = text.split('\n');
+                
+                // 1. 動的コンテナを一度すべて真っさらにリセット
+                document.getElementById('other-income-container').innerHTML = '';
+                document.getElementById('stage-container').innerHTML = '';
+                document.getElementById('income-container').innerHTML = '';
+                document.getElementById('expense-container').innerHTML = '';
+                document.getElementById('dynamic-assets-container').innerHTML = '';
+
+                // 2. CSVを行ごとに解析し、基本設定の復元と動的データの抽出を行う
+                let dynamicDataList = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    
+                    const idx = lines[i].indexOf(',');
+                    if (idx === -1) continue;
+                    
+                    const id = lines[i].substring(0, idx).trim();
+                    let value = lines[i].substring(idx + 1).trim().replace(/^"|"$/g, '').replace(/""/g, '"');
+
+                    if (id === 'ALL_DYNAMIC_DATA_JSON') {
+                        try { dynamicDataList = JSON.parse(value); } catch(e) { console.error("動的データのパースに失敗", e); }
+                    } else {
+                        // 主要な7つの基本設定の復元
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.value = value;
+                        }
                     }
-                    if (imported.length === 0) return;
-                    let labels = [], totalData = [];
-                    let datasetTemplates = { cash:{data:[]}, realestate:{data:[]}, stocks:{data:[]}, trust:{data:[]}, metal:{data:[]}, bonds:{data:[]} };
-                    imported.forEach(rec => {
-                        labels.push(rec.yearLabel); totalData.push(rec.total);
-                        datasetTemplates.cash.data.push(rec.cash); datasetTemplates.realestate.data.push(rec.realestate);
-                        datasetTemplates.stocks.data.push(rec.stocks); datasetTemplates.trust.data.push(rec.trust);
-                        datasetTemplates.metal.data.push(rec.metal); datasetTemplates.bonds.data.push(rec.bonds);
+                }
+
+                // 3. 抽出した動的データを、正規の生成関数を使って画面に完璧に再ビルドする
+                if (dynamicDataList.length > 0) {
+                    dynamicDataList.forEach(item => {
+                        if (item.type === 'other-income') {
+                            addOtherIncomeRow(item.name, item.amount, item.start, item.end);
+                        } else if (item.type === 'stage') {
+                            addStageRow(item.amount, item.endAge);
+                        } else if (item.type === 'income') {
+                            addIncomeRow(item.name, item.age, item.amount, item.target);
+                        } else if (item.type === 'expense') {
+                            addExpenseRow(item.name, item.age, item.amount);
+                        } else if (item.type === 'asset-card') {
+                            addAssetElement({
+                                name: item.name, type: item.assetType, initAmt: item.initAmt, rate: item.rate,
+                                payout: item.payout, yearAmt: item.yearAmt, monthAmt: item.monthAmt,
+                                startAge: item.startAge, endAge: item.endAge
+                            });
+                        }
                     });
-                    renderTableAndChart(labels, datasetTemplates, totalData, imported);
-                    showToast("📊 CSV読込に成功しました！");
-                } catch(err) { showToast("CSV読込に失敗しました。", "error"); }
+                }
+
+                showToast(`💡 軍略盤のすべての設定・配分アセットを完全に復元しました！`);
+                
+                // 4. ステージの年齢の再計算と全体のシミュレーションを実行
+                updateStageAges();
+                runSimulation();
             };
             reader.readAsText(file, 'UTF-8');
         }
 
+// 📥 完全動的版：CSV出力（人物の雛形に入力された名前をファイル名にしてエクスポート）
         function downloadCSV() {
-            if (!lastSimulationData) return;
-            let csvContent = "\uFEFF経過年(西暦/年齢),現金(円),不動産(円),株式(円),投資信託(円),貴金属(円),債券(円),総資産(円)\n";
-            lastSimulationData.forEach(rec => { csvContent += `"${rec.yearLabel.replace(' ','')}",${rec.cash},${rec.realestate},${rec.stocks},${rec.trust},${rec.metal},${rec.bonds},${rec.total}\n`; });
+            let csvContent = "\uFEFF項目ID,設定値\n"; // Excel文字化け防止BOM
+
+            // 1. 固定の基本設定フォームの数値をピンポイントで取得
+            const targetIds = ['start-year', 'start-age', 'years', 'salary-amount', 'salary-limit', 'init-cash', 'rate-cash', 'scenario-input'];
+            targetIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    csvContent += `${id},"${el.value}"\n`;
+                }
+            });
+
+            // 2. 動的に追加されたすべてのカードや行の数値を「生データ」として完全収集
+            let allDynamicData = [];
+
+            // その他所得の収集
+            document.querySelectorAll('.other-income-row').forEach(row => {
+                allDynamicData.push({
+                    type: 'other-income',
+                    name: row.querySelector('.other-inc-name')?.value || '',
+                    amount: parseFloat(row.querySelector('.other-inc-amount')?.value) || 0,
+                    start: parseInt(row.querySelector('.other-inc-start')?.value) || 0,
+                    end: parseInt(row.querySelector('.other-inc-end')?.value) || 0
+                });
+            });
+
+            // 生活費ステージの収集
+            document.querySelectorAll('.stage-row').forEach(row => {
+                allDynamicData.push({
+                    type: 'stage',
+                    amount: parseFloat(row.querySelector('.stage-amount')?.value) || 0,
+                    endAge: parseInt(row.querySelector('.stage-end')?.value) || 0
+                });
+            });
+
+            // 臨時収入の収集
+            document.querySelectorAll('.income-row').forEach(row => {
+                allDynamicData.push({
+                    type: 'income',
+                    name: row.querySelector('.income-memo')?.value || '',
+                    age: parseInt(row.querySelector('.income-age')?.value) || 0,
+                    amount: parseFloat(row.querySelector('.income-amount')?.value) || 0,
+                    target: row.querySelector('.income-target')?.value || 'cash'
+                });
+            });
+
+            // 臨時出費の収集
+            document.querySelectorAll('.expense-row').forEach(row => {
+                allDynamicData.push({
+                    type: 'expense',
+                    name: row.querySelector('.expense-memo')?.value || '',
+                    age: parseInt(row.querySelector('.expense-age')?.value) || 0,
+                    amount: parseFloat(row.querySelector('.expense-amount')?.value) || 0
+                });
+            });
+
+            // 個別投資アセットカードの収集
+            document.querySelectorAll('.asset-card').forEach(card => {
+                allDynamicData.push({
+                    type: 'asset-card',
+                    name: card.querySelector('.asset-name-field')?.value || '',
+                    assetType: card.querySelector('.asset-type-field')?.value || '',
+                    initAmt: parseFloat(card.querySelector('.asset-init-field')?.value) || 0,
+                    rate: parseFloat(card.querySelector('.asset-rate-field')?.value) || 0,
+                    payout: card.querySelector('.asset-payout-field')?.value || 'reinvest',
+                    yearAmt: parseFloat(card.querySelector('.asset-year-field')?.value) || 0,
+                    monthAmt: parseFloat(card.querySelector('.asset-month-field')?.value) || 0,
+                    startAge: parseInt(card.querySelector('.asset-start-field')?.value) || 0,
+                    endAge: parseInt(card.querySelector('.asset-end-field')?.value) || 0
+                });
+            });
+
+            // 3. 収集した全データをJSON化し、CSVの最終行に格納
+            if (allDynamicData.length > 0) {
+                const jsonStr = JSON.stringify(allDynamicData).replace(/"/g, '""');
+                csvContent += `ALL_DYNAMIC_DATA_JSON,"${jsonStr}"\n`;
+            }
+
+            // 🛡️ 4. 【今回の主砲】「人物の雛形」の入力値を取得し、ファイル名として採用
+            const scenarioInput = document.getElementById('scenario-input');
+            // ファイル名に使えない禁止文字（\ / : * ? " < > |）を優しく除去・置換
+            let fileName = (scenarioInput && scenarioInput.value) ? scenarioInput.value.trim() : 'jinsei_settings';
+            fileName = fileName.replace(/[\\/:*?"<>|]/g, '_'); 
+
+            // 5. ダウンロード実行
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.setAttribute("href", URL.createObjectURL(blob));
-            link.setAttribute("download", "investment_simulation.csv");
+            link.setAttribute("download", `${fileName}.csv`); // 動的ファイル名を設定！
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
         }
+
+
+
+
 
         window.onload = function() { 
             const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
