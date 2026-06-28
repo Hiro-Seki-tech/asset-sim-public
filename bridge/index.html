@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>宝均（Gem-Kin） - 資産兵站調停門</title>
+  <title>宝均（Gem-Kin） - 資産データを相続データへ変換！</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -30,14 +30,14 @@
 
     <div class="space-y-3">
       <h2 class="text-xs tracking-[0.3em] font-black text-amber-400 font-mono">ASSET LOGISTICS MEDIATION</h2>
-      <h1 class="text-xl font-bold text-white tracking-wide">『尽生』から『宝均』へ 資産調停中...v.7</h1>
+      <h1 class="text-xl font-bold text-white tracking-wide">『尽生』から『宝均』へ 資産データ変換中...</h1>
       <p class="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto">
-        主君、焦る必要はございません。ただいま、人生最後の残り資産を相続税シミュレータ規格へスタープラチナ級の緻密さで組み替えております。
+        ただいま、人生最後の残り資産データを相続税シミュレータ“宝均”の規格へスタープラチナ級の緻密さで組み替えております。
       </p>
     </div>
 
     <div id="bridge-status" class="text-xs font-mono text-emerald-400 font-bold bg-emerald-950/40 border border-emerald-800/40 rounded-lg py-2 px-4 inline-block">
-      兵站線接続確認中...
+      接続確認中...
     </div>
   </div>
 
@@ -57,7 +57,7 @@
         if (!bridgeRawData) {
           isDummy = true;
           statusBox.className = "text-xs font-mono text-amber-400 font-bold bg-amber-950/40 border border-amber-800/40 rounded-lg py-2 px-4 inline-block";
-          statusBox.innerText = "💡 独立検証モード：ダミー大富豪資産を錬成中...";
+          statusBox.innerText = "💡 独立検証モード：ダミー大富豪資産データを錬成中...";
           
           const dummyAssets = {
             cash: 120000000,       // 現金 1億2000万円
@@ -69,7 +69,7 @@
           };
           bridgeRawData = JSON.stringify(dummyAssets);
         } else {
-          statusBox.innerText = "💀 『尽生』の最期より、残り資産を補足完了...";
+          statusBox.innerText = "💀 『尽生』の最期より、残り資産データを補足完了...";
         }
 
         const rawAssets = JSON.parse(bridgeRawData);
@@ -146,9 +146,9 @@
             
             // v86.html の state.heirs の型に完全追従させた相続人配列
             heirs: [
-              { id: "h1", name: "配偶者（法律婚）", relation: "spouse_legal", spouseType: "legal", share: 50, useZoyo: false },
-              { id: "h2", name: "長男", relation: "child", spouseType: null, share: 25, useZoyo: false },
-              { id: "h3", name: "長女", relation: "child", spouseType: null, share: 25, useZoyo: false }
+              { id: "h1", name: "みさえ", relation: "spouse_legal", spouseType: "legal", share: 50, useZoyo: false },
+              { id: "h2", name: "しんのすけ", relation: "child", spouseType: null, share: 25, useZoyo: false },
+              { id: "h3", name: "ひまわり", relation: "child", spouseType: null, share: 25, useZoyo: false }
             ]
           };
 
@@ -160,9 +160,9 @@
 
           setTimeout(() => {
             if (isDummy) {
-              statusBox.innerText = "⚔️ ダミー陣形構築完了！GitHub Pages本陣へ進軍します！";
+              statusBox.innerText = "⚔️ ダミーデータ構築完了！宝均へ移行します！";
             } else {
-              statusBox.innerText = "⚔️ 陣形構築完了！宝均本陣へ進軍します！";
+              statusBox.innerText = "⚔️ データ構築完了！宝均へ移行します！";
             }
             
             setTimeout(() => {
