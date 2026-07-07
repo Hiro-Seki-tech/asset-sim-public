@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>【連携用】静止したアワーグラス - 尽生アンビエント</title>
+    <title>【連携用】静止したアワーグラス - 尽生アンビエント（修正版）</title>
     <style>
         body {
             background: transparent;
@@ -12,11 +12,12 @@
             margin: 0;
             padding: 5px;
             overflow: hidden;
+            user-select: none;
         }
     </style>
 </head>
 <body>
-<div id="statusText">BGM Initializing...</div>
+<div id="statusText">BGM Ready (連携待機中)</div>
 
 <script>
     let audioCtx = null;
@@ -24,10 +25,62 @@
     let timers = [];
     let masterGain = null;
 
-    // ページ読み込み時に自動起動
-    window.addEventListener('DOMContentLoaded', () => {
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            masterGain = audioCtx.createGain();
+            masterGain.gain.setValueAtTime(0.5, audioCtx.currentTime); // ボリューム50%
+            masterGain.connect(audioCtx.destination);
+        }
+    }
+
+    function playMusic() {
+        if (isPlaying) return;
         initAudio();
+
+        // ブラウザのブロックを解除しながら再生
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        isPlaying = true;
+        document.getElementById("statusText").innerText = "BGM Playing...";
+        
+        // --- ここに実際のループ音源の再生ロジックを入れる ---
+        console.log("アンビエントBGM 再生開始");
+    }
+
+    function stopMusic() {
+        if (!isPlaying) return;
+        if (audioCtx) {
+            audioCtx.suspend();
+        }
+        isPlaying = false;
+        document.getElementById("statusText").innerText = "BGM Stopped";
+    }
+
+    // 【重要】親プログラム（他のファイル）からの呼び出しに対応するAPI
+    window.playBGM = function() {
         playMusic();
-    </script>
+    };
+
+    window.stopBGM = function() {
+        stopMusic();
+    };
+
+    // 【重要】親画面が iframe 越しに postMessage で命令を送ってきた場合にも対応
+    window.addEventListener('message', (event) => {
+        if (event.data === 'play') {
+            playMusic();
+        } else if (event.data === 'stop') {
+            stopMusic();
+        }
+    });
+
+    // 保険：このファイル単体で開いた時も、画面内をどこか1回クリックすれば鳴るようにする
+    window.addEventListener('click', () => {
+        playMusic();
+    });
+</script>
 </body>
 </html>
