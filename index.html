@@ -3256,7 +3256,7 @@ function executeSlotAction(action, slotNum) {
 <script>
         // 🏛️ 三連変転の軍略状態を管理するグローバル変数
         let currentCoreStyleState = 0; // 0:金枠, 1:銀枠, 2:赤枠
-        let audioBgmIframe = null;     // 金枠用（BGM.html）
+        let audioBgmIframe = null;     // 金枠用（bgm.mp3）
         let audioMediaElement = null;  // 銀枠用（song.mp4）
 
         // ⌛ クリック時に「コリッ」と鳴らし、枠色とBGMを3段階に変転させる統括関数
@@ -3335,7 +3335,7 @@ function executeSlotAction(action, slotNum) {
                 });
                 
                 audioBgmIframe = document.createElement('iframe');
-                audioBgmIframe.src = './music/BGM.html';
+                audioBgmIframe.src = './music/bgm.mp3';
                 audioBgmIframe.style.display = 'none';
                 audioBgmIframe.setAttribute('allow', 'autoplay');
                 document.body.appendChild(audioBgmIframe);
