@@ -3256,7 +3256,7 @@ function executeSlotAction(action, slotNum) {
 <script>
         // 🏛️ 三連変転の軍略状態を管理するグローバル変数
         let currentCoreStyleState = 0; // 0:金枠, 1:銀枠, 2:赤枠
-        let audioBgmIframe = null;     // 金枠用（bgm.mp3）
+        let audioBgmElement = null;    // 金枠用（bgm.mp3）
         let audioMediaElement = null;  // 銀枠用（song.mp4）
 
         // ⌛ クリック時に「コリッ」と鳴らし、枠色とBGMを3段階に変転させる統括関数
@@ -3301,7 +3301,7 @@ function executeSlotAction(action, slotNum) {
 
             const svgAnims = btn.querySelectorAll('animateTransform, animate');
 
-            if (audioBgmIframe) { audioBgmIframe.remove(); audioBgmIframe = null; }
+            if (audioBgmElement) { audioBgmElement.pause(); audioBgmElement.remove(); audioBgmElement = null; }
             if (audioMediaElement) { audioMediaElement.pause(); audioMediaElement.remove(); audioMediaElement = null; }
 
             if (currentCoreStyleState === 0) {
@@ -3334,11 +3334,13 @@ function executeSlotAction(action, slotNum) {
                     }
                 });
                 
-                audioBgmIframe = document.createElement('iframe');
-                audioBgmIframe.src = './music/bgm.mp3';
-                audioBgmIframe.style.display = 'none';
-                audioBgmIframe.setAttribute('allow', 'autoplay');
-                document.body.appendChild(audioBgmIframe);
+                audioBgmElement = document.createElement('audio');
+                audioBgmElement.src = './music/bgm.mp3';
+                audioBgmElement.style.display = 'none';
+                audioBgmElement.volume = 0.5;
+                audioBgmElement.loop = false;
+                document.body.appendChild(audioBgmElement);
+                audioBgmElement.play().catch(e => console.warn("BGMの再生に失敗しました:", e));
 
             } else if (currentCoreStyleState === 1) {
                 // 🥈【銀枠の陣】（今より速い ＝ 2.5倍速で爆速落下！）
