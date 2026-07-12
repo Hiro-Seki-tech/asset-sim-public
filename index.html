@@ -68,7 +68,124 @@
         .plip-noble-bubble {
             animation: plipNobleFloat 3s infinite ease-in-out;
         }
-    </style>
+    
+        /* 新SOL尽生ボタン：PLIPボタンジェネレータv5統合 */
+#plip-core-button {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid #FFD700;
+  border-radius: 18px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #475569, #1e293b, #0f172a);
+  box-shadow: 0 0 28px #FFD70055, 0 18px 45px rgba(0,0,0,.5);
+  transition: border-color .2s, box-shadow .2s;
+  touch-action: manipulation;
+}
+#plip-stage, #plip-stage > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.plip-bubble {
+  position: absolute;
+  top: calc(100% - 5px);
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  padding: 0 1px;
+  pointer-events: none;
+}
+.plip-bubble svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+@keyframes plipNobleFloatSVG {
+  0%, 100% { transform: translate3d(0,0,0) rotate(.001deg); }
+  50% { transform: translate3d(0,2px,0) rotate(.001deg); }
+}
+@keyframes plipRainbowTextSVG {
+  0% { fill: #ff0055; filter: drop-shadow(0 0 3px rgba(255,0,85,.5)); }
+  14% { fill: #ff5500; }
+  28% { fill: #ffcc00; }
+  42% { fill: #00ff66; }
+  56% { fill: #00ccff; }
+  70% { fill: #3333ff; }
+  84% { fill: #9900ff; }
+  100% { fill: #ff0055; filter: drop-shadow(0 0 3px rgba(255,0,85,.5)); }
+}
+@keyframes plipBoltFlashSVG {
+  0%, 100% { opacity: .85; filter: drop-shadow(0 0 1px #fde047); }
+  50% { opacity: 1; filter: drop-shadow(0 0 5px #fde047); }
+}
+.animated-bubble-container-svg {
+  animation: plipNobleFloatSVG 3s infinite ease-in-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.rainbow-bulb-svg { animation: plipRainbowTextSVG 7s linear infinite; }
+.flashing-bolt-svg { animation: plipBoltFlashSVG 1.5s infinite ease-in-out; }
+.jinsei-plip-effect-press { animation: jinseiPlipEffectPress .26s ease-out; }
+.jinsei-plip-effect-pulse { animation: jinseiPlipEffectPulse .42s ease-out; }
+.jinsei-plip-effect-glow { animation: jinseiPlipEffectGlow .55s ease-out; }
+.jinsei-plip-effect-shake { animation: jinseiPlipEffectShake .42s ease-out; }
+.jinsei-plip-effect-flash { animation: jinseiPlipEffectFlash .42s ease-out; }
+@keyframes jinseiPlipEffectPress {
+  0% { transform: scale(1) translateY(0); }
+  45% { transform: scale(.94) translateY(8px); filter: brightness(1.25); }
+  100% { transform: scale(1) translateY(0); }
+}
+@keyframes jinseiPlipEffectPulse {
+  0% { transform: scale(1); }
+  42% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+@keyframes jinseiPlipEffectGlow {
+  0% { filter: brightness(1); }
+  45% { filter: brightness(1.8) saturate(1.35); }
+  100% { filter: brightness(1); }
+}
+@keyframes jinseiPlipEffectShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px) rotate(-1deg); }
+  40% { transform: translateX(9px) rotate(1deg); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(4px); }
+}
+@keyframes jinseiPlipEffectFlash {
+  0% { opacity: 1; }
+  35% { opacity: .18; filter: brightness(2.5); }
+  100% { opacity: 1; }
+}
+#plip-toast {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 1000;
+  max-width: min(390px, calc(100vw - 36px));
+  padding: 12px 15px;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #f8fafc;
+  box-shadow: 0 14px 35px rgba(0,0,0,.45);
+  opacity: 0;
+  transform: translateY(-16px);
+  pointer-events: none;
+  transition: .25s;
+  font-size: 14px;
+}
+#plip-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+</style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased transition-all duration-300">
 
@@ -116,140 +233,48 @@
                     <div class="flex items-center gap-3 flex-nowrap min-w-0">
                         
 
-<!-- 🎯【ジェムキン改築：3色変転ボタン開始】ここから差し替えました -->
-
-
-
-
-                        <!-- ⌛ 砂時計ボタン（不動のシンボル：クリックで金・銀・赤に変変転） -->
-						
+<!-- 🎯【新SOL尽生ボタン：PLIPボタンジェネレータv5統合開始】 -->
 <div class="relative shrink-0 select-none w-16 h-16 sm:w-24 sm:h-24 group/core">
+    <button id="plip-core-button" type="button" aria-label="尽生 3段階連動シンボルボタン">
+        <span id="plip-stage"></span>
+    </button>
 
-                           <div id="jinsei-core-btn" onclick="triggerCoreBurstInterlocking();" class="absolute inset-0 cursor-pointer group flex items-center justify-center rounded-2xl bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 border-2 border-amber-400 overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.5)] transition-all duration-200 ease-out active:scale-95 active:translate-y-1 active:shadow-[0_2px_5px_rgba(0,0,0,0.3)] active:brightness-125 active:duration-75 select-none">             
-                               <svg class="w-full h-full z-10 transition-transform duration-300 group-hover:scale-105" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="plip-bubble" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 35">
+            <g class="animated-bubble-container-svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+                <path d="M 6 8 H 42 L 48 3 L 54 8 H 90 A 4 4 0 0 1 94 12 V 29 A 4 4 0 0 1 90 33 H 6 A 4 4 0 0 1 2 29 V 12 A 4 4 0 0 1 6 8 Z" fill="#151d30" stroke="#f59e0b" stroke-width="1.2" stroke-opacity="0.85" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.4))"></path>
+                <g transform="translate(6, 11) scale(0.85)">
+                    <g stroke="#fbbf24" stroke-linecap="round" stroke-width="1.2" opacity="0.55">
+                        <line x1="8" y1="1" x2="8" y2="3"></line><line x1="3" y1="3" x2="4.5" y2="4.5"></line>
+                        <line x1="1" y1="8" x2="3" y2="8"></line><line x1="3" y1="13" x2="4.5" y2="11.5"></line>
+                        <line x1="13" y1="11.5" x2="11.5" y2="10"></line><line x1="15" y1="8" x2="13" y2="8"></line>
+                        <line x1="13" y1="3" x2="11.5" y2="4.5"></line>
+                    </g>
+                    <path class="rainbow-bulb-svg" d="M8,2 C4.7,2 2,4.7 2,8 C2,10.1 3.1,11.2 4,12.1 C4.6,12.7 4.7,13.2 4.7,13.8 L11.3,13.8 C11.3,13.2 11.4,12.7 12,12.1 C12.9,11.2 14,10.1 14,8 C14,4.7 11.3,2 8,2 Z" fill="#94a3b8"></path>
+                    <path d="M5.5,9.5 L7,6.5 L9,6.5 L10.5,9.5" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" style="filter:drop-shadow(0 0 1px #fff)"></path>
+                    <path d="M4.7,13.8 H11.3 V15.5 C11.3,16 10.9,16.5 10.3,16.5 H5.7 C5.1,16.5 4.7,16 4.7,15.5 Z" fill="#94a3b8" stroke="#334155" stroke-width="0.5"></path>
+                    <path d="M5.5,16.5 H10.5 V17.5 C10.5,18 10,18.5 9.5,18.5 H6.5 C6,18.5 5.5,18 5.5,17.5 Z" fill="#475569"></path>
+                    <line x1="5" y1="14.8" x2="11" y2="14.8" stroke="#334155" stroke-width="0.8"></line>
+                    <line x1="5.3" y1="15.8" x2="10.7" y2="15.8" stroke="#334155" stroke-width="0.8"></line>
+                    <polygon class="flashing-bolt-svg" points="16,0.5 8,8.5 12,8.5 10,15.5 18,6.5 14,6.5" fill="#fde047"></polygon>
+                </g>
+                <text x="58" y="24" fill="#fbbf24" font-family="Arial,'Yu Gothic UI',Meiryo,sans-serif" font-size="11" font-weight="900" letter-spacing="0.03em" text-anchor="middle">PLIP !!</text>
+            </g>
+        </svg>
+    </div>
 
+    <div class="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 w-80 bg-slate-950/95 border border-amber-500/40 text-slate-200 p-3.5 rounded-xl shadow-2xl transition-all duration-200 opacity-0 scale-95 pointer-events-none group-hover/core:opacity-100 group-hover/core:scale-100 z-[100] max-sm:hidden">
+        <div class="font-bold text-amber-400 text-sm mb-1.5 flex items-center gap-1.5">
+            <i class="fa-solid fa-hourglass-half"></i><span>尽生シンボルボタン</span>
+        </div>
+        <p class="text-xs leading-relaxed text-slate-300 font-medium">クリックするたびに、環境音・主題歌・無音を3段階で切り替えます。</p>
+        <span class="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-slate-950"></span>
+    </div>
+</div>
+<div id="plip-toast" role="status"></div>
+<!-- 🎯【新SOL尽生ボタン：PLIPボタンジェネレータv5統合終了】 -->
 
-  <defs>
-                                        <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-                                            <stop offset="0%" stop-color="#FFD700"/>
-                                            <stop offset="50%" stop-color="#FCD34D"/>
-                                            <stop offset="100%" stop-color="#B45309"/>
-                                        </linearGradient>
-
-                                        <linearGradient id="platinum" x1="0" y1="0" x2="1" y2="1">
-                                            <stop offset="0%" stop-color="#FFFFFF"/>
-                                            <stop offset="45%" stop-color="#E2E8F0"/>
-                                            <stop offset="70%" stop-color="#94A3B8"/>
-                                            <stop offset="100%" stop-color="#475569"/>
-                                        </linearGradient>
-
-                                        <linearGradient id="platinumText" x1="0" y1="0" x2="1" y2="1">
-                                            <stop offset="0%" stop-color="#FFFFFF"/>
-                                            <stop offset="30%" stop-color="#F8FAFC"/>
-                                            <stop offset="65%" stop-color="#CBD5E1"/>
-                                            <stop offset="100%" stop-color="#475569"/>
-                                        </linearGradient>
-
-                                        <linearGradient id="gemShine" x1="0" y1="0" x2="1" y2="1">
-                                            <stop offset="0%" stop-color="#FFFCE0"/><stop offset="40%" stop-color="#FFE27A"/><stop offset="100%" stop-color="#C0A060"/>
-                                            <animate attributeName="x1" values="0;1;0" dur="4s" repeatCount="indefinite"/><animate attributeName="y1" values="0;1;0" dur="4s" repeatCount="indefinite"/>
-                                        </linearGradient>
-                                        <linearGradient id="gemBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E0F2FE"/><stop offset="50%" stop-color="#38BDF8"/><stop offset="100%" stop-color="#0369A1"/><animate attributeName="x1" values="0;1;0" dur="4.5s" repeatCount="indefinite"/></linearGradient>
-                                        <linearGradient id="gemRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFE4E6"/><stop offset="50%" stop-color="#FB7185"/><stop offset="100%" stop-color="#BE123C"/><animate attributeName="x1" values="0;1;0" dur="3.8s" repeatCount="indefinite"/></linearGradient>
-                                        <linearGradient id="gemGreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#DCFCE7"/><stop offset="50%" stop-color="#4ADE80"/><stop offset="100%" stop-color="#15803D"/><animate attributeName="x1" values="0;1;0" dur="5s" repeatCount="indefinite"/></linearGradient>
-                                    </defs>
-                                    
-									
-                                   <text x="50" y="215" fill="url(#gold)" font-family="'Shippori Mincho', serif" font-size="96" font-weight="900" text-anchor="middle" filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.85))">尽</text>
-                                    <text x="310" y="215" fill="url(#gold)" font-family="'Shippori Mincho', serif" font-size="96" font-weight="900" text-anchor="middle" filter="drop-shadow(0px 3px 5px rgba(0,0,0,0.85))">生</text>
-                                    
-                                    <path d="M130,50 C180,120 180,160 130,230 L130,280 L230,280 L230,230 C180,160 180,120 230,50 Z" fill="#090D16" filter="drop-shadow(0px 4px 10px rgba(0,0,0,0.5))"/>
-                                    
-                                    <path d="M140,60 Q180,100 180,130" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.3" stroke-linecap="round"/>
-                                    <path d="M220,270 Q180,230 180,200" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.2" stroke-linecap="round"/>
-                                    
-                                    <rect x="100" y="20" width="160" height="30" rx="15" fill="url(#platinum)"/>
-                                    <rect x="100" y="310" width="160" height="30" rx="15" fill="url(#platinum)"/>
-                                    <rect x="111" y="50" width="10" height="260" rx="5" fill="url(#platinum)"/>
-                                    <rect x="240" y="50" width="10" height="260" rx="5" fill="url(#platinum)"/>
-                                    
-                                    <path d="M130,50 C180,120 180,160 130,230 L130,280 C120,220 120,180 130,120 Z" fill="none" stroke="url(#platinum)" stroke-width="5"/>
-                                    <path d="M230,50 C180,120 180,160 230,230 L230,280 C240,220 240,180 230,120 Z" fill="none" stroke="url(#platinum)" stroke-width="5"/>
-									
-									
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 215" dur="18s" begin="6.0s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="translate" values="-18,0; 18,45; -12,100; 14.4,155; -18,215" dur="18s" begin="6.0s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" from="-40 180 60" to="320 180 60" dur="12.5s" begin="6.0s" repeatCount="indefinite"/><text x="180" y="60" fill="url(#platinumText)" font-family="'Shippori Mincho', serif" font-size="14" font-weight="700" text-anchor="middle" filter="drop-shadow(0px 1px 3px rgba(255,255,255,0.15))"><animate attributeName="opacity" values="0; 0.95; 0.95; 0.7; 0" dur="18s" begin="6.0s" repeatCount="indefinite"/>生</text></g></g></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 215" dur="20s" begin="14.4s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="translate" values="-16,0; 16,45; -10.666666666666666,100; 12.8,155; -16,215" dur="20s" begin="14.4s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" from="-40 190 60" to="320 190 60" dur="11s" begin="14.4s" repeatCount="indefinite"/><text x="190" y="60" fill="url(#platinumText)" font-family="'Shippori Mincho', serif" font-size="14" font-weight="700" text-anchor="middle" filter="drop-shadow(0px 1px 3px rgba(255,255,255,0.15))"><animate attributeName="opacity" values="0; 0.95; 0.95; 0.7; 0" dur="20s" begin="14.4s" repeatCount="indefinite"/>死</text></g></g></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 215" dur="22s" begin="7.2s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="translate" values="-24,0; 24,45; -16,100; 19.200000000000003,155; -24,215" dur="22s" begin="7.2s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" from="-40 200 60" to="320 200 60" dur="14s" begin="7.2s" repeatCount="indefinite"/><text x="200" y="60" fill="url(#platinumText)" font-family="'Shippori Mincho', serif" font-size="14" font-weight="700" text-anchor="middle" filter="drop-shadow(0px 1px 3px rgba(255,255,255,0.15))"><animate attributeName="opacity" values="0; 0.95; 0.95; 0.7; 0" dur="22s" begin="7.2s" repeatCount="indefinite"/>会</text></g></g></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 215" dur="22s" begin="12.0s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="translate" values="-20,0; 20,45; -13.333333333333334,100; 16,155; -20,215" dur="22s" begin="12.0s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" from="-40 200 60" to="320 200 60" dur="14s" begin="12.0s" repeatCount="indefinite"/><text x="200" y="60" fill="url(#platinumText)" font-family="'Shippori Mincho', serif" font-size="14" font-weight="700" text-anchor="middle" filter="drop-shadow(0px 1px 3px rgba(255,255,255,0.15))"><animate attributeName="opacity" values="0; 0.95; 0.95; 0.7; 0" dur="22s" begin="12.0s" repeatCount="indefinite"/>別</text></g></g></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 215" dur="22s" begin="12.0s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="translate" values="-14,0; 14,45; -9.333333333333334,100; 11.200000000000001,155; -14,215" dur="22s" begin="12.0s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" from="-40 200 60" to="320 200 60" dur="18.5s" begin="12.0s" repeatCount="indefinite"/><text x="200" y="60" fill="url(#platinumText)" font-family="'Shippori Mincho', serif" font-size="14" font-weight="700" text-anchor="middle" filter="drop-shadow(0px 1px 3px rgba(255,255,255,0.15))"><animate attributeName="opacity" values="0; 0.95; 0.95; 0.7; 0" dur="22s" begin="12.0s" repeatCount="indefinite"/>愛</text></g></g></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 215" dur="15s" begin="0.0s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="translate" values="-26,0; 26,45; -17.333333333333332,100; 20.8,155; -26,215" dur="15s" begin="0.0s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" from="-40 165 60" to="320 165 60" dur="12.5s" begin="0.0s" repeatCount="indefinite"/><text x="165" y="60" fill="url(#platinumText)" font-family="'Shippori Mincho', serif" font-size="14" font-weight="700" text-anchor="middle" filter="drop-shadow(0px 1px 3px rgba(255,255,255,0.15))"><animate attributeName="opacity" values="0; 0.95; 0.95; 0.7; 0" dur="15s" begin="0.0s" repeatCount="indefinite"/>憎</text></g></g></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 215" dur="17s" begin="9.6s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="translate" values="-16,0; 16,45; -10.666666666666666,100; 12.8,155; -16,215" dur="17s" begin="9.6s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" from="-40 175 60" to="320 175 60" dur="11s" begin="9.6s" repeatCount="indefinite"/><text x="175" y="60" fill="url(#platinumText)" font-family="'Shippori Mincho', serif" font-size="14" font-weight="700" text-anchor="middle" filter="drop-shadow(0px 1px 3px rgba(255,255,255,0.15))"><animate attributeName="opacity" values="0; 0.95; 0.95; 0.7; 0" dur="17s" begin="9.6s" repeatCount="indefinite"/>育</text></g></g></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 215" dur="22s" begin="14.4s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="translate" values="-14,0; 14,45; -9.333333333333334,100; 11.200000000000001,155; -14,215" dur="22s" begin="14.4s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" from="-40 200 60" to="320 200 60" dur="18.5s" begin="14.4s" repeatCount="indefinite"/><text x="200" y="60" fill="url(#platinumText)" font-family="'Shippori Mincho', serif" font-size="14" font-weight="700" text-anchor="middle" filter="drop-shadow(0px 1px 3px rgba(255,255,255,0.15))"><animate attributeName="opacity" values="0; 0.95; 0.95; 0.7; 0" dur="22s" begin="14.4s" repeatCount="indefinite"/>離</text></g></g></g>
-                                    
-                                    <circle cx="180" cy="80" r="5" fill="#FFD700"><animate attributeName="cy" from="80" to="260" dur="4.2s" begin="0.0s" repeatCount="indefinite"/><animate attributeName="cx" values="180;185;175;180" dur="4.2s" begin="0.0s" repeatCount="indefinite"/></circle>
-                                    <circle cx="200" cy="90" r="4" fill="#FFD700"><animate attributeName="cy" from="90" to="260" dur="5.1s" begin="0.3s" repeatCount="indefinite"/><animate attributeName="cx" values="200;205;195;200" dur="5.1s" begin="0.3s" repeatCount="indefinite"/></circle>
-                                    <circle cx="160" cy="70" r="4" fill="#FFD700"><animate attributeName="cy" from="70" to="260" dur="3.7s" begin="0.6s" repeatCount="indefinite"/><animate attributeName="cx" values="160;165;155;160" dur="3.7s" begin="0.6s" repeatCount="indefinite"/></circle>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 180" dur="5.2s" begin="0.0s" repeatCount="indefinite"/><polygon points="180,85 188,92 188,102 180,109 172,102 172,92" fill="url(#gemShine)"><animateTransform attributeName="transform" type="rotate" from="0 180 97" to="720 180 97" dur="6s" repeatCount="indefinite"/></polygon></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 180" dur="4.8s" begin="0.5s" repeatCount="indefinite"/><polygon points="165,90 173,98 165,106 157,98" fill="url(#gemBlue)"><animateTransform attributeName="transform" type="rotate" from="0 165 98" to="720 165 98" dur="6s" repeatCount="indefinite"/></polygon></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 180" dur="5.5s" begin="1.0s" repeatCount="indefinite"/><polygon points="200,105 207,112 200,122 193,112" fill="url(#gemRed)"><animateTransform attributeName="transform" type="rotate" from="0 200 117" to="720 200 117" dur="6s" repeatCount="indefinite"/></polygon></g>
-                                    <g><animateTransform attributeName="transform" type="translate" from="0 0" to="0 180" dur="5.1s" begin="1.5s" repeatCount="indefinite"/><polygon points="185,120 192,127 185,134 178,127" fill="url(#gemGreen)"><animateTransform attributeName="transform" type="rotate" from="0 185 127" to="720 185 127" dur="6s" repeatCount="indefinite"/></polygon></g>
-                                   
-                                    <rect x="190" y="60" width="20" height="10" fill="#A0FFB0" rx="2"><animate attributeName="x" values="190;195;190;185;190" dur="5s" begin="0.4s" repeatCount="indefinite"/><animate attributeName="y" from="60" to="260" dur="5s" begin="0.4s" repeatCount="indefinite"/></rect>
-                                    <rect x="150" y="85" width="20" height="10" fill="#A0FFB0" rx="2"><animate attributeName="x" values="150;155;150;145;150" dur="5.4s" begin="1.1s" repeatCount="indefinite"/><animate attributeName="y" from="85" to="260" dur="5.4s" begin="1.1s" repeatCount="indefinite"/></rect>
-                     </svg>
-                            </div>
-
-  <div class="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 w-80 bg-slate-950/95 border border-amber-500/40 text-slate-200 p-3.5 rounded-xl shadow-2xl transition-all duration-200 opacity-0 scale-95 pointer-events-none group-hover/core:opacity-100 group-hover/core:scale-100 z-[100] max-sm:hidden">
-                                <div class="font-bold text-amber-400 text-sm mb-1.5 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-hourglass-half"></i> <span>尽生シンボルボタン</span>
-                                </div>
-                                <p class="text-xs leading-relaxed text-slate-300 font-medium">
-                                    クリックすると、専用のテーマ曲でシミュレーションを行います。
-                                </p>
-                                <span class="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[6px] border-r-slate-950"></span>
-                            </div>
-
-
-      <!-- 🎯ここから -->
-
-<!-- 💡ボタンの横幅（100%）にピタッと1ミリの隙間なく満たす新・爆広吹き出し -->
-                            <div class="absolute top-[calc(100%-5px)] left-0 w-full pointer-events-none select-none z-50 px-[1px]">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 35" class="w-full h-auto">
-                                    <defs>
-                                        <style>
-                                            @keyframes plipNobleFloatSVG { 0% { transform: translate3d(0, 0px, 0) rotate(0.001deg); } 50% { transform: translate3d(0, 2px, 0) rotate(0.001deg); } 100% { transform: translate3d(0, 0px, 0) rotate(0.001deg); } }
-                                            @keyframes plipRainbowTextSVG { 0% { fill: #ff0055; filter: drop-shadow(0 0 3px rgba(255, 0, 85, 0.5)); } 14% { fill: #ff5500; filter: drop-shadow(0 0 3px rgba(255, 85, 0, 0.5)); } 28% { fill: #ffcc00; filter: drop-shadow(0 0 3px rgba(255, 204, 0, 0.5)); } 42% { fill: #00ff66; filter: drop-shadow(0 0 3px rgba(0, 255, 102, 0.5)); } 50% { fill: #00ccff; filter: drop-shadow(0 0 3px rgba(0, 204, 255, 0.5)); } 70% { fill: #3333ff; filter: drop-shadow(0 0 3px rgba(51, 51, 255, 0.5)); } 84% { fill: #9900ff; filter: drop-shadow(0 0 3px rgba(153, 0, 255, 0.5)); } 100% { fill: #ff0055; filter: drop-shadow(0 0 3px rgba(255, 0, 85, 0.5)); } }
-                                            @keyframes plipBoltFlashSVG { 0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 1px #fde047); } 50% { opacity: 1; filter: drop-shadow(0 0 5px #fde047); } }
-                                            .animated-bubble-container-svg { animation: plipNobleFloatSVG 3s infinite ease-in-out; will-change: transform; backface-visibility: hidden; }
-                                            .rainbow-bulb-svg { animation: plipRainbowTextSVG 7s linear infinite; }
-                                            .flashing-bolt-svg { animation: plipBoltFlashSVG 1.5s infinite ease-in-out; }
-                                        </style>
-                                    </defs>
-                                    <g class="animated-bubble-container-svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
-                                        <!-- 横幅96pxのキャンバスをギリギリ端（2px〜94px）まで使って描く特製吹き出しパス -->
-                                        <path d="M 6 8 H 42 L 48 3 L 54 8 H 90 A 4 4 0 0 1 94 12 V 29 A 4 4 0 0 1 90 33 H 6 A 4 4 0 0 1 2 29 V 12 A 4 4 0 0 1 6 8 Z" fill="#151d30" stroke="#f59e0b" stroke-width="1.2" stroke-opacity="0.85" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.4))" />
-                                        
-                                        <!-- 左端にきれいに寄せて配置したコアバースト電球 -->
-                                        <g transform="translate(6, 11) scale(0.85)">
-                                            <g stroke="#fbbf24" stroke-linecap="round" stroke-width="1.2" opacity="0.55"><line x1="8" y1="1" x2="8" y2="3" /><line x1="3" y1="3" x2="4.5" y2="4.5" /><line x1="1" y1="8" x2="3" y2="8" /><line x1="3" y1="13" x2="4.5" y2="11.5" /><line x1="13" y1="11.5" x2="11.5" y2="10" /><line x1="15" y1="8" x2="13" y2="8" /><line x1="13" y1="3" x2="11.5" y2="4.5" /></g>
-                                            <path class="rainbow-bulb-svg" d="M8,2 C4.7,2 2,4.7 2,8 C2,10.1 3.1,11.2 4,12.1 C4.6,12.7 4.7,13.2 4.7,13.8 L11.3,13.8 C11.3,13.2 11.4,12.7 12,12.1 C12.9,11.2 14,10.1 14,8 C14,4.7 11.3,2 8,2 Z" fill="#94a3b8" />
-                                            <path d="M5.5,9.5 L7,6.5 L9,6.5 L10.5,9.5" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" style="filter: drop-shadow(0 0 1px #ffffff);" />
-                                            <path d="M4.7,13.8 H11.3 V15.5 C11.3,16 10.9,16.5 10.3,16.5 H5.7 C5.1,16.5 4.7,16 4.7,15.5 Z" fill="#94a3b8" stroke="#334155" stroke-width="0.5" />
-                                            <path d="M5.5,16.5 H10.5 V17.5 C10.5,18 10,18.5 9.5,18.5 H6.5 C6,18.5 5.5,18 5.5,17.5 Z" fill="#475569" />
-                                            <line x1="5" y1="14.8" stroke="#334155" stroke-width="0.8" x2="11" y2="14.8" /><line x1="5.3" y1="15.8" stroke="#334155" stroke-width="0.8" x2="10.7" y2="15.8" />
-                                            <polygon class="flashing-bolt-svg" points="16,0.5 8,8.5 12,8.5 10,15.5 18,6.5 14,6.5" fill="#fde047" />
-                                        </g>
-                                        
-                                        <!-- テキスト位置も右側の中心（x=58）に再配置して文字サイズも調整 -->
-                                        <text x="58" y="24" fill="#fbbf24" font-family="'Plus Jakarta Sans', 'Noto Sans JP', sans-serif" font-size="11" font-weight="900" letter-spacing="0.03em" text-anchor="middle">PLIP !!</text>
-                                    </g>
-                                </svg>
-                            </div>
-    <!-- 🎯ここ　まで -->
-
-                        </div>
-
-                        <div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-col gap-1 min-w-0">
 
   
 
@@ -3253,596 +3278,312 @@ function executeSlotAction(action, slotNum) {
         } // window.onload の終わり
     </script>
 
+
+
 <script>
-        // 🏛️ 三連変転の軍略状態を管理するグローバル変数
-        let currentCoreStyleState = 0; // 0:金枠, 1:銀枠, 2:赤枠
-        let audioBgmElement = null;    // 金枠用（bgm.mp3）
-        let audioMediaElement = null;  // 銀枠用（song.mp4）
+/* 新SOL尽生ボタン：PLIPボタンジェネレータv5統合ロジック */
 
-        // ⌛ クリック時に「コリッ」と鳴らし、枠色とBGMを3段階に変転させる統括関数
-        function triggerCoreBurstInterlocking() {
-            runSimulation();
-            playClickClickSound();
-            currentCoreStyleState = (currentCoreStyleState + 1) % 3;
-            applyCoreBurstStyleAndMusic();
-        }
+(() => {
+  const STATES = [{"svg":"\u003csvg style=\"width:100%;height:100%;display:block\" preserveAspectRatio=\"xMidYMid meet\"  viewBox=\"0 0 360 360\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n      \u003cdefs>\n        \u003c!-- ゴールドフレーム -->\n        \u003clinearGradient id=\"gold\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFD700\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#FCD34D\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#B45309\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- プラチナフレーム -->\n        \u003clinearGradient id=\"platinum\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFFFF\"/>\n          \u003cstop offset=\"45%\" stop-color=\"#E2E8F0\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#94A3B8\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#475569\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- ルビーフレーム -->\n        \u003clinearGradient id=\"ruby\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FDA4AF\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#E11D48\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#4C0519\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- サファイアフレーム -->\n        \u003clinearGradient id=\"sapphire\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#7DD3FC\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#0284C7\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0F172A\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアム白金（プラチナ）グラデーション -->\n        \u003clinearGradient id=\"platinumText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFFFF\"/>\n          \u003cstop offset=\"30%\" stop-color=\"#F8FAFC\"/>\n          \u003cstop offset=\"65%\" stop-color=\"#CBD5E1\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#475569\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムゴールドグラデーション -->\n        \u003clinearGradient id=\"goldText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFF9E6\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#FCD34D\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#D97706\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#78350F\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムルビーグラデーション -->\n        \u003clinearGradient id=\"rubyText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFE4E6\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#FB7185\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#E11D48\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#4C0519\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムサファイアグラデーション -->\n        \u003clinearGradient id=\"sapphireText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#F0F9FF\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#38BDF8\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#0284C7\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0F172A\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- コンテナ背景用グラデーション -->\n        \u003clinearGradient id=\"spaceBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#0f172a\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#020617\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"velvetBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#450a0a\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#090d16\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"forestBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#062f22\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#020806\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 各種ジュエルの輝きアニメーション用グラデーション -->\n        \u003clinearGradient id=\"gemShine\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFCE0\"/>\n          \u003cstop offset=\"40%\" stop-color=\"#FFE27A\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#C0A060\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"4s\" repeatCount=\"indefinite\"/>\n          \u003canimate attributeName=\"y1\" values=\"0;1;0\" dur=\"4s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemBlue\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#E0F2FE\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#38BDF8\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0369A1\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"4.5s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemRed\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFE4E6\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#FB7185\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#BE123C\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"3.8s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemGreen\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#DCFCE7\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#4ADE80\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#15803D\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"5s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n      \u003c/defs>\n  \n  \u003c!-- 動的コンテナ背景層 -->\n  \n  \n  \u003c!-- 妖艶モード専用エフェクト -->\n  \n  \n  \u003c!-- 「尽生」の文字（動的材質グラデーション & 動的フォント） -->\n  \u003ctext x=\"50\" y=\"215\" fill=\"url(#goldText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"96\" font-weight=\"900\" text-anchor=\"middle\" filter=\"drop-shadow(0px 3px 5px rgba(0,0,0,0.85))\">尽\u003c/text>\n  \u003ctext x=\"310\" y=\"215\" fill=\"url(#goldText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"96\" font-weight=\"900\" text-anchor=\"middle\" filter=\"drop-shadow(0px 3px 5px rgba(0,0,0,0.85))\">生\u003c/text>\n  \n  \u003c!-- 砂時計のガラス内部背景（黒固定） -->\n  \u003cpath d=\"M130,50 C180,120 180,160 130,230 L130,280 L230,280 L230,230 C180,160 180,120 230,50 Z\" fill=\"#090D16\" filter=\"drop-shadow(0px 4px 10px rgba(0,0,0,0.5))\"/>\n  \n  \u003c!-- ガラスのリアルな反射光 -->\n  \n        \u003cpath d=\"M140,60 Q180,100 180,130\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"2.5\" opacity=\"0.3\" stroke-linecap=\"round\"/>\n        \u003cpath d=\"M220,270 Q180,230 180,200\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"1.5\" opacity=\"0.2\" stroke-linecap=\"round\"/>\n      \n  \n  \u003c!-- 砂時計の台座＆支柱（動的マテリアル & シェイプ） -->\n  \u003crect x=\"100\" y=\"20\" width=\"160\" height=\"30\" rx=\"15\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"100\" y=\"310\" width=\"160\" height=\"30\" rx=\"15\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"111\" y=\"50\" width=\"10\" height=\"260\" rx=\"5\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"240\" y=\"50\" width=\"10\" height=\"260\" rx=\"5\" fill=\"url(#platinum)\"/>\n  \n  \u003c!-- ガラス外枠曲線 -->\n  \u003cpath d=\"M130,50 C180,120 180,160 130,230 L130,280 C120,220 120,180 130,120 Z\" fill=\"none\" stroke=\"url(#platinum)\" stroke-width=\"5\"/>\n  \u003cpath d=\"M230,50 C180,120 180,160 230,230 L230,280 C240,220 240,180 230,120 Z\" fill=\"none\" stroke=\"url(#platinum)\" stroke-width=\"5\"/>\n  \n  \u003c!-- 動的アセットレイヤー -->\n  \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"18s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-18,0; 18,45; -12,100; 14.4,155; -18,215\" dur=\"18s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 180 60\" to=\"320 180 60\" dur=\"12.5s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"180\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"18s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                    生\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"20s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-16,0; 16,45; -10.666666666666666,100; 12.8,155; -16,215\" dur=\"20s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 190 60\" to=\"320 190 60\" dur=\"11s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"190\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"20s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                    死\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"22s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-24,0; 24,45; -16,100; 19.200000000000003,155; -24,215\" dur=\"22s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"14s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"22s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                    会\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"22s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-20,0; 20,45; -13.333333333333334,100; 16,155; -20,215\" dur=\"22s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"14s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"22s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                    別\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"22s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-14,0; 14,45; -9.333333333333334,100; 11.200000000000001,155; -14,215\" dur=\"22s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"18.5s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"22s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                    愛\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"15s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-26,0; 26,45; -17.333333333333332,100; 20.8,155; -26,215\" dur=\"15s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 165 60\" to=\"320 165 60\" dur=\"12.5s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"165\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"15s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                    憎\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"17s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-16,0; 16,45; -10.666666666666666,100; 12.8,155; -16,215\" dur=\"17s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 175 60\" to=\"320 175 60\" dur=\"11s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"175\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"17s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                    育\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"22s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-14,0; 14,45; -9.333333333333334,100; 11.200000000000001,155; -14,215\" dur=\"22s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"18.5s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"22s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                    離\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003ccircle cx=\"180\" cy=\"80\" r=\"5\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"80\" to=\"260\" dur=\"4.2s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"180;185;175;180\" dur=\"4.2s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"200\" cy=\"90\" r=\"4\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"90\" to=\"260\" dur=\"5.1s\" begin=\"0.3s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"200;205;195;200\" dur=\"5.1s\" begin=\"0.3s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"160\" cy=\"70\" r=\"4\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"70\" to=\"260\" dur=\"3.7s\" begin=\"0.6s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"160;165;155;160\" dur=\"3.7s\" begin=\"0.6s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"170\" cy=\"95\" r=\"3\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"95\" to=\"260\" dur=\"4.8s\" begin=\"0.9s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"170;175;165;170\" dur=\"4.8s\" begin=\"0.9s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"5.2s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"180,85 188,92 188,102 180,109 172,102 172,92\" fill=\"url(#gemShine)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 180 97\" to=\"720 180 97\" dur=\"6s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"4.8s\" begin=\"0.5s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"165,90 173,98 165,106 157,98\" fill=\"url(#gemBlue)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 165 98\" to=\"720 165 98\" dur=\"6s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"5.5s\" begin=\"1.0s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"200,105 207,112 200,122 193,112\" fill=\"url(#gemRed)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 200 117\" to=\"720 200 117\" dur=\"6s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"5.1s\" begin=\"1.5s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"185,120 192,127 185,134 178,127\" fill=\"url(#gemGreen)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 185 127\" to=\"720 185 127\" dur=\"6s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n          \u003cg>\n            \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 210\" dur=\"12s\" begin=\"3s\" repeatCount=\"indefinite\"/>\n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-15,0; 20,70; -5,140; 15,210\" dur=\"12s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 175 65\" to=\"360 175 65\" dur=\"6s\" repeatCount=\"indefinite\"/>\n                \u003cpath d=\"M175,55 C169.5,55 165,59.5 165,65 C165,69.5 168,73.2 172,74.5 L172,85 L177,85 L177,81 L180,81 L180,78 L177,78 L177,74.5 C181,73.2 184,69.5 184,65 C184,59.5 179.5,55 175,55 Z M175,59 C178.3,59 181,61.7 181,65 C181,68.3 178.3,71 175,71 C171.7,71 169,68.3 169,65 C169,61.7 171.7,59 175,59 Z\" fill=\"url(#gold)\"/>\n              \u003c/g>\n            \u003c/g>\n          \u003c/g>\n        \n          \u003cg>\n            \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 210\" dur=\"20s\" begin=\"6s\" repeatCount=\"indefinite\"/>\n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"15,0; -25,50; 20,110; -15,160; 5,210\" dur=\"20s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" values=\"-20 180 57; 30 180 57; -30 180 57; 15 180 57; -20 180 57\" dur=\"5s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003canimate attributeName=\"opacity\" values=\"0; 0.2; 0.9; 1; 0.7; 1; 0.3; 0\" dur=\"6s\" repeatCount=\"indefinite\"/>\n                  \u003cpath d=\"M180,68 C178.5,66.3 172,59.5 172,54.4 C172,50.6 174.9,47.6 178.8,47.6 C180.9,47.6 182.2,48.9 183,49.7 C183.8,48.9 185.1,47.6 187.2,47.6 C191.1,47.6 194,50.6 194,54.4 C194,59.5 187.5,66.3 186,68 L183,70.5 Z\" fill=\"url(#gemRed)\"/>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \u003c/g>\n        \n          \u003crect x=\"190\" y=\"60\" width=\"20\" height=\"10\" fill=\"#A0FFB0\" rx=\"2\">\n            \u003canimate attributeName=\"x\" values=\"190;195;190;185;190\" dur=\"5s\" begin=\"0.4s\" repeatCount=\"indefinite\"/>\n            \u003canimate attributeName=\"y\" from=\"60\" to=\"260\" dur=\"5s\" begin=\"0.4s\" repeatCount=\"indefinite\"/>\n          \u003c/rect>\n          \u003crect x=\"150\" y=\"85\" width=\"20\" height=\"10\" fill=\"#A0FFB0\" rx=\"2\">\n            \u003canimate attributeName=\"x\" values=\"150;155;150;145;150\" dur=\"5.4s\" begin=\"1.1s\" repeatCount=\"indefinite\"/>\n            \u003canimate attributeName=\"y\" from=\"85\" to=\"260\" dur=\"5.4s\" begin=\"1.1s\" repeatCount=\"indefinite\"/>\n          \u003c/rect>\n        \n\u003c/svg>","color":"#FFD700","musicMode":"ambient"},{"svg":"\u003csvg style=\"width:100%;height:100%;display:block\" preserveAspectRatio=\"xMidYMid meet\"  viewBox=\"0 0 360 360\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n      \u003cdefs>\n        \u003c!-- ゴールドフレーム -->\n        \u003clinearGradient id=\"gold\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFD700\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#FCD34D\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#B45309\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- プラチナフレーム -->\n        \u003clinearGradient id=\"platinum\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFFFF\"/>\n          \u003cstop offset=\"45%\" stop-color=\"#E2E8F0\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#94A3B8\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#475569\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- ルビーフレーム -->\n        \u003clinearGradient id=\"ruby\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FDA4AF\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#E11D48\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#4C0519\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- サファイアフレーム -->\n        \u003clinearGradient id=\"sapphire\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#7DD3FC\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#0284C7\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0F172A\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアム白金（プラチナ）グラデーション -->\n        \u003clinearGradient id=\"platinumText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFFFF\"/>\n          \u003cstop offset=\"30%\" stop-color=\"#F8FAFC\"/>\n          \u003cstop offset=\"65%\" stop-color=\"#CBD5E1\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#475569\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムゴールドグラデーション -->\n        \u003clinearGradient id=\"goldText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFF9E6\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#FCD34D\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#D97706\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#78350F\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムルビーグラデーション -->\n        \u003clinearGradient id=\"rubyText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFE4E6\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#FB7185\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#E11D48\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#4C0519\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムサファイアグラデーション -->\n        \u003clinearGradient id=\"sapphireText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#F0F9FF\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#38BDF8\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#0284C7\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0F172A\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- コンテナ背景用グラデーション -->\n        \u003clinearGradient id=\"spaceBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#0f172a\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#020617\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"velvetBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#450a0a\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#090d16\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"forestBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#062f22\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#020806\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 各種ジュエルの輝きアニメーション用グラデーション -->\n        \u003clinearGradient id=\"gemShine\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFCE0\"/>\n          \u003cstop offset=\"40%\" stop-color=\"#FFE27A\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#C0A060\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"1.3793103448275863s\" repeatCount=\"indefinite\"/>\n          \u003canimate attributeName=\"y1\" values=\"0;1;0\" dur=\"1.3793103448275863s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemBlue\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#E0F2FE\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#38BDF8\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0369A1\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"1.5517241379310345s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemRed\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFE4E6\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#FB7185\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#BE123C\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"1.3103448275862069s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemGreen\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#DCFCE7\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#4ADE80\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#15803D\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"1.7241379310344829s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n      \u003c/defs>\n  \n  \u003c!-- 動的コンテナ背景層 -->\n  \n  \n  \u003c!-- 妖艶モード専用エフェクト -->\n  \n  \n  \u003c!-- 「尽生」の文字（動的材質グラデーション & 動的フォント） -->\n  \u003ctext x=\"50\" y=\"215\" fill=\"url(#goldText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"96\" font-weight=\"900\" text-anchor=\"middle\" filter=\"drop-shadow(0px 3px 5px rgba(0,0,0,0.85))\">尽\u003c/text>\n  \u003ctext x=\"310\" y=\"215\" fill=\"url(#goldText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"96\" font-weight=\"900\" text-anchor=\"middle\" filter=\"drop-shadow(0px 3px 5px rgba(0,0,0,0.85))\">生\u003c/text>\n  \n  \u003c!-- 砂時計のガラス内部背景（黒固定） -->\n  \u003cpath d=\"M130,50 C180,120 180,160 130,230 L130,280 L230,280 L230,230 C180,160 180,120 230,50 Z\" fill=\"#090D16\" filter=\"drop-shadow(0px 4px 10px rgba(0,0,0,0.5))\"/>\n  \n  \u003c!-- ガラスのリアルな反射光 -->\n  \n        \u003cpath d=\"M140,60 Q180,100 180,130\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"2.5\" opacity=\"0.3\" stroke-linecap=\"round\"/>\n        \u003cpath d=\"M220,270 Q180,230 180,200\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"1.5\" opacity=\"0.2\" stroke-linecap=\"round\"/>\n      \n  \n  \u003c!-- 砂時計の台座＆支柱（動的マテリアル & シェイプ） -->\n  \u003crect x=\"100\" y=\"20\" width=\"160\" height=\"30\" rx=\"15\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"100\" y=\"310\" width=\"160\" height=\"30\" rx=\"15\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"111\" y=\"50\" width=\"10\" height=\"260\" rx=\"5\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"240\" y=\"50\" width=\"10\" height=\"260\" rx=\"5\" fill=\"url(#platinum)\"/>\n  \n  \u003c!-- ガラス外枠曲線 -->\n  \u003cpath d=\"M130,50 C180,120 180,160 130,230 L130,280 C120,220 120,180 130,120 Z\" fill=\"none\" stroke=\"url(#platinum)\" stroke-width=\"5\"/>\n  \u003cpath d=\"M230,50 C180,120 180,160 230,230 L230,280 C240,220 240,180 230,120 Z\" fill=\"none\" stroke=\"url(#platinum)\" stroke-width=\"5\"/>\n  \n  \u003c!-- 動的アセットレイヤー -->\n  \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"6.206896551724138s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-18,0; 18,45; -12,100; 14.4,155; -18,215\" dur=\"6.206896551724138s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 180 60\" to=\"320 180 60\" dur=\"4.310344827586207s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"180\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"6.206896551724138s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                    生\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"6.8965517241379315s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-16,0; 16,45; -10.666666666666666,100; 12.8,155; -16,215\" dur=\"6.8965517241379315s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 190 60\" to=\"320 190 60\" dur=\"3.793103448275862s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"190\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"6.8965517241379315s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                    死\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"7.586206896551724s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-24,0; 24,45; -16,100; 19.200000000000003,155; -24,215\" dur=\"7.586206896551724s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"4.827586206896552s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"7.586206896551724s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                    会\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"7.586206896551724s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-20,0; 20,45; -13.333333333333334,100; 16,155; -20,215\" dur=\"7.586206896551724s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"4.827586206896552s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"7.586206896551724s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                    別\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"7.586206896551724s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-14,0; 14,45; -9.333333333333334,100; 11.200000000000001,155; -14,215\" dur=\"7.586206896551724s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"6.379310344827586s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"7.586206896551724s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                    愛\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"5.172413793103448s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-26,0; 26,45; -17.333333333333332,100; 20.8,155; -26,215\" dur=\"5.172413793103448s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 165 60\" to=\"320 165 60\" dur=\"4.310344827586207s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"165\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"5.172413793103448s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                    憎\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"5.862068965517242s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-16,0; 16,45; -10.666666666666666,100; 12.8,155; -16,215\" dur=\"5.862068965517242s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 175 60\" to=\"320 175 60\" dur=\"3.793103448275862s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"175\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"5.862068965517242s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                    育\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"7.586206896551724s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-14,0; 14,45; -9.333333333333334,100; 11.200000000000001,155; -14,215\" dur=\"7.586206896551724s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"6.379310344827586s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"7.586206896551724s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                    離\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003ccircle cx=\"180\" cy=\"80\" r=\"5\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"80\" to=\"260\" dur=\"1.4482758620689655s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"180;185;175;180\" dur=\"1.4482758620689655s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"200\" cy=\"90\" r=\"4\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"90\" to=\"260\" dur=\"1.7586206896551724s\" begin=\"0.3s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"200;205;195;200\" dur=\"1.7586206896551724s\" begin=\"0.3s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"160\" cy=\"70\" r=\"4\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"70\" to=\"260\" dur=\"1.2758620689655173s\" begin=\"0.6s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"160;165;155;160\" dur=\"1.2758620689655173s\" begin=\"0.6s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"170\" cy=\"95\" r=\"3\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"95\" to=\"260\" dur=\"1.6551724137931034s\" begin=\"0.9s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"170;175;165;170\" dur=\"1.6551724137931034s\" begin=\"0.9s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"190\" cy=\"85\" r=\"4.5\" fill=\"#FFE066\">\n              \u003canimate attributeName=\"cy\" from=\"85\" to=\"260\" dur=\"1.3793103448275863s\" begin=\"1.2s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"190;195;185;190\" dur=\"1.3793103448275863s\" begin=\"1.2s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"1.793103448275862s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"180,85 188,92 188,102 180,109 172,102 172,92\" fill=\"url(#gemShine)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 180 97\" to=\"720 180 97\" dur=\"2.0689655172413794s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"1.6551724137931034s\" begin=\"0.5s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"165,90 173,98 165,106 157,98\" fill=\"url(#gemBlue)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 165 98\" to=\"720 165 98\" dur=\"2.0689655172413794s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"1.896551724137931s\" begin=\"1.0s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"200,105 207,112 200,122 193,112\" fill=\"url(#gemRed)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 200 117\" to=\"720 200 117\" dur=\"2.0689655172413794s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"1.7586206896551724s\" begin=\"1.5s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"185,120 192,127 185,134 178,127\" fill=\"url(#gemGreen)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 185 127\" to=\"720 185 127\" dur=\"2.0689655172413794s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n          \u003cg>\n            \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 210\" dur=\"4.137931034482759s\" begin=\"3s\" repeatCount=\"indefinite\"/>\n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-15,0; 20,70; -5,140; 15,210\" dur=\"4.137931034482759s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 175 65\" to=\"360 175 65\" dur=\"2.0689655172413794s\" repeatCount=\"indefinite\"/>\n                \u003cpath d=\"M175,55 C169.5,55 165,59.5 165,65 C165,69.5 168,73.2 172,74.5 L172,85 L177,85 L177,81 L180,81 L180,78 L177,78 L177,74.5 C181,73.2 184,69.5 184,65 C184,59.5 179.5,55 175,55 Z M175,59 C178.3,59 181,61.7 181,65 C181,68.3 178.3,71 175,71 C171.7,71 169,68.3 169,65 C169,61.7 171.7,59 175,59 Z\" fill=\"url(#gold)\"/>\n              \u003c/g>\n            \u003c/g>\n          \u003c/g>\n        \n          \u003cg>\n            \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 210\" dur=\"6.8965517241379315s\" begin=\"6s\" repeatCount=\"indefinite\"/>\n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"15,0; -25,50; 20,110; -15,160; 5,210\" dur=\"6.8965517241379315s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" values=\"-20 180 57; 30 180 57; -30 180 57; 15 180 57; -20 180 57\" dur=\"1.7241379310344829s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003canimate attributeName=\"opacity\" values=\"0; 0.2; 0.9; 1; 0.7; 1; 0.3; 0\" dur=\"2.0689655172413794s\" repeatCount=\"indefinite\"/>\n                  \u003cpath d=\"M180,68 C178.5,66.3 172,59.5 172,54.4 C172,50.6 174.9,47.6 178.8,47.6 C180.9,47.6 182.2,48.9 183,49.7 C183.8,48.9 185.1,47.6 187.2,47.6 C191.1,47.6 194,50.6 194,54.4 C194,59.5 187.5,66.3 186,68 L183,70.5 Z\" fill=\"url(#gemRed)\"/>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \u003c/g>\n        \n          \u003crect x=\"190\" y=\"60\" width=\"20\" height=\"10\" fill=\"#A0FFB0\" rx=\"2\">\n            \u003canimate attributeName=\"x\" values=\"190;195;190;185;190\" dur=\"1.7241379310344829s\" begin=\"0.4s\" repeatCount=\"indefinite\"/>\n            \u003canimate attributeName=\"y\" from=\"60\" to=\"260\" dur=\"1.7241379310344829s\" begin=\"0.4s\" repeatCount=\"indefinite\"/>\n          \u003c/rect>\n          \u003crect x=\"150\" y=\"85\" width=\"20\" height=\"10\" fill=\"#A0FFB0\" rx=\"2\">\n            \u003canimate attributeName=\"x\" values=\"150;155;150;145;150\" dur=\"1.8620689655172415s\" begin=\"1.1s\" repeatCount=\"indefinite\"/>\n            \u003canimate attributeName=\"y\" from=\"85\" to=\"260\" dur=\"1.8620689655172415s\" begin=\"1.1s\" repeatCount=\"indefinite\"/>\n          \u003c/rect>\n        \n\u003c/svg>","color":"#E2E8F0","musicMode":"theme"},{"svg":"\u003csvg style=\"width:100%;height:100%;display:block\" preserveAspectRatio=\"xMidYMid meet\"  viewBox=\"0 0 360 360\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n  \n      \u003cdefs>\n        \u003c!-- ゴールドフレーム -->\n        \u003clinearGradient id=\"gold\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFD700\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#FCD34D\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#B45309\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- プラチナフレーム -->\n        \u003clinearGradient id=\"platinum\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFFFF\"/>\n          \u003cstop offset=\"45%\" stop-color=\"#E2E8F0\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#94A3B8\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#475569\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- ルビーフレーム -->\n        \u003clinearGradient id=\"ruby\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FDA4AF\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#E11D48\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#4C0519\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- サファイアフレーム -->\n        \u003clinearGradient id=\"sapphire\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#7DD3FC\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#0284C7\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0F172A\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアム白金（プラチナ）グラデーション -->\n        \u003clinearGradient id=\"platinumText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFFFF\"/>\n          \u003cstop offset=\"30%\" stop-color=\"#F8FAFC\"/>\n          \u003cstop offset=\"65%\" stop-color=\"#CBD5E1\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#475569\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムゴールドグラデーション -->\n        \u003clinearGradient id=\"goldText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFF9E6\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#FCD34D\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#D97706\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#78350F\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムルビーグラデーション -->\n        \u003clinearGradient id=\"rubyText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFE4E6\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#FB7185\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#E11D48\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#4C0519\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 文字用のプレミアムサファイアグラデーション -->\n        \u003clinearGradient id=\"sapphireText\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#F0F9FF\"/>\n          \u003cstop offset=\"35%\" stop-color=\"#38BDF8\"/>\n          \u003cstop offset=\"70%\" stop-color=\"#0284C7\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0F172A\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- コンテナ背景用グラデーション -->\n        \u003clinearGradient id=\"spaceBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#0f172a\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#020617\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"velvetBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#450a0a\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#090d16\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"forestBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#062f22\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#020806\"/>\n        \u003c/linearGradient>\n\n        \u003c!-- 各種ジュエルの輝きアニメーション用グラデーション -->\n        \u003clinearGradient id=\"gemShine\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFFCE0\"/>\n          \u003cstop offset=\"40%\" stop-color=\"#FFE27A\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#C0A060\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"10s\" repeatCount=\"indefinite\"/>\n          \u003canimate attributeName=\"y1\" values=\"0;1;0\" dur=\"10s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemBlue\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#E0F2FE\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#38BDF8\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#0369A1\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"11.25s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemRed\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#FFE4E6\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#FB7185\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#BE123C\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"9.499999999999998s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n        \u003clinearGradient id=\"gemGreen\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          \u003cstop offset=\"0%\" stop-color=\"#DCFCE7\"/>\n          \u003cstop offset=\"50%\" stop-color=\"#4ADE80\"/>\n          \u003cstop offset=\"100%\" stop-color=\"#15803D\"/>\n          \u003canimate attributeName=\"x1\" values=\"0;1;0\" dur=\"12.5s\" repeatCount=\"indefinite\"/>\n        \u003c/linearGradient>\n      \u003c/defs>\n  \n  \u003c!-- 動的コンテナ背景層 -->\n  \n  \n  \u003c!-- 妖艶モード専用エフェクト -->\n  \n  \n  \u003c!-- 「尽生」の文字（動的材質グラデーション & 動的フォント） -->\n  \u003ctext x=\"50\" y=\"215\" fill=\"url(#goldText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"96\" font-weight=\"900\" text-anchor=\"middle\" filter=\"drop-shadow(0px 3px 5px rgba(0,0,0,0.85))\">尽\u003c/text>\n  \u003ctext x=\"310\" y=\"215\" fill=\"url(#goldText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"96\" font-weight=\"900\" text-anchor=\"middle\" filter=\"drop-shadow(0px 3px 5px rgba(0,0,0,0.85))\">生\u003c/text>\n  \n  \u003c!-- 砂時計のガラス内部背景（黒固定） -->\n  \u003cpath d=\"M130,50 C180,120 180,160 130,230 L130,280 L230,280 L230,230 C180,160 180,120 230,50 Z\" fill=\"#090D16\" filter=\"drop-shadow(0px 4px 10px rgba(0,0,0,0.5))\"/>\n  \n  \u003c!-- ガラスのリアルな反射光 -->\n  \n        \u003cpath d=\"M140,60 Q180,100 180,130\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"2.5\" opacity=\"0.3\" stroke-linecap=\"round\"/>\n        \u003cpath d=\"M220,270 Q180,230 180,200\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"1.5\" opacity=\"0.2\" stroke-linecap=\"round\"/>\n      \n  \n  \u003c!-- 砂時計の台座＆支柱（動的マテリアル & シェイプ） -->\n  \u003crect x=\"100\" y=\"20\" width=\"160\" height=\"30\" rx=\"15\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"100\" y=\"310\" width=\"160\" height=\"30\" rx=\"15\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"111\" y=\"50\" width=\"10\" height=\"260\" rx=\"5\" fill=\"url(#platinum)\"/>\n  \u003crect x=\"240\" y=\"50\" width=\"10\" height=\"260\" rx=\"5\" fill=\"url(#platinum)\"/>\n  \n  \u003c!-- ガラス外枠曲線 -->\n  \u003cpath d=\"M130,50 C180,120 180,160 130,230 L130,280 C120,220 120,180 130,120 Z\" fill=\"none\" stroke=\"url(#platinum)\" stroke-width=\"5\"/>\n  \u003cpath d=\"M230,50 C180,120 180,160 230,230 L230,280 C240,220 240,180 230,120 Z\" fill=\"none\" stroke=\"url(#platinum)\" stroke-width=\"5\"/>\n  \n  \u003c!-- 動的アセットレイヤー -->\n  \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"45s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-18,0; 18,45; -12,100; 14.4,155; -18,215\" dur=\"45s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 180 60\" to=\"320 180 60\" dur=\"31.25s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"180\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"45s\" begin=\"6.0s\" repeatCount=\"indefinite\"/>\n                    生\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"50s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-16,0; 16,45; -10.666666666666666,100; 12.8,155; -16,215\" dur=\"50s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 190 60\" to=\"320 190 60\" dur=\"27.5s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"190\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"50s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                    死\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"55s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-24,0; 24,45; -16,100; 19.200000000000003,155; -24,215\" dur=\"55s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"35s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"55s\" begin=\"7.2s\" repeatCount=\"indefinite\"/>\n                    会\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"55s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-20,0; 20,45; -13.333333333333334,100; 16,155; -20,215\" dur=\"55s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"35s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"55s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                    別\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"55s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-14,0; 14,45; -9.333333333333334,100; 11.200000000000001,155; -14,215\" dur=\"55s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"46.25s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"55s\" begin=\"12.0s\" repeatCount=\"indefinite\"/>\n                    愛\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"37.5s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-26,0; 26,45; -17.333333333333332,100; 20.8,155; -26,215\" dur=\"37.5s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 165 60\" to=\"320 165 60\" dur=\"31.25s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"165\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"37.5s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n                    憎\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"42.5s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-16,0; 16,45; -10.666666666666666,100; 12.8,155; -16,215\" dur=\"42.5s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 175 60\" to=\"320 175 60\" dur=\"27.5s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"175\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"42.5s\" begin=\"9.6s\" repeatCount=\"indefinite\"/>\n                    育\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003cg>\n              \u003c!-- 縦方向の超低速・優雅な落下（translateY） -->\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 215\" dur=\"55s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003c!-- 横方向の木の葉が舞うようなひらひらしたスイング（translateX） -->\n                \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-14,0; 14,45; -9.333333333333334,100; 11.200000000000001,155; -14,215\" dur=\"55s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003c!-- ゆっくりとした自転回転（自転軸は文字固有の座標） -->\n                  \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"-40 200 60\" to=\"320 200 60\" dur=\"46.25s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                  \n                  \u003c!-- 文字描画（フェードイン・アウトのアニメーション付き） -->\n                  \u003ctext x=\"200\" y=\"60\" fill=\"url(#platinumText)\" font-family=\"'Shippori Mincho', serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" filter=\"drop-shadow(0px 1px 3px rgba(255,255,255,0.15))\">\n                    \u003canimate attributeName=\"opacity\" values=\"0; 0.95; 0.95; 0.7; 0\" dur=\"55s\" begin=\"14.4s\" repeatCount=\"indefinite\"/>\n                    離\n                  \u003c/text>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \n            \u003ccircle cx=\"180\" cy=\"80\" r=\"5\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"80\" to=\"260\" dur=\"10.5s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"180;185;175;180\" dur=\"10.5s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"200\" cy=\"90\" r=\"4\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"90\" to=\"260\" dur=\"12.749999999999998s\" begin=\"0.3s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"200;205;195;200\" dur=\"12.749999999999998s\" begin=\"0.3s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"160\" cy=\"70\" r=\"4\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"70\" to=\"260\" dur=\"9.25s\" begin=\"0.6s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"160;165;155;160\" dur=\"9.25s\" begin=\"0.6s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"170\" cy=\"95\" r=\"3\" fill=\"#FFD700\">\n              \u003canimate attributeName=\"cy\" from=\"95\" to=\"260\" dur=\"11.999999999999998s\" begin=\"0.9s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"170;175;165;170\" dur=\"11.999999999999998s\" begin=\"0.9s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003ccircle cx=\"190\" cy=\"85\" r=\"4.5\" fill=\"#FFE066\">\n              \u003canimate attributeName=\"cy\" from=\"85\" to=\"260\" dur=\"10s\" begin=\"1.2s\" repeatCount=\"indefinite\"/>\n              \u003canimate attributeName=\"cx\" values=\"190;195;185;190\" dur=\"10s\" begin=\"1.2s\" repeatCount=\"indefinite\"/>\n            \u003c/circle>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"13s\" begin=\"0.0s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"180,85 188,92 188,102 180,109 172,102 172,92\" fill=\"url(#gemShine)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 180 97\" to=\"720 180 97\" dur=\"15s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"11.999999999999998s\" begin=\"0.5s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"165,90 173,98 165,106 157,98\" fill=\"url(#gemBlue)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 165 98\" to=\"720 165 98\" dur=\"15s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"13.75s\" begin=\"1.0s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"200,105 207,112 200,122 193,112\" fill=\"url(#gemRed)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 200 117\" to=\"720 200 117\" dur=\"15s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 180\" dur=\"12.749999999999998s\" begin=\"1.5s\" repeatCount=\"indefinite\"/>\n              \u003cpolygon points=\"185,120 192,127 185,134 178,127\" fill=\"url(#gemGreen)\">\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 185 127\" to=\"720 185 127\" dur=\"15s\" repeatCount=\"indefinite\"/>\n              \u003c/polygon>\n            \u003c/g>\n          \n          \u003cg>\n            \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 210\" dur=\"30s\" begin=\"3s\" repeatCount=\"indefinite\"/>\n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"-15,0; 20,70; -5,140; 15,210\" dur=\"30s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" from=\"0 175 65\" to=\"360 175 65\" dur=\"15s\" repeatCount=\"indefinite\"/>\n                \u003cpath d=\"M175,55 C169.5,55 165,59.5 165,65 C165,69.5 168,73.2 172,74.5 L172,85 L177,85 L177,81 L180,81 L180,78 L177,78 L177,74.5 C181,73.2 184,69.5 184,65 C184,59.5 179.5,55 175,55 Z M175,59 C178.3,59 181,61.7 181,65 C181,68.3 178.3,71 175,71 C171.7,71 169,68.3 169,65 C169,61.7 171.7,59 175,59 Z\" fill=\"url(#gold)\"/>\n              \u003c/g>\n            \u003c/g>\n          \u003c/g>\n        \n          \u003cg>\n            \u003canimateTransform attributeName=\"transform\" type=\"translate\" from=\"0 0\" to=\"0 210\" dur=\"50s\" begin=\"6s\" repeatCount=\"indefinite\"/>\n            \u003cg>\n              \u003canimateTransform attributeName=\"transform\" type=\"translate\" values=\"15,0; -25,50; 20,110; -15,160; 5,210\" dur=\"50s\" repeatCount=\"indefinite\"/>\n              \u003cg>\n                \u003canimateTransform attributeName=\"transform\" type=\"rotate\" values=\"-20 180 57; 30 180 57; -30 180 57; 15 180 57; -20 180 57\" dur=\"12.5s\" repeatCount=\"indefinite\"/>\n                \u003cg>\n                  \u003canimate attributeName=\"opacity\" values=\"0; 0.2; 0.9; 1; 0.7; 1; 0.3; 0\" dur=\"15s\" repeatCount=\"indefinite\"/>\n                  \u003cpath d=\"M180,68 C178.5,66.3 172,59.5 172,54.4 C172,50.6 174.9,47.6 178.8,47.6 C180.9,47.6 182.2,48.9 183,49.7 C183.8,48.9 185.1,47.6 187.2,47.6 C191.1,47.6 194,50.6 194,54.4 C194,59.5 187.5,66.3 186,68 L183,70.5 Z\" fill=\"url(#gemRed)\"/>\n                \u003c/g>\n              \u003c/g>\n            \u003c/g>\n          \u003c/g>\n        \n          \u003crect x=\"190\" y=\"60\" width=\"20\" height=\"10\" fill=\"#A0FFB0\" rx=\"2\">\n            \u003canimate attributeName=\"x\" values=\"190;195;190;185;190\" dur=\"12.5s\" begin=\"0.4s\" repeatCount=\"indefinite\"/>\n            \u003canimate attributeName=\"y\" from=\"60\" to=\"260\" dur=\"12.5s\" begin=\"0.4s\" repeatCount=\"indefinite\"/>\n          \u003c/rect>\n          \u003crect x=\"150\" y=\"85\" width=\"20\" height=\"10\" fill=\"#A0FFB0\" rx=\"2\">\n            \u003canimate attributeName=\"x\" values=\"150;155;150;145;150\" dur=\"13.5s\" begin=\"1.1s\" repeatCount=\"indefinite\"/>\n            \u003canimate attributeName=\"y\" from=\"85\" to=\"260\" dur=\"13.5s\" begin=\"1.1s\" repeatCount=\"indefinite\"/>\n          \u003c/rect>\n        \n\u003c/svg>","color":"#0D0D0D","musicMode":"silent"}];
+  const TRANSITIONS = [{"sound":"speech","speech":{"text":"主題歌を再生","rate":1,"pitch":1.4,"volume":1}},{"sound":"speech","speech":{"text":"音声をオフ","rate":1,"pitch":1.4,"volume":1}},{"sound":"speech","speech":{"text":"静かな環境音","rate":1,"pitch":1.4,"volume":1}}];
+  const EFFECT = "press";
 
-        // 🔊 電子音を排し、高級なスイッチや木を叩いたような上品な「コッ」を生成
-        function playClickClickSound() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(850, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.03);
-                
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.03);
-                
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                
-                osc.start();
-                osc.stop(ctx.currentTime + 0.03);
-            } catch (e) {
-                console.warn("新SEの発音に失敗しました:", e);
-            }
-        }
+  let currentState = 0;
+  let managedAudio = null;
+  let toastTimer = null;
+  let sharedAudioContext = null;
+  let themeLoopTimer = null;
+  let musicSessionId = 0;
 
-    
-  // 🔮 枠の見た目と音楽を完全に同期させて切り替える執行関数（ループなし・自動金枠帰還・5曲自動検知ランダム抽選版）
-        async function applyCoreBurstStyleAndMusic() {
-            const btn = document.getElementById('jinsei-core-btn');
-            if (!btn) return;
+  const button = document.getElementById("plip-core-button");
+  const stage = document.getElementById("plip-stage");
+  const toast = document.getElementById("plip-toast");
 
-            const svgAnims = btn.querySelectorAll('animateTransform, animate');
-
-            if (audioBgmElement) { audioBgmElement.pause(); audioBgmElement.remove(); audioBgmElement = null; }
-            if (audioMediaElement) { audioMediaElement.pause(); audioMediaElement.remove(); audioMediaElement = null; }
-
-            if (currentCoreStyleState === 0) {
-                // ✨【金枠の陣】（今の速度 ＝ 標準）
-                btn.style.borderColor = '#FFD700';
-                btn.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.4)';
-
-                showToast('⚡️ 未来が再計算されました。(尽生のBGM on!)');
-
-                svgAnims.forEach(anim => {
-                    if (anim.getAttribute('type') === 'rotate' || anim.getAttribute('attributeName') === 'cy' || anim.getAttribute('attributeName') === 'y') {
-                        if (anim.getAttribute('type') === 'rotate') {
-                            const baseDurs = { '180': '12.5s', '190': '11s', '200': '14s', '165': '12.5s', '175': '11s' };
-                            const cx = anim.getAttribute('from')?.split(' ')[1] || '180';
-                            anim.setAttribute('dur', baseDurs[cx] || '12s');
-                        } else {
-                            const begin = anim.getAttribute('begin');
-                            if (begin === '0.0s') anim.setAttribute('dur', '4.2s');
-                            else if (begin === '0.3s') anim.setAttribute('dur', '5.1s');
-                            else if (begin === '0.6s') anim.setAttribute('dur', '3.7s');
-                            else anim.setAttribute('dur', '5s');
-                        }
-                    } else {
-                        const begin = anim.getAttribute('begin');
-                        if (begin === '6.0s') anim.setAttribute('dur', '18s');
-                        else if (begin === '14.4s') anim.setAttribute('dur', '20s');
-                        else if (begin === '0.0s') anim.setAttribute('dur', '15s');
-                        else if (begin === '9.6s') anim.setAttribute('dur', '17s');
-                        else anim.setAttribute('dur', '22s');
-                    }
-                });
-                
-                audioBgmElement = document.createElement('audio');
-                audioBgmElement.src = './music/bgm.mp3';
-                audioBgmElement.style.display = 'none';
-                audioBgmElement.volume = 0.5;
-                audioBgmElement.loop = false;
-                document.body.appendChild(audioBgmElement);
-                audioBgmElement.play().catch(e => console.warn("BGMの再生に失敗しました:", e));
-
-            } else if (currentCoreStyleState === 1) {
-                // 🥈【銀枠の陣】（今より速い ＝ 2.5倍速で爆速落下！）
-                btn.style.borderColor = '#E2E8F0';
-                btn.style.boxShadow = '0 0 20px rgba(226, 232, 240, 0.4)';
-
-                // 5つの候補ファイル
-                const songCandidates = [
-                    './music/song.mp4',
-                    './music/song1.mp4',
-                    './music/song2.mp4',
-                    './music/song3.mp4',
-                    './music/song4.mp4'
-                ];
-
-                // 存在するファイルをチェックして格納する配列
-                const availableSongs = [];
-
-                // 5つのファイルを並列で高速に存在確認 (fetchのHEADリクエストでサーバーへの負荷と通信量を最小化)
-                await Promise.all(songCandidates.map(async (url) => {
-                    try {
-                        const response = await fetch(url, { method: 'HEAD' });
-                        if (response.ok) {
-                            availableSongs.push(url);
-                        }
-                    } catch (e) {
-                        // ファイルが存在しない、またはエラーの場合はスルー
-                    }
-                }));
-
-                // 1曲も検知できなかった場合のフォールバック（デフォルトのパスを使用）
-                if (availableSongs.length === 0) {
-                    availableSongs.push('./music/song.mp4');
-                }
-
-                // 存在する曲の中から1曲をランダム抽選
-                const chosenSong = availableSongs[Math.floor(Math.random() * availableSongs.length)];
-                
-                // どの曲が選ばれたか分かりやすいようにファイル名を抽出して通知
-                const songFileName = chosenSong.substring(chosenSong.lastIndexOf('/') + 1);
-                showToast(`⚡️ 未来が再計算されました。🎵 抽選曲: ${songFileName} を再生！`);
-
-                svgAnims.forEach(anim => {
-                    if (anim.getAttribute('type') === 'rotate' || anim.getAttribute('attributeName') === 'cy' || anim.getAttribute('attributeName') === 'y') {
-                        anim.setAttribute('dur', '1.5s');
-                    } else {
-                        anim.setAttribute('dur', '6s');
-                    }
-                });
-                
-                audioMediaElement = document.createElement('audio');
-                audioMediaElement.src = chosenSong;
-                audioMediaElement.style.display = 'none';
-                audioMediaElement.volume = 0.5; 
-                
-                // ループはさせず、終了時に金枠へ戻る
-                audioMediaElement.loop = false; 
-                audioMediaElement.addEventListener('ended', () => {
-                    currentCoreStyleState = 0; 
-                    applyCoreBurstStyleAndMusic(); 
-                });
-
-                document.body.appendChild(audioMediaElement);
-                audioMediaElement.play().catch(e => console.warn("ブラウザの自動再生制限:", e));
-
-            } else if (currentCoreStyleState === 2) {
-                // 🩸【赤枠の陣】（今より遅い ＝ 厳かにスローモーション…）
-                btn.style.borderColor = '#EF4444';
-                btn.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.4)';
-
-                showToast('⚡️ 未来が再計算されました。(静寂の世界 音声 off!)');
-
-                svgAnims.forEach(anim => {
-                    if (anim.getAttribute('type') === 'rotate' || anim.getAttribute('attributeName') === 'cy' || anim.getAttribute('attributeName') === 'y') {
-                        anim.setAttribute('dur', '14s');
-                    } else {
-                        anim.setAttribute('dur', '55s');
-                    }
-                });
-            }
-        }
-
-// ==========================================================================
-// 💾 【尽生の書】3スロット・セーブ＆ロードシステム（ドラクエ風世界線記録陣）
-// ==========================================================================
-
-// モーダルを開く（mode: 'save' または 'load'）
-function openJinseiSaveLoadModal(mode) {
-  const modal = document.getElementById('jinsei-saveload-modal');
-  const title = document.getElementById('jinsei-saveload-modal-title');
-  const desc = document.getElementById('jinsei-saveload-modal-desc');
-  
-  if (mode === 'save') {
-    title.innerHTML = `<i class="fa-solid fa-floppy-disk text-amber-400"></i> 尽生の書（軍略の記録）`;
-    desc.textContent = "現在の基本設定や配置アセット構成を固定保存するスロットを選び、名前をつけて記録しておくと便利です。";
-  } else {
-    title.innerHTML = `<i class="fa-solid fa-folder-open text-amber-500"></i> 尽生の書（軍略の復元）`;
-    desc.textContent = "以前に記録した世界線へ跳躍（復元）します。現在の未保存データは上書きされるのでご注意ください。";
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
   }
-  
-  // 1〜3のスロットUIを最新のLocalStorageの状態に基づいて更新
-  for (let i = 1; i <= 3; i++) {
-    const savedData = JSON.parse(localStorage.getItem(`jinsei_slot_${i}`));
-    const timeEl = document.getElementById(`j-slot-time-${i}`);
-    const nameInput = document.getElementById(`j-slot-name-${i}`);
-    const btn = document.getElementById(`j-slot-btn-${i}`);
-    
-    if (savedData) {
-      // 既にデータが存在する場合
-      timeEl.textContent = savedData.savedAt;
-      if (mode === 'save') {
-        nameInput.value = savedData.slotName;
-        nameInput.disabled = false;
-        btn.className = "shrink-0 px-3 py-1.5 rounded-lg bg-rose-600/30 hover:bg-rose-600 border border-rose-500 text-white font-bold text-xs transition-all";
-        btn.textContent = "上書き保存";
-        btn.onclick = () => executeJinseiSaveSlot(i);
-      } else {
-        nameInput.value = savedData.slotName;
-        nameInput.disabled = true; // ロード時は入力不可
-        btn.className = "shrink-0 px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-md shadow-amber-500/10";
-        btn.textContent = "この書を開く";
-        btn.onclick = () => executeJinseiLoadSlot(i);
-      }
-    } else {
-      // スロットが空の場合
-      timeEl.textContent = "セーブデータはありません";
-      nameInput.value = "";
-      if (mode === 'save') {
-        nameInput.disabled = false;
-        nameInput.placeholder = i === 1 ? "（例：準富裕層・40代早期FIRE）" : i === 2 ? "（例：現役全力積立・タワマン購入）" : "（例：中流堅実・子供2人進学）";
-        btn.className = "shrink-0 px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 border border-emerald-500 text-white font-bold text-xs transition-all";
-        btn.textContent = "新規保存";
-        btn.onclick = () => executeJinseiSaveSlot(i);
-      } else {
-        nameInput.disabled = true;
-        nameInput.placeholder = "記録がありません";
-        btn.className = "shrink-0 px-4 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-500 text-xs font-bold cursor-not-allowed opacity-40";
-        btn.textContent = "ーーー";
-        btn.onclick = null;
-      }
-    }
-  }
-  
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-}
 
-// モーダルを閉じる
-function closeJinseiSaveLoadModal() {
-  const modal = document.getElementById('jinsei-saveload-modal');
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
-}
-
-// 収集用のヘルパー（既存のCSVエクスポートロジックと100%同一の生データ抽出陣）
-function captureCurrentJinseiState() {
-  let allDynamicData = [];
-  document.querySelectorAll('.other-income-row').forEach(row => {
-    allDynamicData.push({
-      type: 'other-income',
-      name: row.querySelector('.other-inc-name')?.value || '',
-      amount: parseFloat(row.querySelector('.other-inc-amount')?.value) || 0,
-      start: parseInt(row.querySelector('.other-inc-start')?.value) || 0,
-      end: parseInt(row.querySelector('.other-inc-end')?.value) || 0
-    });
-  });
-  document.querySelectorAll('.stage-row').forEach(row => {
-    allDynamicData.push({
-      type: 'stage',
-      amount: parseFloat(row.querySelector('.stage-amount')?.value) || 0,
-      endAge: parseInt(row.querySelector('.stage-end')?.value) || 0
-    });
-  });
-  document.querySelectorAll('.income-row').forEach(row => {
-    allDynamicData.push({
-      type: 'income',
-      name: row.querySelector('.income-memo')?.value || '',
-      age: parseInt(row.querySelector('.income-age')?.value) || 0,
-      amount: parseFloat(row.querySelector('.income-amount')?.value) || 0,
-      target: row.querySelector('.income-target')?.value || 'cash'
-    });
-  });
-  document.querySelectorAll('.expense-row').forEach(row => {
-    allDynamicData.push({
-      type: 'expense',
-      name: row.querySelector('.expense-memo')?.value || '',
-      age: parseInt(row.querySelector('.expense-age')?.value) || 0,
-      amount: parseFloat(row.querySelector('.expense-amount')?.value) || 0
-    });
-  });
-  document.querySelectorAll('.asset-card').forEach(card => {
-    allDynamicData.push({
-      type: 'asset-card',
-      name: card.querySelector('.asset-name-field')?.value || '',
-      assetType: card.querySelector('.asset-type-field')?.value || '',
-      initAmt: parseFloat(card.querySelector('.asset-init-field')?.value) || 0,
-      rate: parseFloat(card.querySelector('.asset-rate-field')?.value) || 0,
-      payout: card.querySelector('.asset-payout-field')?.value || 'reinvest',
-      yearAmt: parseFloat(card.querySelector('.asset-year-field')?.value) || 0,
-      monthAmt: parseFloat(card.querySelector('.asset-month-field')?.value) || 0,
-      startAge: parseInt(card.querySelector('.asset-start-field')?.value) || 0,
-      endAge: parseInt(card.querySelector('.asset-end-field')?.value) || 0
-    });
-  });
-
-  return {
-    customName: document.getElementById('scenario-input').value,
-    startYear: document.getElementById('start-year').value,
-    startAge: document.getElementById('start-age').value,
-    years: document.getElementById('years').value,
-    salaryAmount: document.getElementById('salary-amount').value,
-    salaryLimit: document.getElementById('salary-limit').value,
-    initCash: document.getElementById('init-cash').value,
-    rateCash: document.getElementById('rate-cash').value,
-    dynamicDataList: allDynamicData
-  };
-}
-
-// 保存の実行
-function executeJinseiSaveSlot(slotNumber) {
-  const nameInput = document.getElementById(`j-slot-name-${slotNumber}`);
-  let slotName = nameInput.value.trim();
-  
-  if (!slotName) {
-    slotName = `軍略パターン ${slotNumber === 1 ? '一' : slotNumber === 2 ? '二' : '三'}`;
-  }
-  
-  const now = new Date();
-  const timestamp = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-  
-  const stateData = captureCurrentJinseiState();
-  stateData.slotName = slotName;
-  stateData.savedAt = timestamp;
-  
-  localStorage.setItem(`jinsei_slot_${slotNumber}`, JSON.stringify(stateData));
-  
-  showToast(`💾 【尽生の書 ${slotNumber === 1 ? '一' : slotNumber === 2 ? '二' : '三'}】に『${slotName}』の布陣を完全記録しました。`);
-  closeJinseiSaveLoadModal();
-}
-
-// 読込の実行
-function executeJinseiLoadSlot(slotNumber) {
-  const savedData = JSON.parse(localStorage.getItem(`jinsei_slot_${slotNumber}`));
-  if (!savedData) return;
-  
-  // 1. 各フォーム要素の復元
-  document.getElementById('start-year').value = savedData.startYear;
-  document.getElementById('start-age').value = savedData.startAge;
-  document.getElementById('years').value = savedData.years;
-  document.getElementById('salary-amount').value = savedData.salaryAmount;
-  document.getElementById('salary-limit').value = savedData.salaryLimit;
-  document.getElementById('init-cash').value = savedData.initCash;
-  document.getElementById('rate-cash').value = savedData.rateCash;
-  
-  if (savedData.customName) {
-    document.getElementById('scenario-input').value = savedData.customName;
-    document.getElementById('graph-title-element').innerHTML = `<i class="fa-solid fa-chart-line text-blue-500"></i> 「${savedData.customName}」の生涯キャッシュフロー`;
-  }
-  
-  // 2. 動的コンテナを初期化して再構築（既存のCSVインポートの仕組みを完全応用）
-  document.getElementById('other-income-container').innerHTML = '';
-  document.getElementById('stage-container').innerHTML = '';
-  document.getElementById('income-container').innerHTML = '';
-  document.getElementById('expense-container').innerHTML = '';
-  document.getElementById('dynamic-assets-container').innerHTML = '';
-
-  if (savedData.dynamicDataList && Array.isArray(savedData.dynamicDataList)) {
-    savedData.dynamicDataList.forEach(item => {
-      if (item.type === 'other-income') {
-        addOtherIncomeRow(item.name, item.amount, item.start, item.end);
-      } else if (item.type === 'stage') {
-        addStageRow(item.amount, item.endAge);
-      } else if (item.type === 'income') {
-        addIncomeRow(item.name, item.age, item.amount, item.target);
-      } else if (item.type === 'expense') {
-        addExpenseRow(item.name, item.age, item.amount);
-      } else if (item.type === 'asset-card') {
-        addAssetElement({
-          name: item.name, type: item.assetType, initAmt: item.initAmt, rate: item.rate,
-          payout: item.payout, yearAmt: item.yearAmt, monthAmt: item.monthAmt,
-          startAge: item.startAge, endAge: item.endAge
-        });
-      }
-    });
-  }
-  
-  // 3. 再計算
-  updateStageAges();
-  runSimulation();
-  document.getElementById('scenario-selector').value = 'custom';
-  
-  showToast(`🔮 【尽生の書 ${slotNumber === 1 ? '一' : slotNumber === 2 ? '二' : '三'}】より『${savedData.slotName}』の世界線を完全に復元しました。`);
-  closeJinseiSaveLoadModal();
-}
-
-// 👑 【新設】「尽生の書 一〜三」名前・日付対応ローカルストレージ連動システム
-
-// 各スロットのラベル（名前と日付）を画面に反映する関数
-function updateSlotLabels() {
-    for (let slot = 1; slot <= 3; slot++) {
-        const rawData = localStorage.getItem(`jinsei_slot_v2_${slot}`);
-        const slotTitleEl = document.getElementById(`jinsei-slot-title-${slot}`);
-        const slotDateEl = document.getElementById(`jinsei-slot-date-${slot}`);
-        
-        if (slotTitleEl && slotDateEl) {
-            if (rawData) {
-                try {
-                    const parsed = JSON.parse(rawData);
-                    slotTitleEl.innerText = parsed.slotName || `尽生の書 ${slot === 1 ? '一' : slot === 2 ? '二' : '三'}`;
-                    slotDateEl.innerText = parsed.savedAt || 'ーーー';
-                } catch(e) {
-                    slotTitleEl.innerText = `尽生の書 ${slot === 1 ? '一' : slot === 2 ? '二' : '三'} (データあり)`;
-                    slotDateEl.innerText = 'ーーー';
-                }
-            } else {
-                slotTitleEl.innerText = 'データがありません';
-                slotDateEl.innerText = 'ーーー';
-            }
-        }
-    }
-}
-
-// 記録（セーブ）＆ 出す（ロード）の統合コントロール
-function executeSlotAction(action, slotNum) {
-    if (action === 'save') {
-        const defaultName = document.getElementById(`jinsei-slot-title-${slotNum}`)?.innerText;
-        const currentName = (defaultName === 'データがありません') ? '' : defaultName;
-        const userInput = prompt(`『尽生の書 ${slotNum === 1 ? '一' : slotNum === 2 ? '二' : '三'}』に記録します。\nこの人生パターン（プラン名）の名称を入力してください：`, currentName);
-        
-        if (userInput === null) return; 
-        const slotName = userInput.trim() || `無題のプラン（書 ${slotNum === 1 ? '一' : slotNum === 2 ? '二' : '三'}）`;
-
+  function stopMediaInDocument(targetDocument) {
+    try {
+      targetDocument.querySelectorAll("audio, video").forEach(media => {
         try {
-            const now = new Date();
-            const savedAt = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+          media.pause();
+          media.currentTime = 0;
+        } catch (_) {}
+      });
 
-            const data = {
-                slotName: slotName,
-                savedAt: savedAt,
-                startYear: parseInt(document.getElementById('start-year')?.value) || 2026,
-                currentAge: parseInt(document.getElementById('current-age')?.value) || 30,
-                endAge: parseInt(document.getElementById('end-age')?.value) || 100,
-                salaryIncome: parseFloat(document.getElementById('salary-income')?.value) || 0,
-                salaryStartAge: parseInt(document.getElementById('salary-start-age')?.value) || 30,
-                salaryEndAge: parseInt(document.getElementById('salary-end-age')?.value) || 60,
-                initCash: parseFloat(document.getElementById('init-cash')?.value) || 0,
-                cashRate: parseFloat(document.getElementById('rate-cash')?.value) || 0,
-                dynamicDataList: []
-            };
+      targetDocument.querySelectorAll("[data-plip-managed-audio='true']")
+        .forEach(element => element.remove());
 
-            document.querySelectorAll('#other-income-container .grid').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                if (inputs.length >= 4) {
-                    data.dynamicDataList.push({
-                        type: 'other-income', name: inputs[0].value, amount: parseFloat(inputs[1].value) || 0, start: parseInt(inputs[2].value) || 0, end: parseInt(inputs[3].value) || 0
-                    });
-                }
-            });
-
-            document.querySelectorAll('#stage-container .grid').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                if (inputs.length >= 2) {
-                    data.dynamicDataList.push({
-                        type: 'stage', amount: parseFloat(inputs[0].value) || 0, endAge: parseInt(inputs[1].value) || 0
-                    });
-                }
-            });
-
-            document.querySelectorAll('#income-container .grid').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                const select = row.querySelector('select');
-                if (inputs.length >= 3) {
-                    data.dynamicDataList.push({
-                        type: 'income', name: inputs[0].value, age: parseInt(inputs[1].value) || 0, amount: parseFloat(inputs[2].value) || 0, target: select ? select.value : 'cash'
-                    });
-                }
-            });
-
-            document.querySelectorAll('#expense-container .grid').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                if (inputs.length >= 3) {
-                    data.dynamicDataList.push({
-                        type: 'expense', name: inputs[0].value, age: parseInt(inputs[1].value) || 0, amount: parseFloat(inputs[2].value) || 0
-                    });
-                }
-            });
-
-            document.querySelectorAll('#dynamic-assets-container > div').forEach(card => {
-                const name = card.querySelector('h3 span')?.innerText || '';
-                const assetType = card.getAttribute('data-asset-type') || '';
-                const initAmt = parseFloat(card.querySelector('[id^="asset-init-amt-"]')?.value) || 0;
-                const rate = parseFloat(card.querySelector('[id^="asset-rate-"]')?.value) || 0;
-                const payout = card.querySelector('[id^="asset-payout-"]')?.value || 'reinvest';
-                const yearAmt = parseFloat(card.querySelector('[id^="asset-year-amt-"]')?.value) || 0;
-                const monthAmt = parseFloat(card.querySelector('[id^="asset-month-amt-"]')?.value) || 0;
-                const startAge = parseInt(card.querySelector('[id^="asset-start-age-"]')?.value) || 0;
-                const endAge = parseInt(card.querySelector('[id^="asset-end-age-"]')?.value) || 0;
-
-                data.dynamicDataList.push({
-                    type: 'asset-card', name, assetType, initAmt, rate, payout, yearAmt, monthAmt, startAge, endAge
-                });
-            });
-
-            localStorage.setItem(`jinsei_slot_v2_${slotNum}`, JSON.stringify(data));
-            updateSlotLabels();
-
-            if (typeof showToast === 'function') {
-                showToast(`『尽生の書 ${slotNum === 1 ? '一' : slotNum === 2 ? '二' : '三'}』に「${slotName}」を記録しました。`, 'success');
-            }
-        } catch (e) {
-            console.error(e);
-            alert('セーブ中にエラーが発生しました。');
-        }
-
-    } else if (action === 'load') {
+      targetDocument.querySelectorAll("iframe").forEach(frame => {
         try {
-            const rawData = localStorage.getItem(`jinsei_slot_v2_${slotNum}`);
-            if (!rawData) {
-                if (typeof showToast === 'function') {
-                    showToast(`『尽生の書』伝承スロット ${slotNum === 1 ? '一' : slotNum === 2 ? '二' : '三'} にはデータがありません。`, 'warning');
-                }
-                return;
-            }
+          frame.contentWindow.postMessage({ type: "PLIP_STOP_AUDIO" }, "*");
+        } catch (_) {}
+      });
+    } catch (_) {}
+  }
 
-            const savedData = JSON.parse(rawData);
+  function stopManagedMusic() {
+    musicSessionId += 1;
 
-            if(document.getElementById('start-year')) document.getElementById('start-year').value = savedData.startYear || 2026;
-            if(document.getElementById('current-age')) document.getElementById('current-age').value = savedData.currentAge || 30;
-            if(document.getElementById('end-age')) document.getElementById('end-age').value = savedData.endAge || 100;
-            
-            if(document.getElementById('salary-income')) document.getElementById('salary-income').value = savedData.salaryIncome || 0;
-            if(document.getElementById('salary-start-age')) document.getElementById('salary-start-age').value = savedData.salaryStartAge || 30;
-            if(document.getElementById('salary-end-age')) document.getElementById('salary-end-age').value = savedData.salaryEndAge || 60;
-            
-            if(document.getElementById('init-cash')) document.getElementById('init-cash').value = savedData.initCash || 0;
-            if(document.getElementById('rate-cash')) document.getElementById('rate-cash').value = savedData.cashRate || 0;
-
-            if(document.getElementById('other-income-container')) document.getElementById('other-income-container').innerHTML = '';
-            if(document.getElementById('stage-container')) document.getElementById('stage-container').innerHTML = '';
-            if(document.getElementById('income-container')) document.getElementById('income-container').innerHTML = '';
-            if(document.getElementById('expense-container')) document.getElementById('expense-container').innerHTML = '';
-            if(document.getElementById('dynamic-assets-container')) document.getElementById('dynamic-assets-container').innerHTML = '';
-
-            if (savedData.dynamicDataList && Array.isArray(savedData.dynamicDataList)) {
-                savedData.dynamicDataList.forEach(item => {
-                    if (item.type === 'other-income' && typeof addOtherIncomeRow === 'function') {
-                        addOtherIncomeRow(item.name, item.amount, item.start, item.end);
-                    } else if (item.type === 'stage' && typeof addStageRow === 'function') {
-                        addStageRow(item.amount, item.endAge);
-                    } else if (item.type === 'income' && typeof addIncomeRow === 'function') {
-                        addIncomeRow(item.name, item.age, item.amount, item.target);
-                    } else if (item.type === 'expense' && typeof addExpenseRow === 'function') {
-                        addExpenseRow(item.name, item.age, item.amount);
-                    } else if (item.type === 'asset-card' && typeof addAssetElement === 'function') {
-                        addAssetElement({
-                            name: item.name, type: item.assetType, initAmt: item.initAmt, rate: item.rate,
-                            payout: item.payout, yearAmt: item.yearAmt, monthAmt: item.monthAmt,
-                            startAge: item.startAge, endAge: item.endAge
-                        });
-                    }
-                });
-            }
-            
-            if (typeof updateStageAges === 'function') updateStageAges();
-            if (typeof runSimulation === 'function') runSimulation();
-
-            if (typeof showToast === 'function') {
-                showToast(`『尽生の書』から「${savedData.slotName || '無題'}」の軍略を展開しました！`, 'success');
-            }
-        } catch (e) {
-            console.error(e);
-            alert('ロード中にエラーが発生しました。');
-        }
+    if (themeLoopTimer) {
+      clearTimeout(themeLoopTimer);
+      themeLoopTimer = null;
     }
-}
 
-// ページ読み込み時に初期化処理を走らせる自動フック
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof updateSlotLabels === 'function') updateSlotLabels();
-});
-
-// 💡 【新設】親切説明ポップオーバーの表示・非表示を切り替える調停関数
-function toggleJinseiHelp(helpId) {
-    const helpBox = document.getElementById(helpId);
-    if (!helpBox) return;
-    
-    // クリックされたボックス以外のすべての説明ボックスを一度綺麗に閉じる（重複防止）
-    const allHelpBoxes = ['help-basic', 'help-assets', 'help-saveload'];
-    allHelpBoxes.forEach(id => {
-        if (id !== helpId) {
-            const otherBox = document.getElementById(id);
-            if (otherBox) otherBox.classList.add('hidden');
-        }
-    });
-
-    // 対象のボックスをパッと切り替え
-    if (helpBox.classList.contains('hidden')) {
-        helpBox.classList.remove('hidden');
-    } else {
-        helpBox.classList.add('hidden');
+    if (managedAudio) {
+      try { managedAudio.pause(); } catch (_) {}
+      managedAudio.remove();
+      managedAudio = null;
     }
-}
 
-    </script>
+    stopMediaInDocument(document);
+
+    try {
+      if (window.parent && window.parent !== window) {
+        stopMediaInDocument(window.parent.document);
+      }
+    } catch (_) {}
+  }
+
+  function getAudioContext() {
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) return null;
+
+    if (!sharedAudioContext || sharedAudioContext.state === "closed") {
+      sharedAudioContext = new AudioContextClass();
+    }
+    return sharedAudioContext;
+  }
+
+  function tone(context, frequency, start, duration,
+                type = "sine", volume = .1) {
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, start);
+    gain.gain.setValueAtTime(volume, start);
+    gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+
+    oscillator.connect(gain).connect(context.destination);
+    oscillator.start(start);
+    oscillator.stop(start + duration);
+  }
+
+  function playClickSound(setting) {
+    if (setting.sound === "none") return;
+
+    if (setting.sound === "speech") {
+      if (!("speechSynthesis" in window)) return;
+
+      const utterance = new SpeechSynthesisUtterance(setting.speech.text);
+      utterance.lang = "ja-JP";
+      utterance.rate = setting.speech.rate;
+      utterance.pitch = setting.speech.pitch;
+      utterance.volume = setting.speech.volume;
+      speechSynthesis.speak(utterance);
+      return;
+    }
+
+    const context = getAudioContext();
+    if (!context) return;
+
+    if (context.state === "suspended") {
+      context.resume();
+    }
+
+    const time = context.currentTime;
+
+    if (setting.sound === "click") {
+      tone(context, 850, time, .035, "sine", .12);
+    } else if (setting.sound === "digital") {
+      tone(context, 620, time, .07, "square", .08);
+      tone(context, 980, time + .07, .09, "square", .07);
+    } else if (setting.sound === "confirm") {
+      tone(context, 523.25, time, .10, "sine", .10);
+      tone(context, 783.99, time + .09, .16, "sine", .10);
+    } else if (setting.sound === "metallic") {
+      tone(context, 1300, time, .07, "triangle", .07);
+      tone(context, 1780, time + .018, .11, "triangle", .05);
+    } else if (setting.sound === "impact") {
+      tone(context, 120, time, .16, "sine", .18);
+      tone(context, 65, time + .03, .22, "triangle", .09);
+    } else if (setting.sound === "sparkle") {
+      [880, 1174, 1568, 2093].forEach((frequency, index) => {
+        tone(context, frequency, time + index * .055,
+             .16, "sine", .06);
+      });
+    }
+  }
+
+  function runEffect() {
+    if (EFFECT === "none") return;
+
+    const className = "jinsei-plip-effect-" + EFFECT;
+    button.classList.remove(className);
+    void button.offsetWidth;
+    button.classList.add(className);
+    button.addEventListener("animationend", () => {
+      button.classList.remove(className);
+    }, { once: true });
+  }
+
+  function createManagedAudio(source, loop = false) {
+    const audio = document.createElement("audio");
+    audio.src = source;
+    audio.loop = loop;
+    audio.volume = .35;
+    audio.preload = "auto";
+    audio.dataset.plipManagedAudio = "true";
+    audio.style.display = "none";
+    document.body.appendChild(audio);
+    managedAudio = audio;
+    return audio;
+  }
+
+  function randomChoice(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  async function playSourceWithFallback(primarySource, fallbackSource, options = {}) {
+    const sessionId = options.sessionId;
+    const loop = Boolean(options.loop);
+    const onEnded = options.onEnded;
+
+    async function attempt(source, isFallback) {
+      if (sessionId !== musicSessionId) return false;
+
+      const audio = createManagedAudio(source, loop);
+
+      if (typeof onEnded === "function") {
+        audio.addEventListener("ended", () => {
+          if (sessionId !== musicSessionId) return;
+          onEnded();
+        }, { once: true });
+      }
+
+      try {
+        await audio.play();
+        return true;
+      } catch (_) {
+        if (managedAudio === audio) {
+          audio.remove();
+          managedAudio = null;
+        }
+
+        if (!isFallback && primarySource !== fallbackSource) {
+          return attempt(fallbackSource, true);
+        }
+        return false;
+      }
+    }
+
+    return attempt(primarySource, false);
+  }
+
+  async function playMusicForState(state) {
+    const sessionId = musicSessionId;
+
+    if (state.musicMode === "silent") {
+      showToast("🔇 音楽をオフにしました");
+      return;
+    }
+
+    if (state.musicMode === "ambient") {
+      const chosen = randomChoice([
+        "./music/bgm.mp3",
+        "./music/bgm1.mp3"
+      ]);
+
+      const played = await playSourceWithFallback(
+        chosen,
+        "./music/bgm.mp3",
+        { loop: true, sessionId }
+      );
+
+      if (sessionId !== musicSessionId) return;
+      showToast(played
+        ? "🌿 BGMを再生：" + chosen.split("/").pop()
+        : "⚠️ BGMを再生できません");
+      return;
+    }
+
+    const themeSources = [
+      "./music/song.mp4",
+      "./music/song1.mp4",
+      "./music/song2.mp4",
+      "./music/song3.mp4",
+      "./music/song4.mp4"
+    ];
+
+    const playNextTheme = async () => {
+      if (sessionId !== musicSessionId || currentState !== 1) return;
+
+      const chosen = randomChoice(themeSources);
+      const played = await playSourceWithFallback(
+        chosen,
+        "./music/song.mp4",
+        {
+          loop: false,
+          sessionId,
+          onEnded: () => {
+            if (sessionId !== musicSessionId || currentState !== 1) return;
+            themeLoopTimer = setTimeout(() => {
+              themeLoopTimer = null;
+              playNextTheme();
+            }, 3000);
+          }
+        }
+      );
+
+      if (sessionId !== musicSessionId || currentState !== 1) return;
+      showToast(played
+        ? "🎵 主題歌を再生：" + chosen.split("/").pop()
+        : "⚠️ 主題歌を再生できません");
+    };
+
+    await playNextTheme();
+  }
+
+  async function applyState(withSound = true, transitionIndex = 0) {
+    const state = STATES[currentState];
+
+    stage.innerHTML = state.svg;
+    button.style.borderColor = state.color;
+    button.style.boxShadow =
+      "0 0 28px " + state.color +
+      "55, 0 18px 45px rgba(0,0,0,.5)";
+
+    runEffect();
+
+    if (withSound) {
+      stopManagedMusic();
+      playClickSound(TRANSITIONS[transitionIndex]);
+      await playMusicForState(state);
+    }
+  }
+
+  button.addEventListener("click", () => {
+    if (typeof runSimulation === "function") runSimulation();
+    const transitionIndex = currentState;
+    currentState = (currentState + 1) % STATES.length;
+    applyState(true, transitionIndex);
+  });
+
+  window.addEventListener("message", event => {
+    if (event.data && event.data.type === "PLIP_STOP_AUDIO") {
+      stopManagedMusic();
+    }
+  });
+
+  applyState(false, 0);
+})();
+
+</script>
 </html>
