@@ -3515,11 +3515,11 @@ function executeSlotAction(action, slotNum) {
     }
 
     const themeSources = [
-      "./music/song.mp4",
-      "./music/song1.mp4",
-      "./music/song2.mp4",
-      "./music/song3.mp4",
-      "./music/song4.mp4"
+      "./music/song.mp3",
+      "./music/song1.mp3",
+      "./music/song2.mp3",
+      "./music/song3.mp3",
+      "./music/song4.mp3"
     ];
 
     const playNextTheme = async () => {
@@ -3528,7 +3528,7 @@ function executeSlotAction(action, slotNum) {
       const chosen = randomChoice(themeSources);
       const played = await playSourceWithFallback(
         chosen,
-        "./music/song.mp4",
+        "./music/song.mp3",
         {
           loop: false,
           sessionId,
