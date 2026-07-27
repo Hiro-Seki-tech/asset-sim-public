@@ -202,7 +202,7 @@
         </div>
     </div>
 
-    <div id="chart-tooltip" class="absolute bg-slate-950/95 text-white p-4 max-sm:p-3 rounded-2xl shadow-2xl border border-slate-800 pointer-events-none opacity-0 transition-opacity duration-200 z-50 w-80 lg:w-80 flex flex-col gap-3 max-sm:gap-2 max-sm:w-70 max-sm:left-1/2 max-sm:-translate-x-1/2">
+    <div id="chart-tooltip" class="absolute bg-slate-950/95 text-white p-4 max-sm:p-3 rounded-2xl shadow-2xl border border-slate-800 pointer-events-none opacity-0 transition-opacity duration-200 z-[100] w-80 lg:w-80 flex flex-col gap-3 max-sm:gap-2 max-sm:w-70 max-sm:left-1/2 max-sm:-translate-x-1/2">
         <div id="tooltip-year" class="text-xs font-bold tracking-wider text-slate-400 border-b border-slate-800 pb-1.5 flex justify-between">
             <span data-i18n="tooltip_elapsed_years">経過年次</span>
             <span class="text-amber-400" data-i18n="tooltip_portfolio">資産ポートフォリオ</span>
@@ -1230,7 +1230,7 @@
     </div>
 
 
-<div id="floating-dwz-btn" class="fixed top-3/4 -translate-y-1/2 right-4 z-[60]" style="transform: translate3d(0,-50%,0); will-change: transform;">
+<div id="floating-dwz-btn" class="fixed top-3/4 -translate-y-1/2 right-4 z-[110]" style="transform: translate3d(0,-50%,0); will-change: transform;">
         <button onclick="transitionToDwz()" class="pulse-dwz bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-slate-950 font-black px-4 py-3 sm:px-5 sm:py-4 rounded-2xl shadow-[0_10px_30px_rgba(245,158,11,0.4)] flex items-center gap-2 transition-all group focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs sm:text-sm">
             <span class="text-base sm:text-lg">💀</span>
             <span class="text-[10px] sm:text-xs uppercase tracking-widest font-black" data-i18n="btn_floating_dwz_check">DIE WITH ZERO !</span>
