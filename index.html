@@ -555,6 +555,7 @@
                             <div>
                                 <label class="text-slate-400 text-[10px] block mb-1" data-i18n="lbl_salary_amount">所得額 (万円/年)</label>
                                 <input type="number" id="salary-amount" value="800" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 p-2 font-bold text-slate-800 focus:outline-slate-500 text-xs">
+                                <p id="salary-amount-hint" class="mt-1 text-[9px] leading-tight text-slate-400 min-h-[1.25rem]" aria-live="polite"></p>
                             </div>
                             <div>
                                 <label class="text-slate-400 text-[10px] block mb-1" data-i18n="lbl_salary_limit">受給期限 (年齢まで)</label>
@@ -651,6 +652,7 @@
                             <div>
                                 <label class="text-slate-400 block mb-1" data-i18n="lbl_initial_cash">初期資金 (万円)</label>
                                 <input type="number" id="init-cash" value="2500" oninput="runSimulation();" class="w-full rounded-lg border border-slate-200 bg-white p-2 font-bold text-slate-800 focus:outline-slate-500">
+                                <p id="init-cash-hint" class="mt-1 text-[9px] leading-tight text-slate-400 min-h-[1.25rem]" aria-live="polite"></p>
                             </div>
                             <div>
                                 <label class="text-slate-400 block mb-1" data-i18n="lbl_cash_interest_rate">想定年利 (%)</label>
@@ -784,6 +786,17 @@
                                     <input type="file" id="csv-import-file" accept=".csv" class="hidden" onchange="importCSV(event)">
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="border-t border-slate-800/80 pt-4 flex flex-col gap-2">
+                            <span class="text-[10px] font-bold text-slate-500 tracking-wider uppercase">ブラウザ内データの整理</span>
+                            <button type="button" onclick="resetJinseiLocalStorageExceptBooks()" class="w-full p-2.5 bg-rose-950/30 hover:bg-rose-950/50 text-rose-300 border border-rose-900/50 hover:border-rose-700/70 rounded-xl font-bold transition-colors flex items-center justify-center gap-2 text-[11px]">
+                                <i class="fa-solid fa-broom"></i>
+                                <span>尽生の書を残して初期化</span>
+                            </button>
+                            <p class="text-[10px] leading-relaxed text-slate-500">
+                                3冊の「尽生の書」は残したまま、現在の人物雛形や一時設定など、それ以外のLocalStorageを初期状態へ戻します。
+                            </p>
                         </div>
 						
 						
@@ -1576,8 +1589,13 @@
                 <div class="flex items-center justify-between gap-2 text-[10px] pt-1">
                     <span class="text-slate-500 font-semibold">${lblBurn}</span>
                     <div class="flex items-center gap-1">
-                        <input type="number" class="stage-amount w-24 rounded border border-rose-200 bg-white p-1 font-black text-rose-700 text-center" value="${amount}" oninput="runSimulation();">
-                        <span class="text-rose-700 font-bold">${lblUnit}</span>
+                        <div class="flex flex-col items-end gap-0.5">
+                            <div class="flex items-center gap-1">
+                                <input type="number" class="stage-amount w-24 rounded border border-rose-200 bg-white p-1 font-black text-rose-700 text-center" value="${amount}" oninput="runSimulation();">
+                                <span class="text-rose-700 font-bold">${lblUnit}</span>
+                            </div>
+                            <span class="stage-amount-hint text-[9px] leading-tight text-slate-400 min-h-[0.75rem]" aria-live="polite"></span>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1653,7 +1671,8 @@
                 </div>
                 <div class="col-span-3 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
-                    <input type="number" class="income-amount rounded border border-slate-200 p-1 font-bold text-emerald-700 text-center" value="${amount}">
+                    <input type="number" class="income-amount rounded border border-slate-200 p-1 font-bold text-emerald-700 text-center" value="${amount}" oninput="runSimulation();">
+                    <p class="income-amount-hint mt-1 text-[9px] leading-tight text-slate-400 min-h-[1rem] text-center" aria-live="polite"></p>
                 </div>
                 <div class="col-span-2 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblTarget}</span>
@@ -1887,6 +1906,7 @@
                     <div>
                         <label class="text-slate-400 block mb-0.5">初期/購入額 (万円)</label>
                         <input type="number" class="asset-init-field w-full rounded border border-slate-200 p-1.5 font-bold" value="${data.initAmt}" oninput="runSimulation();">
+                        <p class="asset-init-hint mt-1 text-[9px] leading-tight text-slate-400 min-h-[1rem]" aria-live="polite"></p>
                     </div>
                     <div>
                         <label class="text-slate-400 block mb-0.5">想定年利 (%)</label>
@@ -2246,7 +2266,80 @@
             return `${sign}${absWan}万円`;
         }
 
+        function formatManYenReadable(valueInManYen) {
+            const value = Number(valueInManYen);
+            if (!Number.isFinite(value)) return '';
+
+            const rounded = Math.round(value * 10) / 10;
+            const sign = rounded < 0 ? '−' : '';
+            const absolute = Math.abs(rounded);
+            const oku = Math.floor(absolute / 10000);
+            const man = Math.round((absolute - oku * 10000) * 10) / 10;
+            const formatNumber = (num) => Number.isInteger(num)
+                ? num.toLocaleString('ja-JP')
+                : num.toLocaleString('ja-JP', { maximumFractionDigits: 1 });
+
+            if (oku > 0) {
+                const manText = man > 0 ? `${formatNumber(man)}万円` : '';
+                return `${sign}${oku.toLocaleString('ja-JP')}億${manText}`;
+            }
+            return `${sign}${formatNumber(absolute)}万円`;
+        }
+
+        function applyFinancialHint(hintElement, text, amountInManYen) {
+            if (!hintElement) return;
+            hintElement.textContent = text;
+            hintElement.classList.toggle('text-amber-600', Number.isFinite(amountInManYen) && Math.abs(amountInManYen) >= 10000);
+            hintElement.classList.toggle('font-bold', Number.isFinite(amountInManYen) && Math.abs(amountInManYen) >= 10000);
+            hintElement.classList.toggle('text-slate-400', !(Number.isFinite(amountInManYen) && Math.abs(amountInManYen) >= 10000));
+        }
+
+        function updateFinancialInputHints() {
+            const salaryInput = document.getElementById('salary-amount');
+            const salaryHint = document.getElementById('salary-amount-hint');
+            if (salaryInput && salaryHint) {
+                const annual = Number(salaryInput.value);
+                applyFinancialHint(
+                    salaryHint,
+                    Number.isFinite(annual) ? `年額：${formatManYenReadable(annual)} ／ 月額換算：約${formatManYenReadable(annual / 12)}` : '',
+                    annual
+                );
+            }
+
+            const initCashInput = document.getElementById('init-cash');
+            const initCashHint = document.getElementById('init-cash-hint');
+            if (initCashInput && initCashHint) {
+                const amount = Number(initCashInput.value);
+                applyFinancialHint(initCashHint, Number.isFinite(amount) ? `＝ ${formatManYenReadable(amount)}` : '', amount);
+            }
+
+            document.querySelectorAll('.stage-row').forEach((row) => {
+                const amountInput = row.querySelector('.stage-amount');
+                const hint = row.querySelector('.stage-amount-hint');
+                if (!amountInput || !hint) return;
+                const annual = Number(amountInput.value);
+                applyFinancialHint(hint, Number.isFinite(annual) ? `月平均：約${formatManYenReadable(annual / 12)}` : '', annual);
+            });
+
+            document.querySelectorAll('.income-row').forEach((row) => {
+                const amountInput = row.querySelector('.income-amount');
+                const hint = row.querySelector('.income-amount-hint');
+                if (!amountInput || !hint) return;
+                const amount = Number(amountInput.value);
+                applyFinancialHint(hint, Number.isFinite(amount) ? `＝ ${formatManYenReadable(amount)}` : '', amount);
+            });
+
+            document.querySelectorAll('.asset-card').forEach((card) => {
+                const amountInput = card.querySelector('.asset-init-field');
+                const hint = card.querySelector('.asset-init-hint');
+                if (!amountInput || !hint) return;
+                const amount = Number(amountInput.value);
+                applyFinancialHint(hint, Number.isFinite(amount) ? `＝ ${formatManYenReadable(amount)}` : '', amount);
+            });
+        }
+
         function runSimulation() {
+            updateFinancialInputHints();
             const startYear = parseInt(document.getElementById('start-year').value) || 2026;
             const startAge = parseInt(document.getElementById('start-age').value) || 30;
             const endAge = parseInt(document.getElementById('years').value) || 85;
@@ -3202,6 +3295,39 @@ function executeSlotAction(action, slotNum) {
         }
     }
 }
+
+        function resetJinseiLocalStorageExceptBooks() {
+            const confirmed = window.confirm(
+                '「尽生の書」3冊の保存データは残し、それ以外のブラウザ内設定を初期化します。\nこの操作は元に戻せません。実行しますか？'
+            );
+            if (!confirmed) return;
+
+            try {
+                const keysToRemove = [];
+                for (let index = 0; index < localStorage.length; index++) {
+                    const key = localStorage.key(index);
+                    if (key && !key.startsWith('jinsei_slot_')) keysToRemove.push(key);
+                }
+                keysToRemove.forEach((key) => localStorage.removeItem(key));
+
+                const selector = document.getElementById('scenario-selector');
+                const defaultScenario = 'live_middle_mainstream';
+                if (selector) {
+                    selector.value = defaultScenario;
+                    const selectedOption = selector.options[selector.selectedIndex];
+                    const scenarioInput = document.getElementById('scenario-input');
+                    if (scenarioInput && selectedOption) scenarioInput.value = selectedOption.text;
+                }
+                applyScenario(defaultScenario);
+                localStorage.setItem('gemkin_active_scenario', defaultScenario);
+
+                if (typeof updateJinseiSlotDisplay === 'function') updateJinseiSlotDisplay();
+                showToast('🧹 尽生の書を残して、その他のブラウザ内設定を初期化しました。');
+            } catch (error) {
+                console.error('LocalStorageの初期化に失敗しました:', error);
+                showToast('初期化に失敗しました。', 'error');
+            }
+        }
 
         window.onload = function() { 
             const lastScenario = localStorage.getItem('gemkin_active_scenario') || 'sub_rich';
