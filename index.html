@@ -869,9 +869,9 @@
         <footer class="bg-slate-900 text-slate-500 text-xs py-6 px-4 text-center border-t border-slate-800 mt-auto">
             <p data-i18n="footer_copyright">© 2026 PLIP & Hiro-Seki-Tech & 投資運用のジェムキン (Gemkin FinTech Lab). 無断転載及びハルシネーションはお断り申し上げます。</p>
             <div class="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px]">
-                <span>Version 81</span>
+                <span>Version 83</span>
                 <span class="text-slate-700" aria-hidden="true">|</span>
-                <span>2026.08.06</span>
+                <span>2026.08.09</span>
                 <span class="text-slate-700" aria-hidden="true">|</span>
                 <button type="button" id="jinsei-history-open" class="text-amber-400 hover:text-amber-300 font-bold underline decoration-amber-500/40 underline-offset-4 transition-colors">
                     📜 尽生の軌跡
@@ -889,6 +889,14 @@
             </div>
             <div class="custom-scrollbar overflow-y-auto px-5 py-4 text-sm leading-relaxed">
                 <article class="border-b border-slate-700/70 pb-4">
+                    <h3 class="font-bold text-amber-300">Version 83　2026.08.09</h3>
+                    <p class="mt-1 text-slate-300">・EUR Editionで得た人生設計の知見を日本語版へ反映<br>・14種の人生雛形に住宅・教育・家族・旅行・挑戦など人物ごとの支出を追加<br>・「貯めて増やす」だけでなく、「使い、楽しみ、残す」人生の違いを強化</p>
+                </article>
+                <article class="border-b border-slate-700/70 py-4">
+                    <h3 class="font-bold text-amber-300">Version 82　2026.08.08</h3>
+                    <p class="mt-1 text-slate-300">・EUR Editionを最新の尽生を基に全面的に再構築<br>・欧州向けLife Profileを整備し、地域に合った人生設計・支出モデルへ刷新<br>・ドイツ語・フランス語・イタリア語・スペイン語の主題歌を追加</p>
+                </article>
+                <article class="border-b border-slate-700/70 py-4">
                     <h3 class="font-bold text-amber-300">Version 81　2026.08.06</h3>
                     <p class="mt-1 text-slate-300">・金額入力の補助表示と、1億円以上の金色表示を追加<br>・「尽生の書」を残す初期化機能を追加<br>・作品の成長を残す「尽生の軌跡」を開始</p>
                 </article>
@@ -2190,57 +2198,57 @@
             if (scenario === 'nri_ultra_rich') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 50; document.getElementById('years').value = 90;
                 document.getElementById('salary-amount').value = 3500; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 15000; document.getElementById('rate-cash').value = 0.2;
-                addOtherIncomeRow("事業オーナー配当金", 2000, 50, 90); addStageRow(3200, 70); addStageRow(2200, 90); addIncomeRow("海外不動産売却益", 65, 10000, "cash"); addExpenseRow("資産管理法人設立費用", 55, 3000);
+                addOtherIncomeRow("事業オーナー配当金", 2000, 50, 90); addStageRow(3200, 70); addStageRow(2200, 90); addIncomeRow("海外不動産売却益", 65, 10000, "cash"); addExpenseRow("資産管理法人設立費用", 55, 3000); addExpenseRow("家族・記念旅行", 55, 1000); addExpenseRow("別荘・セカンドハウス取得", 60, 5000); addExpenseRow("子世代への住宅援助", 65, 3000); addExpenseRow("趣味・家族イベント", 70, 1500);
                 addAssetElement({ name: "米国プライベートエクイティ", type: "stocks", initAmt: 20000, rate: 8.0, yearAmt: 1000, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 85 });
                 addAssetElement({ name: "コアインデックス投信", type: "trust", initAmt: 15000, rate: 5.0, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 50, endAge: 91 });
             } else if (scenario === 'nri_rich') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 45; document.getElementById('years').value = 85;
                 document.getElementById('salary-amount').value = 1800; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 5000; document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("未公開株配当等", 300, 45, 85); addStageRow(1600, 65); addStageRow(1100, 85); addIncomeRow("役員退職慰労金", 60, 5000, "trust");
+                addOtherIncomeRow("未公開株配当等", 300, 45, 85); addStageRow(1600, 65); addStageRow(1100, 85); addIncomeRow("役員退職慰労金", 60, 5000, "trust"); addExpenseRow("住宅大規模改修", 55, 1500); addExpenseRow("退職前後の旅行・趣味", 60, 800); addExpenseRow("子どもの住宅援助", 65, 1500); addExpenseRow("家族旅行・家族イベント", 70, 500);
                 addAssetElement({ name: "欧米高配当個別株", type: "stocks", initAmt: 6000, rate: 6.0, yearAmt: 200, monthAmt: 0, payout: "cashout", startAge: 45, endAge: 80 });
                 addAssetElement({ name: "世界分散ファンド", type: "trust", initAmt: 8000, rate: 4.5, yearAmt: 300, monthAmt: 0, payout: "reinvest", startAge: 45, endAge: 86 });
             } else if (scenario === 'nri_sub_rich') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 40; document.getElementById('years').value = 85;
                 document.getElementById('salary-amount').value = 1000; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 2500; document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("厚生・国民年金", 220, 65, 85); addStageRow(800, 65); addStageRow(580, 85); addIncomeRow("大企業定年退職金", 65, 2000, "trust");
+                addOtherIncomeRow("厚生・国民年金", 220, 65, 85); addStageRow(800, 65); addStageRow(580, 85); addIncomeRow("大企業定年退職金", 65, 2000, "trust"); addExpenseRow("教育・子ども独立支援", 50, 600); addExpenseRow("住宅大規模改修", 60, 700); addExpenseRow("退職記念旅行", 65, 300); addExpenseRow("趣味・旅行", 70, 200);
                 addAssetElement({ name: "企業型持株会優良株", type: "stocks", initAmt: 1000, rate: 4.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 65 });
                 addAssetElement({ name: "優良インデックス投信", type: "trust", initAmt: 3500, rate: 4.0, yearAmt: 120, monthAmt: 0, payout: "reinvest", startAge: 40, endAge: 86 });
             } else if (scenario === 'nri_upper_mass') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 35; document.getElementById('years').value = 85;
                 document.getElementById('salary-amount').value = 700; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 1500; document.getElementById('rate-cash').value = 0.1;
-                addOtherIncomeRow("基礎・厚生年金", 180, 65, 85); addStageRow(550, 60); addStageRow(420, 85); addIncomeRow("中小企業退職金", 60, 1000, "cash");
+                addOtherIncomeRow("基礎・厚生年金", 180, 65, 85); addStageRow(550, 60); addStageRow(420, 85); addIncomeRow("中小企業退職金", 60, 1000, "cash"); addExpenseRow("子どもの教育費", 45, 400); addExpenseRow("住宅修繕", 55, 400); addExpenseRow("退職旅行", 65, 200); addExpenseRow("子・孫への援助", 70, 200);
                 addAssetElement({ name: "つみたてオルカン投信", type: "trust", initAmt: 2000, rate: 4.0, yearAmt: 0, monthAmt: 10, startAge: 35, endAge: 86 });
             } else if (scenario === 'nri_mass') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 30; document.getElementById('years').value = 85;
                 document.getElementById('salary-amount').value = 500; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 600; document.getElementById('rate-cash').value = 0.05;
-                addOtherIncomeRow("老齢基礎年金", 130, 65, 85); addStageRow(420, 65); addStageRow(320, 85); addIncomeRow("小規模退職一時金", 65, 500, "cash");
+                addOtherIncomeRow("老齢基礎年金", 130, 65, 85); addStageRow(420, 65); addStageRow(320, 85); addIncomeRow("小規模退職一時金", 65, 500, "cash"); addExpenseRow("住宅取得関連費用", 35, 300); addExpenseRow("教育・家族支出", 45, 300); addExpenseRow("車の買い替え", 55, 200); addExpenseRow("住宅修繕", 65, 300);
                 addAssetElement({ name: "初期積立投資信託", type: "trust", initAmt: 400, rate: 3.5, yearAmt: 0, monthAmt: 3, startAge: 30, endAge: 86 });
             } else if (scenario === 'live_power_couple') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 32; document.getElementById('years').value = 85;
                 document.getElementById('salary-amount').value = 1600; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 1500; document.getElementById('rate-cash').value = 0.1;
-                addStageRow(900, 60); addStageRow(500, 85); addExpenseRow("タワマン大規模修繕積立金増額", 45, 500);
+                addStageRow(900, 60); addStageRow(500, 85); addExpenseRow("住宅取得関連費用", 35, 1500); addExpenseRow("子どもの教育費", 42, 800); addExpenseRow("タワマン大規模修繕積立金増額", 45, 500); addExpenseRow("教育費ピーク", 50, 1000); addExpenseRow("住居改修・設備更新", 60, 800); addExpenseRow("夫婦旅行", 65, 500);
                 addAssetElement({ name: "新NISA・夫婦満額オルカン積立", type: "trust", initAmt: 1000, rate: 6.5, yearAmt: 0, monthAmt: 30, startAge: 32, endAge: 86 });
                 addAssetElement({ name: "サテライト米国個別株", type: "stocks", initAmt: 500, rate: 8.5, yearAmt: 50, monthAmt: 0, payout: "reinvest", startAge: 32, endAge: 55 });
             } else if (scenario === 'live_fire') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 42; document.getElementById('years').value = 85;
                 document.getElementById('salary-amount').value = 0; document.getElementById('salary-limit').value = 42; document.getElementById('init-cash').value = 1000; document.getElementById('rate-cash').value = 0.05;
-                addOtherIncomeRow("国民年金（将来受給）", 65, 65, 85); addStageRow(300, 65); addStageRow(240, 85);
+                addOtherIncomeRow("国民年金（将来受給）", 65, 65, 85); addStageRow(300, 65); addStageRow(240, 85); addExpenseRow("FIRE記念長期旅行", 45, 400); addExpenseRow("趣味・経験への投資", 50, 300); addExpenseRow("長期旅行", 55, 400); addExpenseRow("住環境改善", 60, 500); addExpenseRow("旅行・セカンドライフ", 65, 300); addExpenseRow("趣味・交流", 70, 200);
                 addAssetElement({ name: "高配当株ポートフォリオ", type: "stocks", initAmt: 4000, rate: 4.5, yearAmt: 0, monthAmt: 0, payout: "cashout", startAge: 42, endAge: 86 });
                 addAssetElement({ name: "新NISA・インデックスコア", type: "trust", initAmt: 2000, rate: 5.5, yearAmt: 0, monthAmt: 0, payout: "reinvest", startAge: 42, endAge: 86 });
             } else if (scenario === 'live_middle_mainstream') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 35; document.getElementById('years').value = 85;
                 document.getElementById('salary-amount').value = 650; document.getElementById('salary-limit').value = 60; document.getElementById('init-cash').value = 400; document.getElementById('rate-cash').value = 0.05;
-                addOtherIncomeRow("厚生年金・夫婦合算", 220, 65, 85); addStageRow(480, 60); addStageRow(300, 85); addIncomeRow("定年時の会社退職金", 60, 1500, "cash"); addExpenseRow("子供の大学進学費用（私立文系）", 50, 500); addExpenseRow("住宅リフォーム・修繕コスト", 65, 300);
+                addOtherIncomeRow("厚生年金・夫婦合算", 220, 65, 85); addStageRow(480, 60); addStageRow(300, 85); addIncomeRow("定年時の会社退職金", 60, 1500, "cash"); addExpenseRow("車の買い替え", 40, 250); addExpenseRow("家族旅行", 45, 100); addExpenseRow("子供の大学進学費用（私立文系）", 50, 500); addExpenseRow("車の買い替え", 55, 250); addExpenseRow("住宅リフォーム・修繕コスト", 65, 300); addExpenseRow("退職記念旅行", 65, 150);
                 addAssetElement({ name: "新NISA・手堅いインデックス積立", type: "trust", initAmt: 200, rate: 5.0, yearAmt: 0, monthAmt: 5, startAge: 35, endAge: 86 });
             } else if (scenario === 'live_children_room') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 38; document.getElementById('years').value = 80;
                 document.getElementById('salary-amount').value = 450; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 1000; document.getElementById('rate-cash').value = 0.05;
-                addStageRow(80, 65); addStageRow(200, 85); addExpenseRow("実家の相続登記・固定資産税清算", 65, 200);
+                addStageRow(80, 65); addStageRow(200, 85); addExpenseRow("実家設備更新", 50, 200); addExpenseRow("実家大規模修繕", 60, 600); addExpenseRow("実家の相続登記・固定資産税清算", 65, 200); addExpenseRow("住環境・家電更新", 70, 300);
                 addAssetElement({ name: "限界聖域・全力特定インデックス", type: "trust", initAmt: 2000, rate: 6.0, yearAmt: 200, monthAmt: 10, startAge: 38, endAge: 85 });
             } else if (scenario === 'live_local_startup') {
                 document.getElementById('start-year').value = 2026; document.getElementById('start-age').value = 38; document.getElementById('years').value = 85;
                 document.getElementById('salary-amount').value = 300; document.getElementById('salary-limit').value = 65; document.getElementById('init-cash').value = 500; document.getElementById('rate-cash').value = 0.05;
-                addStageRow(240, 65); addStageRow(180, 85); addIncomeRow("ローカルビジネス小規模M&A売却益", 50, 3000, "trust"); addExpenseRow("古民家リノベーション工事費用", 39, 400);
+                addStageRow(240, 65); addStageRow(180, 85); addIncomeRow("ローカルビジネス小規模M&A売却益", 50, 3000, "trust"); addExpenseRow("古民家リノベーション工事費用", 39, 400); addExpenseRow("事業追加投資", 42, 700); addExpenseRow("事業拡張", 46, 500); addExpenseRow("第二の人生プロジェクト", 55, 500);
                 addAssetElement({ name: "新NISA（オルカン自動積立）", type: "trust", initAmt: 300, rate: 5.0, yearAmt: 0, monthAmt: 3, startAge: 38, endAge: 85 });
 
 } else if (scenario === 'live_mild_yankee') {
@@ -2256,7 +2264,10 @@
             addStageRow(380, 60);
             addStageRow(260, 85);
             addExpenseRow("地元工務店でのローコストハウス頭金", 30, 400);
+            addExpenseRow("ミニバンの買い替え", 38, 250);
             addExpenseRow("子供2人の高校・大学進学費用", 48, 800);
+            addExpenseRow("住宅修繕", 55, 300);
+            addExpenseRow("夫婦旅行", 65, 150);
             addAssetElement({ name: "地元のJA定期貯金・国債", type: "bonds", initAmt: 100, rate: 1.5, yearAmt: 10, monthAmt: 0, payout: "reinvest", startAge: 28, endAge: 85 });
 
 
@@ -2272,6 +2283,14 @@
             addOtherIncomeRow("厚生年金・将来推定", 150, 65, 90);
             addStageRow(230, 60);
             addStageRow(200, 90);
+            addExpenseRow("結婚・新生活", 28, 150);
+            addExpenseRow("住宅取得・引越関連", 32, 400);
+            addExpenseRow("車・家族生活", 38, 200);
+            addExpenseRow("子どもの教育費", 45, 400);
+            addExpenseRow("大学等教育費", 52, 600);
+            addExpenseRow("住宅修繕", 60, 300);
+            addExpenseRow("退職記念旅行", 65, 150);
+            addExpenseRow("趣味・夫婦旅行", 70, 100);
             addAssetElement({ name: "新NISA・オルカン積立A", type: "trust", initAmt: 10, rate: 5.0, yearAmt: 10, monthAmt: 5, payout: "reinvest", startAge: 22, endAge: 65 });
 
         } else if (scenario === 'child_a') {
@@ -2286,6 +2305,14 @@
             addOtherIncomeRow("厚生年金・将来推定", 150, 65, 90);
             addStageRow(230, 60);
             addStageRow(200, 90);
+            addExpenseRow("結婚・新生活", 28, 150);
+            addExpenseRow("住宅取得・引越関連", 32, 400);
+            addExpenseRow("車・家族生活", 38, 200);
+            addExpenseRow("子どもの教育費", 45, 400);
+            addExpenseRow("大学等教育費", 52, 600);
+            addExpenseRow("住宅修繕", 60, 300);
+            addExpenseRow("退職記念旅行", 65, 150);
+            addExpenseRow("趣味・夫婦旅行", 70, 100);
             // 投資アセットは無し（Aと同じ生活費で浮いた分がそのまま現金口座に蓄積する挙動）
 
         } else if (scenario === 'child_b') {
@@ -2301,6 +2328,14 @@
             addStageRow(290, 34); // 22〜34歳までは浪費ステージ（投資原資ほぼゼロ）
             addStageRow(170, 60); // 35歳から猛烈に生活費を削って投資に回す
             addStageRow(200, 90);
+            addExpenseRow("結婚・新生活", 28, 150);
+            addExpenseRow("住宅取得・引越関連", 32, 400);
+            addExpenseRow("車・家族生活", 38, 200);
+            addExpenseRow("子どもの教育費", 45, 400);
+            addExpenseRow("大学等教育費", 52, 600);
+            addExpenseRow("住宅修繕", 60, 300);
+            addExpenseRow("退職記念旅行", 65, 150);
+            addExpenseRow("趣味・夫婦旅行", 70, 100);
             addAssetElement({ name: "35歳からの挽回積立C", type: "trust", initAmt: 10, rate: 5.0, yearAmt: 0, monthAmt: 10, payout: "reinvest", startAge: 35, endAge: 65 });
         }
 
