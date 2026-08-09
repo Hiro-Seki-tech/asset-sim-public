@@ -846,7 +846,7 @@
                         <table id="resultTable" class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-900/90 text-white text-xs tracking-wider">
-                                    <th class="p-4 text-center font-bold sticky top-0 bg-slate-900 z-10 w-24" data-i18n="th_elapsed_year">Elapsed</th>
+                                    <th class="p-4 text-center font-bold sticky top-0 bg-slate-900 z-10 w-28" data-i18n="th_elapsed_year">Year / Age</th>
                                     <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10" data-i18n="th_cash">Cash</th>
                                     <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10" data-i18n="th_realestate">Real Estate</th>
                                     <th class="p-4 text-right font-bold sticky top-0 bg-slate-900 z-10" data-i18n="th_stocks">Stocks</th>
@@ -1782,7 +1782,8 @@
                 </div>
                 <div class="col-span-4 flex flex-col">
                     <span class="text-slate-400 text-[9px] mb-0.5 pl-1">${lblAmt}</span>
-                    <input type="number" class="expense-amount rounded border border-slate-200 p-1 font-bold text-rose-700 text-center" value="${amount}">
+                    <input type="number" class="expense-amount rounded border border-slate-200 p-1 font-bold text-rose-700 text-center" value="${amount}" oninput="runSimulation();">
+                    <p class="expense-amount-hint mt-1 text-[9px] leading-tight text-slate-400 min-h-[1rem] text-center" aria-live="polite"></p>
                 </div>
                 <button type="button" onclick="this.parentElement.remove(); runSimulation();" class="col-span-1 text-rose-500 hover:text-rose-700 text-xs text-center mt-4"><i class="fa-solid fa-trash-can"></i></button>
             `;
@@ -2595,6 +2596,14 @@
                 applyFinancialHint(hint, Number.isFinite(amount) ? `= ${formatManYenReadable(amount)}` : '', amount);
             });
 
+            document.querySelectorAll('.expense-row').forEach((row) => {
+                const amountInput = row.querySelector('.expense-amount');
+                const hint = row.querySelector('.expense-amount-hint');
+                if (!amountInput || !hint) return;
+                const amount = Number(amountInput.value);
+                applyFinancialHint(hint, Number.isFinite(amount) ? `= ${formatManYenReadable(amount)}` : '', amount);
+            });
+
             document.querySelectorAll('.asset-card').forEach((card) => {
                 const amountInput = card.querySelector('.asset-init-field');
                 const hint = card.querySelector('.asset-init-hint');
@@ -2792,9 +2801,11 @@
             simRecords.forEach((rec, idx) => {
                 let row = tbody.insertRow();
                 row.className = idx === simRecords.length - 1 ? 'bg-emerald-500/10 border-t-2 border-emerald-500 text-slate-900 font-bold' : 'hover:bg-slate-50 transition-colors';
-                const labelParts = rec.yearLabel.split(' ');
-                
-                row.insertCell().innerHTML = `<div class="text-center font-bold text-slate-800">${labelParts[0]}</div><div class="text-center text-slate-400 font-normal text-[10px]">${labelParts[1] || ''}</div>`;
+                const labelMatch = rec.yearLabel.match(/\((\d{4})\s*\/\s*Age\s+(\d+)\)/);
+                const calendarYear = labelMatch ? labelMatch[1] : '';
+                const age = labelMatch ? labelMatch[2] : '';
+
+                row.insertCell().innerHTML = `<div class="text-center font-bold text-slate-800">${calendarYear || '—'}</div><div class="text-center text-slate-400 font-normal text-[10px]">${age ? `⚖️ ${age}` : ''}</div>`;
                 row.insertCell().innerHTML = `<div class="text-right p-1 font-mono ${rec.cash < 0 ? 'text-rose-600 font-bold' : 'text-slate-800'}">${formatAssetValue(rec.cash)}</div>`;
                 row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.realestate)}</div>`;
                 row.insertCell().innerHTML = `<div class="text-right p-1 font-mono">${formatAssetValue(rec.stocks)}</div>`;
