@@ -3908,7 +3908,7 @@ function executeSlotAction(action, slotNum) {
 
       if (sessionId !== musicSessionId) return;
       showToast(played
-        ? "🌿 Background music is now playing."
+        ? "🌿 " + chosen.split("/").pop()
         : "⚠️ Background music could not be played.");
       return;
     }
@@ -3920,14 +3920,6 @@ function executeSlotAction(action, slotNum) {
       "./music/song3.mp3",
       "./music/song4.mp3"
     ];
-
-    const themeDisplayNames = {
-      "./music/song.mp3": "Theme Song — German",
-      "./music/song1.mp3": "Theme Song — French",
-      "./music/song2.mp3": "Theme Song — Italian",
-      "./music/song3.mp3": "Theme Song — Spanish",
-      "./music/song4.mp3": "Theme Song — Japanese + English"
-    };
 
     const playNextTheme = async () => {
       if (sessionId !== musicSessionId || currentState !== 1) return;
@@ -3951,7 +3943,7 @@ function executeSlotAction(action, slotNum) {
 
       if (sessionId !== musicSessionId || currentState !== 1) return;
       showToast(played
-        ? "🎵 " + (themeDisplayNames[chosen] || "Theme Song") + " is now playing."
+        ? "🎵 " + chosen.split("/").pop()
         : "⚠️ Theme song could not be played.");
     };
 
